@@ -1,4 +1,4 @@
-# Gibbon Attendance Module
+# Gibbon Attendance Review Module
 
 This repository contains code for the **Gibbon Attendance Module** – a part of the flexible, open school platform Gibbon. The module provides features for viewing and querying student attendance information, as well as transferring attendance records between classes.
 
@@ -9,7 +9,7 @@ This repository contains code for the **Gibbon Attendance Module** – a part of
 - **View Attendance Information:**  
   Allows users (Admins, Teachers, and Parents) to query attendance records for a specified student.  
   - For teachers and admins: view complete attendance records.
-  - For parents: view their child's attendance information.
+  - **(Incomplete)** For parents: view their child's attendance information.
 
 - **Attendance Summary:**  
   Display daily attendance summaries including the expected score and actual attendance score, calculated based on attendance type (e.g., Present, Sick Leave, Absent).
@@ -19,15 +19,6 @@ This repository contains code for the **Gibbon Attendance Module** – a part of
 
 - **Role & Permission Handling:**  
   Built-in logic to restrict access based on user roles (Admin, Teacher, Student, Parent, Support).
-
-- **Helper Functions:**  
-  Several helper functions are provided to:
-  - Parse and trim comma-separated strings.
-  - Calculate permission values based on different flags.
-  - Convert integers to a 4-character binary string representation (using Y/N).
-  - Format and validate date ranges.
-  - Retrieve attendance records from the database using complex SQL queries with CTEs.
-  - Compute daily attendance scores using configurable parameters.
 
 - **Transfer Attendance Records (Under Development):**  
   A feature intended to transfer attendance records from one class period to another.  
