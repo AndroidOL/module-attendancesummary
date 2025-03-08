@@ -71,8 +71,6 @@ This repository contains code for the **Gibbon Attendance Module** – a part of
 
 - **Transfer Attendance Records:**  
   Further development is required to fully implement the transfer attendance functionality.
-- **Enhanced Role Management:**  
-  Additional role-based access control enhancements may be added.
 - **User Interface Improvements:**  
   Improved UI/UX for better data visualization and interaction.
 
