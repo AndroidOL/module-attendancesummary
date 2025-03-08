@@ -46,13 +46,9 @@ This repository contains code for the **Gibbon Attendance Module** – a part of
 
 ## Usage
 
-- **Viewing Attendance:**  
-  Navigate to the attendance module (e.g., `attendance_summary.php`). Use the provided forms to select a student and date range.  
-  Attendance records are displayed in a detailed table format, including daily summaries and expandable rows for detailed information.
-
-- **Transferring Attendance Records (Under Development):**  
-  The transfer functionality is accessed through `attendance_record_transfer.php`.  
-  **Note:** This feature is still under development and may not work as expected.
+1. Go to "System Settings" > "Attendance Summary" Module Settings.
+2. Configure the module's basic information, such as module name and description.
+3. Set up permissions to define which roles can access the module's features.
 
 ## Code Structure
 
