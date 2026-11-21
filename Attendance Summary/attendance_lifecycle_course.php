@@ -42,6 +42,12 @@ if (!isActionAccessible($guid, $connection2, '/modules/Attendance Summary/attend
 
 $isPrint = (($_REQUEST['viewMode'] ?? '') === 'print');
 $gibbonPersonID = is_scalar($_REQUEST['gibbonPersonID'] ?? null) ? trim((string) $_REQUEST['gibbonPersonID']) : '';
+if ($gibbonPersonID !== ''
+    && !attendanceCanAccessStudent($pdo, $session->get('gibbonPersonID'), $gibbonPersonID, $session->get('gibbonSchoolYearID'))
+) {
+    $page->addError(attendanceT('You do not have access to this student.'));
+    return;
+}
 
 // Report scope: all enrolment / one school year / one term. Term wins over year.
 $scope = is_scalar($_REQUEST['scope'] ?? null) ? trim((string) $_REQUEST['scope']) : '';

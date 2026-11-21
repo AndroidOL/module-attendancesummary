@@ -44,6 +44,10 @@ if ($gibbonPersonID === '') {
     $page->addError(attendanceT('Select a student.'));
     return;
 }
+if (!attendanceCanAccessStudent($pdo, $session->get('gibbonPersonID'), $gibbonPersonID, $session->get('gibbonSchoolYearID'))) {
+    $page->addError(attendanceT('You do not have access to this student.'));
+    return;
+}
 
 $student = $pdo->selectOne(
     "SELECT gibbonPersonID FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID",

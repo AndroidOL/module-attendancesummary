@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+v1.1.4
+------
+- Require form-tutor, course-teacher, or all-classes access before opening a
+  student attendance view, lifecycle report, or transfer page.
+- Evaluate follow-up owner eligibility against the case's school year instead
+  of the viewer's current session year.
+- Route Attendance Trends output through the page writer and remove an unused
+  school-day helper.
+
 v1.1.3
 ------
 - Load the Follow-up helpers in the form-group attendance summary so the quick

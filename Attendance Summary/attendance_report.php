@@ -164,22 +164,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance Summary/attenda
         $row->addFooter();
         $row->addSearchSubmit($session);
 
-    echo $form->getOutput();
+    $page->write($form->getOutput());
 
 
     if ($dateStart != '') {
-        echo '<h2>';
-        echo attendanceT('Report Data');
-        echo '</h2>';
-
-        echo '<p><span class="text-xs italic">'.attendanceT('Click a legend item to toggle visibility.').'</span></p>';
+        $page->write('<h2>'.attendanceT('Report Data').'</h2>');
+        $page->write('<p><span class="text-xs italic">'.attendanceT('Click a legend item to toggle visibility.').'</span></p>');
 
         // Produce array of attendance data
         $rows = getAttendanceSummary($connection2, $dateStart, $dateEnd, $selectedStd['StudentID'], $countClassAsSchool);
 
 
         if (empty($rows)) {
-            echo $page->getBlankSlate();
+            $page->write($page->getBlankSlate());
         } else {
             $data = [];
             $days = [];
@@ -249,7 +246,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance Summary/attenda
                     ->setData($dates);
             }
 
-            echo $chart->render();
+            $page->write($chart->render());
         }
     }
 }

@@ -56,10 +56,11 @@ $dueDate = is_scalar($input['dueDate'] ?? null) ? Format::dateConvert((string) $
 $resolutionCode = is_scalar($input['resolutionCode'] ?? null) ? trim((string) $input['resolutionCode']) : '';
 $resolutionNote = is_scalar($input['resolutionNote'] ?? null) ? trim((string) $input['resolutionNote']) : '';
 
+$caseSchoolYearID = (string) $case['gibbonSchoolYearID'];
 $ownerOptions = attendanceFollowUpOwnerOptions(
     $pdo,
     $case['gibbonPersonIDStudent'],
-    $gibbonSchoolYearID,
+    $caseSchoolYearID,
     $gibbonPersonID,
     $case['gibbonPersonIDOwner']
 );
@@ -69,7 +70,7 @@ if (
         $pdo,
         $ownerID,
         $case['gibbonPersonIDStudent'],
-        $gibbonSchoolYearID,
+        $caseSchoolYearID,
         $gibbonPersonID,
         $case['gibbonPersonIDOwner']
     )

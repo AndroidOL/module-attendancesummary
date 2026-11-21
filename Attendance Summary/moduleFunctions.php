@@ -274,6 +274,62 @@ function attendanceCanViewAllClasses($gibbonPersonID): bool
     return is_string($highest) && substr($highest, -4) === '_all';
 }
 
+function attendanceCanAccessStudent($pdo, $personID, $studentID, $schoolYearID): bool
+{
+    if (attendanceCanViewAllClasses($personID)) {
+        return true;
+    }
+
+    return !empty($pdo->selectOne(
+        "SELECT person.gibbonPersonID
+         FROM gibbonPerson AS person
+         WHERE person.gibbonPersonID=:studentPersonID
+           AND person.status='Full'
+           AND (person.dateStart IS NULL OR person.dateStart<=CURRENT_DATE)
+           AND (person.dateEnd IS NULL OR person.dateEnd>=CURRENT_DATE)
+           AND (
+               EXISTS (
+                   SELECT 1
+                   FROM gibbonStudentEnrolment AS enrolment
+                   JOIN gibbonFormGroup AS formGroup
+                     ON formGroup.gibbonFormGroupID=enrolment.gibbonFormGroupID
+                   WHERE enrolment.gibbonPersonID=person.gibbonPersonID
+                     AND enrolment.gibbonSchoolYearID=:schoolYearIDForm
+                     AND (
+                         formGroup.gibbonPersonIDTutor=:tutorPersonID
+                         OR formGroup.gibbonPersonIDTutor2=:tutorPersonID
+                         OR formGroup.gibbonPersonIDTutor3=:tutorPersonID
+                     )
+               )
+               OR EXISTS (
+                   SELECT 1
+                   FROM gibbonCourseClassPerson AS teacher
+                   JOIN gibbonCourseClass AS class
+                     ON class.gibbonCourseClassID=teacher.gibbonCourseClassID
+                   JOIN gibbonCourse AS course
+                     ON course.gibbonCourseID=class.gibbonCourseID
+                   JOIN gibbonCourseClassPerson AS student
+                     ON student.gibbonCourseClassID=class.gibbonCourseClassID
+                    AND student.gibbonPersonID=person.gibbonPersonID
+                    AND student.role='Student'
+                    AND (student.dateEnrolled IS NULL OR student.dateEnrolled<=CURRENT_DATE)
+                    AND (student.dateUnenrolled IS NULL OR student.dateUnenrolled>=CURRENT_DATE)
+                   WHERE teacher.gibbonPersonID=:teacherPersonID
+                     AND teacher.role IN ('Teacher', 'Assistant', 'Technician')
+                     AND course.gibbonSchoolYearID=:schoolYearIDCourse
+               )
+           )
+         LIMIT 1",
+        [
+            'studentPersonID'   => $studentID,
+            'tutorPersonID'     => $personID,
+            'teacherPersonID'   => $personID,
+            'schoolYearIDForm'  => $schoolYearID,
+            'schoolYearIDCourse' => $schoolYearID,
+        ]
+    ));
+}
+
 /**
  * Validate and normalise a requested date range.
  *
@@ -1320,30 +1376,6 @@ function processAttendanceTransfer($pdo, $data, $gibbonPersonID, $url)
 
         return $url . '&return=error2';
     }
-}
-
-// Get the last N school days from currentDate within the last 100.
-function getLastNSchoolDays($guid, $connection2, $date, $n = 5, $inclusive = false)
-{
-    $timestamp = Format::timestamp($date);
-    if ($inclusive == true) {
-        $timestamp += 86400;
-    }
-
-    $count = 0;
-    $spin = 1;
-    $max = max($n, 100);
-    $lastNSchoolDays = [];
-    while ($count < $n and $spin <= $max) {
-        $date = date('Y-m-d', ($timestamp - ($spin * 86400)));
-        if (isSchoolOpen($guid, $date, $connection2)) {
-            $lastNSchoolDays[$count] = $date;
-            ++$count;
-        }
-        ++$spin;
-    }
-
-    return $lastNSchoolDays;
 }
 
 /**

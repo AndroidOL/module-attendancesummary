@@ -110,7 +110,7 @@ if ($canManage) {
     $ownerOptions = attendanceFollowUpOwnerOptions(
         $pdo,
         $case['gibbonPersonIDStudent'],
-        $gibbonSchoolYearID,
+        (string) $case['gibbonSchoolYearID'],
         $gibbonPersonID,
         $case['gibbonPersonIDOwner']
     );
