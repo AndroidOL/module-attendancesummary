@@ -149,10 +149,16 @@ function attendanceFollowUpCanAccessStudent($pdo, $personID, $studentID, $school
     return attendanceFollowUpIsFormTutor($enrolment, $personID);
 }
 
-function attendanceFollowUpStudentOptions($pdo, $personID, $schoolYearID): array
+function attendanceFollowUpStudentOptions($pdo, $personID, $schoolYearID, $gibbonFormGroupID = null): array
 {
     $allStudents = attendanceCanViewAllClasses($personID);
     $params = ['schoolYearID' => $schoolYearID];
+    $formGroupClause = !empty($gibbonFormGroupID) && $gibbonFormGroupID !== '*'
+        ? ' AND formGroup.gibbonFormGroupID=:gibbonFormGroupID'
+        : '';
+    if ($formGroupClause !== '') {
+        $params['gibbonFormGroupID'] = $gibbonFormGroupID;
+    }
     $tutorClause = $allStudents ? '' : "
         AND (
             formGroup.gibbonPersonIDTutor=:tutor1
@@ -175,6 +181,7 @@ function attendanceFollowUpStudentOptions($pdo, $personID, $schoolYearID): array
            ON formGroup.gibbonFormGroupID=enrolment.gibbonFormGroupID
          WHERE enrolment.gibbonSchoolYearID=:schoolYearID
            AND person.status='Full'
+           {$formGroupClause}
            {$tutorClause}
          ORDER BY formGroup.nameShort, person.surname, person.preferredName",
         $params

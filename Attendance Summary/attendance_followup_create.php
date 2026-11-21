@@ -34,7 +34,10 @@ $page->return->addReturns([
 
 $gibbonPersonID = (string) $session->get('gibbonPersonID');
 $gibbonSchoolYearID = (string) $session->get('gibbonSchoolYearID');
-$students = attendanceFollowUpStudentOptions($pdo, $gibbonPersonID, $gibbonSchoolYearID);
+$requestedFormGroupID = is_scalar($_GET['gibbonFormGroupID'] ?? null)
+    ? trim((string) $_GET['gibbonFormGroupID'])
+    : '';
+$students = attendanceFollowUpStudentOptions($pdo, $gibbonPersonID, $gibbonSchoolYearID, $requestedFormGroupID);
 if (empty($students)) {
     $page->addError(attendanceT('No current students are available for follow-up with your access.'));
     return;
