@@ -76,17 +76,30 @@ $canCreateFollowUp = isActionAccessible(
     $connection2,
     '/modules/Attendance Summary/attendance_followup_create.php'
 );
+$followUpFormGroupID = $gibbonFormGroupID !== '' && $gibbonFormGroupID !== '*'
+    ? (string) $gibbonFormGroupID
+    : null;
+$followUpStudentIDs = $canCreateFollowUp
+    ? array_fill_keys(array_keys(attendanceFollowUpStudentOptions(
+        $pdo,
+        $gibbonPersonID,
+        $session->get('gibbonSchoolYearID'),
+        $followUpFormGroupID
+    )), true)
+    : [];
 $followUpStartDate = getTermFirstDay($connection2, $session->get('gibbonSchoolYearID'));
 $followUpEndDate = (new DateTime('last Friday'))->format('Y-m-d');
 
 $table = DataTable::createPaginated('studentsByFormGroup', $criteria);
 $table->setTitle(attendanceT('Report Data'));
-if (isActionAccessible($guid, $connection2, '/modules/Attendance Summary/attendance_followup_create.php')) {
-    $table->addHeaderAction('followUp', attendanceT('Create Follow-up'))
+if ($canCreateFollowUp && !empty($followUpStudentIDs)) {
+    $followUpHeaderAction = $table->addHeaderAction('followUp', attendanceT('Create Follow-up'))
         ->setURL('/modules/Attendance Summary/attendance_followup_create.php')
-        ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
         ->setIcon('markbook')
         ->displayLabel();
+    if ($followUpFormGroupID !== null) {
+        $followUpHeaderAction->addParam('gibbonFormGroupID', $followUpFormGroupID);
+    }
 }
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings.php')) {
     $table->addHeaderAction('settings', attendanceT('Attendance Score Settings'))
@@ -126,7 +139,7 @@ $table->addActionColumn()
     ->addParam('gibbonPersonID')
     ->addParam('surname')
     ->addParam('preferredName')
-    ->format(function ($row, $actions) use ($canCreateFollowUp, $followUpStartDate, $followUpEndDate) {
+    ->format(function ($row, $actions) use ($followUpStudentIDs, $followUpFormGroupID, $followUpStartDate, $followUpEndDate) {
         $actions->addAction('profile', attendanceT('View'))
             ->setURL('/modules/Attendance Summary/attendance_summary_view.php');
         $actions->addAction('lifecycle', attendanceT('Full History (School Days)'))
@@ -135,13 +148,16 @@ $table->addActionColumn()
         $actions->addAction('lifecycleCourse', attendanceT('Full History (Courses)'))
             ->setIcon('tasks')
             ->setURL('/modules/Attendance Summary/attendance_lifecycle_course.php');
-        if ($canCreateFollowUp) {
-            $actions->addAction('followUp', attendanceT('Create Follow-up'))
+        if (isset($followUpStudentIDs[(string) ($row['gibbonPersonID'] ?? '')])) {
+            $followUpAction = $actions->addAction('followUp', attendanceT('Create Follow-up'))
                 ->setIcon('markbook')
                 ->setURL('/modules/Attendance Summary/attendance_followup_create.php')
                 ->addParam('reason', 'low_attendance')
                 ->addParam('start', $followUpStartDate)
                 ->addParam('end', $followUpEndDate);
+            if ($followUpFormGroupID !== null) {
+                $followUpAction->addParam('gibbonFormGroupID', $followUpFormGroupID);
+            }
         }
     });
 

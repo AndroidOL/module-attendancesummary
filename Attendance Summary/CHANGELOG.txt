@@ -8,7 +8,8 @@ v1.1.1
   worklist menu while data visibility remains form-group/all-student scoped.
 - Add permission-aware Create Follow-up actions to the form-group attendance
   summary: a header action limited to the selected form group and a row action
-  prefilled with the student and current-term date range.
+  limited to students the current user can follow up, prefilled with the
+  student and current-term date range.
 
 v1.1.0
 ------

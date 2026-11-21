@@ -123,6 +123,10 @@ namespace Gibbon\Module\Attendance\Tests {
             $this->assertStringContainsString('The CSV was not generated.', $export);
             $this->assertStringContainsString('/modules/System Admin/systemSettings.php', $retention);
             $this->assertStringContainsString('/modules/Attendance Summary/attendance_followup_create.php', $summary);
+            $this->assertStringContainsString('$followUpStudentIDs = $canCreateFollowUp', $summary);
+            $this->assertStringContainsString('isset($followUpStudentIDs[', $summary);
+            $this->assertStringContainsString("\$followUpHeaderAction->addParam('gibbonFormGroupID'", $summary);
+            $this->assertStringContainsString("\$followUpAction->addParam('gibbonFormGroupID'", $summary);
             $this->assertStringContainsString("addParam('reason', 'low_attendance')", $summary);
             $this->assertStringContainsString("addParam('start', \$followUpStartDate)", $summary);
             $this->assertStringContainsString("addParam('end', \$followUpEndDate)", $summary);
