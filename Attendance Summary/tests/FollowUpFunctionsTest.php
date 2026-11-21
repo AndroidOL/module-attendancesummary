@@ -110,6 +110,8 @@ namespace Gibbon\Module\Attendance\Tests {
             $this->assertStringContainsString('activeKey', $changedb);
             $this->assertStringContainsString('revision', $changedb);
             $this->assertStringContainsString('attendanceFollowUpRecordEvent', $update);
+            $this->assertStringContainsString('gibbonPersonIDActor=:actorID', $functions);
+            $this->assertStringNotContainsString('actorPersonID=:actorPersonID', $functions);
             $this->assertStringContainsString('maxLength(2000)', $view);
             $this->assertStringContainsString('sendAttendanceCsv', $export);
             $this->assertStringContainsString('/modules/System Admin/systemSettings.php', $retention);

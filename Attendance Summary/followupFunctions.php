@@ -310,11 +310,11 @@ function attendanceFollowUpRecordEvent(
 ): void {
     $pdo->insert(
         "INSERT INTO attendance_follow_up_event
-         SET followUpID=:followUpID, actorPersonID=:actorPersonID, eventType=:eventType,
+         SET followUpID=:followUpID, gibbonPersonIDActor=:actorID, eventType=:eventType,
              fieldName=:fieldName, oldValue=:oldValue, newValue=:newValue",
         [
             'followUpID'   => $followUpID,
-            'actorPersonID'=> $actorPersonID,
+            'actorID'      => $actorPersonID,
             'eventType'    => $eventType,
             'fieldName'    => $fieldName,
             'oldValue'     => $oldValue === null ? null : mb_substr($oldValue, 0, 255),

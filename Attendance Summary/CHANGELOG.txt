@@ -13,6 +13,8 @@ v1.1.0
 - Add formula-safe CSV export scoped to cases the current manager can access.
 - Recheck current case access under a row lock before appending coordination
   notes, and reject follow-up creation for students who are no longer active.
+- Align follow-up audit event inserts with the installed actor column so case
+  creation, updates, note events and export audit records persist correctly.
 - Use Gibbon's standard Button component for attendance detail controls.
 
 v1.0.5
