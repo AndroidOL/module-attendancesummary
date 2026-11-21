@@ -39,5 +39,35 @@ namespace Gibbon\Module\Attendance\Tests {
         $this->assertFalse(\attendanceIsNoRecord('Absent'));
         $this->assertSame('No record', \attendanceDisplayType('__NO_RECORD__'));
     }
+
+    public function testTransferParserRequiresScheduleRowsToMatchSubmittedClasses()
+    {
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->exec('CREATE TABLE gibbonttdayrowclass (
+            gibbonTTDayRowClassID TEXT PRIMARY KEY,
+            gibbonCourseClassID TEXT NOT NULL,
+            gibbonTTColumnRowID TEXT NOT NULL,
+            gibbonTTDayID TEXT NOT NULL
+        )');
+        $statement = $pdo->prepare('INSERT INTO gibbonttdayrowclass VALUES (?, ?, ?, ?)');
+        $statement->execute(['101', 'A', 'P1', 'D1']);
+        $statement->execute(['102', 'B', 'P1', 'D1']);
+
+        $valid = \parseAttendance($pdo, [
+            'gibbonStudentID' => '1',
+            'start_date' => '2026-11-01',
+            'end_date' => '2026-11-07',
+            'replacement-A_101' => 'B.102',
+        ]);
+        $this->assertCount(1, $valid['replacement']);
+
+        $invalid = \parseAttendance($pdo, [
+            'gibbonStudentID' => '1',
+            'start_date' => '2026-11-01',
+            'end_date' => '2026-11-07',
+            'replacement-A_101' => 'D.102',
+        ]);
+        $this->assertCount(0, $invalid['replacement']);
+    }
     }
 }
