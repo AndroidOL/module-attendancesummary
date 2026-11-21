@@ -33,6 +33,51 @@ msgstr "缺勤类型统计"
 msgid "Absent"
 msgstr "缺勤"
 
+msgid "Absence"
+msgstr "缺勤"
+
+msgid "Score for unexcused or personal absence."
+msgstr "无故缺勤或个人事假的评分。"
+
+msgid "Suspension"
+msgstr "停课"
+
+msgid "Score for a suspension."
+msgstr "被停课的评分。"
+
+msgid "Score for lateness."
+msgstr "迟到的评分。"
+
+msgid "Score for leaving early."
+msgstr "早退的评分。"
+
+msgid "Sick Leave"
+msgstr "病假"
+
+msgid "Score for sick leave."
+msgstr "病假的评分。"
+
+msgid "Authorized Absence"
+msgstr "公假"
+
+msgid "Score for an authorized absence."
+msgstr "公假的评分。"
+
+msgid "Score for attendance."
+msgstr "出勤的评分。"
+
+msgid "No Record"
+msgstr "无记录"
+
+msgid "Score for an attendance type marked as no record."
+msgstr "无记录考勤类型的评分。"
+
+msgid "Unknown Type"
+msgstr "未知类型"
+
+msgid "Fallback score when an attendance type does not match a configured category."
+msgstr "考勤类型未匹配任何配置类别时使用的评分。"
+
 msgid "Actions"
 msgstr "操作"
 
@@ -50,6 +95,15 @@ msgstr "所有课程"
 
 msgid "Attendance"
 msgstr "考勤信息"
+
+msgid "Attendance Score Settings"
+msgstr "考勤评分设置"
+
+msgid "Attendance score settings saved."
+msgstr "考勤评分设置已保存。"
+
+msgid "Weights are used by the full attendance history by course. Values range from 0 to 1, where 1 means full attendance."
+msgstr "权重用于全周期课程考勤；数值范围为 0 到 1，1 表示完整出勤。"
 
 msgid "Attendance Analysis and Alerts"
 msgstr "考勤分析与预警"

@@ -74,6 +74,12 @@ $studentsAttendance = getAllStudentsAttendanceRate($connection2, $students, $ses
 
 $table = DataTable::createPaginated('studentsByFormGroup', $criteria);
 $table->setTitle(attendanceT('Report Data'));
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings.php')) {
+    $table->addHeaderAction('settings', attendanceT('Attendance Score Settings'))
+        ->setURL('/modules/Attendance Summary/attendance_settings.php')
+        ->setIcon('settings')
+        ->displayLabel();
+}
 $table->setDescription(function () use ($gibbonFormGroupID, $formGroupGateway) {
     $output = '';
 

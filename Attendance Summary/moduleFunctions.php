@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\DataSet;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 
 function attendanceT($text, array $params = []): string
@@ -41,28 +42,90 @@ function attendanceT($text, array $params = []): string
  *
  * @return array
  */
-function getAttendanceScoreConfig()
+function getAttendanceScoreConfig(?array $scores = null)
 {
-    return [
-        '旷课'     => 0.0,
-        '事假'     => 0.0,
-        '被停课'   => 0.0,
-        'Absent'   => 0.0,
-        'Unexcused absence' => 0.0,
-        'Suspended' => 0.0,
-        '迟到'     => 0.7,
-        '早退'     => 0.7,
-        'Late'     => 0.7,
-        'Left early' => 0.7,
-        '病假'     => 0.5,
-        'Sick leave' => 0.5,
-        '公假'     => 1.0,
-        'Authorized absence' => 1.0,
-        '出勤'     => 1.0,
-        'Present'  => 1.0,
-        '无记录'   => 1.0,
-        'No record' => 1.0,
+    static $cached = null;
+
+    $defaults = [
+        'scoreAbsence'           => 0.0,
+        'scoreSuspension'        => 0.0,
+        'scoreLate'              => 0.7,
+        'scoreLeftEarly'         => 0.7,
+        'scoreSickLeave'         => 0.5,
+        'scoreAuthorizedAbsence' => 1.0,
+        'scorePresent'           => 1.0,
+        'scoreNoRecord'          => 1.0,
+        'scoreUnknown'           => 1.0,
     ];
+
+    if ($scores === null) {
+        if ($cached !== null) {
+            return $cached;
+        }
+        $scores = attendanceScoreSettings();
+    }
+
+    $resolved = [];
+    foreach ($defaults as $key => $default) {
+        $value = $scores[$key] ?? $default;
+        $resolved[$key] = is_numeric($value) ? max(0.0, min(1.0, (float) $value)) : $default;
+    }
+
+    $keywordGroups = [
+        'scoreAbsence'           => ['旷课', '事假', 'Absent', 'Unexcused absence'],
+        'scoreSuspension'        => ['被停课', 'Suspended'],
+        'scoreLate'              => ['迟到', 'Late'],
+        'scoreLeftEarly'         => ['早退', 'Left early'],
+        'scoreSickLeave'         => ['病假', 'Sick leave'],
+        'scoreAuthorizedAbsence' => ['公假', 'Authorized absence'],
+        'scorePresent'           => ['出勤', 'Present'],
+        'scoreNoRecord'          => ['无记录', 'No record'],
+    ];
+
+    $config = [];
+    foreach ($keywordGroups as $key => $keywords) {
+        foreach ($keywords as $keyword) {
+            $config[$keyword] = $resolved[$key];
+        }
+    }
+    $config['__UNKNOWN__'] = $resolved['scoreUnknown'];
+
+    if ($scores === null) {
+        $cached = $config;
+    }
+
+    return $config;
+}
+
+function attendanceScoreSettings(): array
+{
+    global $container;
+
+    if (!is_object($container) || !method_exists($container, 'get')) {
+        return [];
+    }
+
+    try {
+        $gateway = $container->get(SettingGateway::class);
+        $values = [];
+        foreach ([
+            'scoreAbsence',
+            'scoreSuspension',
+            'scoreLate',
+            'scoreLeftEarly',
+            'scoreSickLeave',
+            'scoreAuthorizedAbsence',
+            'scorePresent',
+            'scoreNoRecord',
+            'scoreUnknown',
+        ] as $name) {
+            $values[$name] = $gateway->getSettingByScope('Attendance Summary', $name);
+        }
+
+        return $values;
+    } catch (\Throwable $e) {
+        return [];
+    }
 }
 
 /**
@@ -82,7 +145,7 @@ function getAttendanceScore($attendanceStr, array $config)
         }
     }
 
-    return empty($matchedScores) ? 1.0 : min($matchedScores);
+    return empty($matchedScores) ? (float) ($config['__UNKNOWN__'] ?? 1.0) : min($matchedScores);
 }
 
 function attendanceIsNoRecord($attendanceType): bool

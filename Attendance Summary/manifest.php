@@ -25,7 +25,7 @@ $description = 'View, analyse and transfer student attendance.';            // S
 $entryURL    = "attendance_summary.php";   // The landing page for the unit, used in the main menu
 $type        = "Additional";  // Do not change.
 $category    = 'Other';            // The main menu area to place the module in
-$version     = '1.0.1';            // Version number
+$version     = '1.0.2';            // Version number
 $author      = 'Tianhao Wu';            // Your name
 $url         = 'https://gibbonedu.org';            // Your URL
 
@@ -45,7 +45,15 @@ $moduleTables[] = 'CREATE TABLE `attendance_transfer_record` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
 
 // Add gibbonSettings entries
-// $gibbonSetting[] = "";
+$gibbonSetting[] = "INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance Summary', 'scoreAbsence', 'Absence Score', 'Score for unexcused or personal absence.', '0');";
+$gibbonSetting[] = "INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance Summary', 'scoreSuspension', 'Suspension Score', 'Score for a suspension.', '0');";
+$gibbonSetting[] = "INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance Summary', 'scoreLate', 'Late Score', 'Score for lateness.', '0.7');";
+$gibbonSetting[] = "INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance Summary', 'scoreLeftEarly', 'Left Early Score', 'Score for leaving early.', '0.7');";
+$gibbonSetting[] = "INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance Summary', 'scoreSickLeave', 'Sick Leave Score', 'Score for sick leave.', '0.5');";
+$gibbonSetting[] = "INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance Summary', 'scoreAuthorizedAbsence', 'Authorized Absence Score', 'Score for an authorized absence.', '1');";
+$gibbonSetting[] = "INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance Summary', 'scorePresent', 'Present Score', 'Score for attendance.', '1');";
+$gibbonSetting[] = "INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance Summary', 'scoreNoRecord', 'No Record Score', 'Score for an attendance type marked as no record.', '1');";
+$gibbonSetting[] = "INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance Summary', 'scoreUnknown', 'Unknown Type Score', 'Fallback score when an attendance type does not match a configured category.', '1');";
 
 // Action rows 
 $actionRows[] = [

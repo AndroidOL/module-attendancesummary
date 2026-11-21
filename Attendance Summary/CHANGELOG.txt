@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.0.2
+------
+- Move course-history attendance score weights into database-backed settings.
+- Add an administrator settings screen linked from the attendance report.
+
 v1.0.1
 ------
 - Add CSV export for the full attendance history by course.

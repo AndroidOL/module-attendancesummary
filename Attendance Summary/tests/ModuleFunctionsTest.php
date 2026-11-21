@@ -26,6 +26,19 @@ namespace Gibbon\Module\Attendance\Tests {
         $this->assertSame(1.0, \getAttendanceScore('Unknown type', $config));
     }
 
+    public function testAttendanceScoreCategoriesUseConfiguredOverrides()
+    {
+        $config = \getAttendanceScoreConfig([
+            'scoreAbsence' => 0.2,
+            'scoreLate' => 0.8,
+            'scoreUnknown' => 0.9,
+        ]);
+
+        $this->assertSame(0.2, \getAttendanceScore('Absent', $config));
+        $this->assertSame(0.8, \getAttendanceScore('Late', $config));
+        $this->assertSame(0.9, \getAttendanceScore('Unknown type', $config));
+    }
+
     public function testCsvCellsWithLeadingWhitespaceCannotStartAFormula()
     {
         $this->assertSame("'=1+1", \attendanceCsvSafeCell('=1+1'));
