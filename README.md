@@ -1,91 +1,63 @@
-# Gibbon Attendance Review Module
+# Attendance Summary for Gibbon
 
-This repository contains code for the **Gibbon Attendance Module** – a part of the flexible, open school platform Gibbon. The module provides features for viewing and querying student attendance information, as well as transferring attendance records between classes.
+Attendance Summary extends Gibbon with class and school-level attendance reporting,
+full attendance history, analytics and a controlled lesson-transfer workflow.
 
-> **Note:** Some features (such as the transfer of attendance records) are not fully developed yet.
+## Requirements
 
-## Features
-
-- **View Attendance Information:**  
-  Allows users (Admins, Teachers, and Parents) to query attendance records for a specified student.  
-  - For teachers and admins: view complete attendance records.
-  - **(Incomplete)** For parents: view their child's attendance information.
-
-- **Attendance Summary:**  
-  Display daily attendance summaries including the expected score and actual attendance score, calculated based on attendance type (e.g., Present, Sick Leave, Absent).
-
-- **Date Range Validation:**  
-  Ensures valid date ranges are used for querying attendance data with default values and limits to prevent excessive date ranges.
-
-- **Role & Permission Handling:**  
-  Built-in logic to restrict access based on user roles (Admin, Teacher, Student, Parent, Support).
-
-- **Transfer Attendance Records (Under Development):**  
-  A feature intended to transfer attendance records from one class period to another.  
-  **Status:** *Not fully implemented.* Some parts of this functionality are still in development.
+- Gibbon 31.0.00 or later
+- PHP 8.2 or later
+- MySQL 8 compatible server
 
 ## Installation
 
-1. **Clone the Repository:**
-    ```bash
-    git clone https://github.com/yourusername/gibbon-attendance-module.git
-    cd gibbon-attendance-module
-    ```
+1. Copy the `Attendance Summary` directory into `modules/`.
+2. Sign in as an administrator and open **System Admin → Manage Modules**.
+3. Install or update the module.
+4. Grant the required actions to the appropriate staff and parent roles.
 
-2. **Configure the Environment:**
-    - Ensure you have PHP installed (version 7.4 or higher is recommended).
-    - Configure your web server (e.g., Apache, Nginx) to serve the module.
-    - Set up your database connection (using PDO) in your configuration files.
+The transfer audit table is created during module installation.
 
-3. **Dependencies:**
-    - This module is part of the Gibbon framework. Ensure that you have Gibbon installed and configured.
-    - The module makes use of Composer-managed packages. If you are using Composer, run:
-      ```bash
-      composer install
-      ```
+## Features
 
-## Usage
+- View attendance by form group and open a student's detailed record.
+- Calculate daily, weekly, monthly and whole-term attendance summaries.
+- View attendance across the whole enrolment history by school day or course.
+- Analyse attendance by class, year group, weekday and month.
+- Identify students below a configurable attendance threshold.
+- Export CSV and print reports.
+- Transfer class-context attendance records with authorization, CSRF,
+  transaction rollback and an audit record.
 
-1. Go to "System Settings" > "Attendance Summary" Module Settings.
-2. Configure the module's basic information, such as module name and description.
-3. Set up permissions to define which roles can access the module's features.
+## Permissions
 
-## Code Structure
+The module installs four actions:
 
-- **Module Functions:**  
-  Contains helper functions for:
-  - Attendance record retrieval (`getAttendanceRecords()`).
-  - Date range validation (`getValidatedDates()`).
-  - Daily attendance calculations (`calculateDailyAttendance()`).
-  - Permission and role processing.
-  - Transfer record generation (`generateTransferData()`, `getTransferData()`).
+- View Student Attendance
+- View Attendance Trends
+- View My Child's Attendance
+- Transfer Attendance Records
 
-- **Action Rows:**  
-  Defines actions for viewing attendance (for students, staff, parents) as well as for transferring attendance records.  
-  Permissions for each action are configured based on role categories.
+Schools should review the default role assignments before enabling the module.
 
-- **SQL Queries:**  
-  Uses complex SQL queries with Common Table Expressions (CTEs) to fetch attendance and scheduling data from the database.
+## Attendance definitions
 
-## Future Development
+The day-based analysis excludes days with no record from the attendance-rate
+denominator. The course view uses a weighted score. Both definitions are
+implemented in `moduleFunctions.php` and are intentionally documented separately.
 
-- **Transfer Attendance Records:**  
-  Further development is required to fully implement the transfer attendance functionality.
-- **User Interface Improvements:**  
-  Improved UI/UX for better data visualization and interaction.
+The `Attendance` setting `countClassAsSchool` controls whether class-context
+attendance is included in day-based reports.
 
-## Contributing
+## Development
 
-Contributions are welcome! If you would like to contribute to this module, please fork the repository and submit a pull request with your changes. For major changes, please open an issue first to discuss what you would like to change.
+Run the helper tests from the Gibbon repository root:
+
+```sh
+vendor/bin/phpunit --bootstrap vendor/autoload.php \
+  "modules/Attendance Summary/tests/ModuleFunctionsTest.php"
+```
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- **Gibbon Project:**  
-  Built as part of the [Gibbon Flexible, Open School Platform](https://gibbonedu.org/).
-- **Community Contributions:**  
-  Special thanks to Ross Parker, Sandra Kuipers, and the Gibbon community for their continuous support.
-
+GPL-3.0

@@ -12,137 +12,100 @@ the Free Software Foundation, either version 3 of the License, or
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Import necessary classes from the Gibbon framework
-use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Tables\DataTable;
-use Gibbon\Services\Format;
-use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 
-// Include module-specific helper functions
 require_once __DIR__ . '/moduleFunctions.php';
 
-// Add breadcrumb for "Transfer Attendance Records"
-$page->breadcrumbs->add(__('Transfer Attendance Records'));
+$page->breadcrumbs->add(attendanceT('Transfer Attendance'));
 
-// Check if the user has permission to access the attendance record page
-if (!isActionAccessible($guid, $connection2, '/modules/' . 'Attendance Summary' . '/attendance_record.php')) {
-    // Access denied: display error message and TODO: redirect to a child page
-    $page->addError(__('You do not have permission to access this page.'));
-    ## TODO: Redirect to child page
-} else {
-    // Retrieve the selected Form Group ID from GET parameters (if provided)
-    $gibbonFormGroupID = (isset($_GET['gibbonFormGroupID']) ? $_GET['gibbonFormGroupID'] : null);
-    
-    // Add breadcrumb for "Students by Form Group"
-    $page->breadcrumbs->add(__('Students by Form Group'));
-
-    // Create a new form for selecting a Form Group
-    $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
-    $form->setTitle(__('Choose Form Group'))
-         ->setFactory(DatabaseFormFactory::create($pdo))
-         ->setClass('noIntBorder w-full');
-
-    // Add a hidden field for the query so the form submits to the correct module page
-    $form->addHiddenValue('q', "/modules/".$session->get('module')."/attendance_record.php");
-
-    // Add a row for selecting the Form Group
-    $row = $form->addRow();
-        $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        // Add a select field to choose a Form Group for the current school year. The field is required.
-        $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'), true)
-            ->selected($gibbonFormGroupID)
-            ->placeholder()
-            ->required();
-
-    // Add a row for the search/submit button
-    $row = $form->addRow();
-        $row->addFooter();
-        $row->addSearchSubmit($session);
-
-    // Output the selection form
-    echo $form->getOutput();
-    
-    // Cancel execution if no form group is selected
-    if (!isset($gibbonFormGroupID)) return;
-
-    // Retrieve the FormGroupGateway and StudentGateway from the dependency container
-    $formGroupGateway = $container->get(FormGroupGateway::class);
-    $studentGateway = $container->get(StudentGateway::class);
-
-    // --- QUERY SECTION ---
-    // Create query criteria to retrieve student enrolment information, sorted by form group, surname, and preferred name.
-    // Set the page size to 50 records and populate the criteria from the $_POST array.
-    $criteria = $studentGateway->newQueryCriteria(true)
-        ->sortBy(['formGroup', 'surname', 'preferredName'])
-        ->pageSize(50)
-        ->fromArray($_POST);
-    
-    // Query the student enrolment data for the selected form group.
-    // If the selected form group is not '*', pass the form group ID; otherwise, pass null.
-    $students = $studentGateway->queryStudentEnrolmentByFormGroup($criteria, $gibbonFormGroupID != '*' ? $gibbonFormGroupID : null);
-
-    // --- DATA TABLE SETUP ---
-    // Create a paginated data table with the specified criteria
-    $table = DataTable::createPaginated('studentsByFormGroup', $criteria);
-    $table->setTitle(__('Report Data'));
-    
-    // Set the table description based on the selected form group and its associated tutors.
-    $table->setDescription(function () use ($gibbonFormGroupID, $formGroupGateway) {
-        $output = '';
-
-        // If the selection is set to '*' (all), then no description is generated.
-        if ($gibbonFormGroupID == '*') return $output;
-        
-        // Retrieve the form group details by ID and add the form group name to the output.
-        if ($formGroup = $formGroupGateway->getFormGroupByID($gibbonFormGroupID)) {
-            $output .= '<b>' . __('Form Group') . '</b>: ' . $formGroup['name'];
-        }
-        // Retrieve and list the tutors associated with this form group.
-        if ($tutors = $formGroupGateway->selectTutorsByFormGroup($gibbonFormGroupID)->fetchAll()) {
-            $output .= '<br/><b>' . __('Tutors') . '</b>: ' . Format::nameList($tutors, 'Staff');
-        }
-
-        return $output;
-    });
-
-    // Add a column for the Student's name, including sortable fields for surname and preferred name.
-    $table->addColumn('student', __('Student'))
-        ->width('30%')
-        ->sortable(['surname', 'preferredName'])
-        ->format(function ($person) {
-            // Format the student's full name and include a small text with their status information.
-            return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true)
-                . '<br/><small><i>' . Format::userStatusInfo($person) . '</i></small>';
-        });
-    
-    // Add columns for Year Group and Form Group
-    $table->addColumn('yearGroup', __('Year Group'));
-    $table->addColumn('formGroup', __('Form Group'));
-    
-    // Add an action column with a "Transfer" action. The action passes student parameters and links to the attendance record transfer page.
-    $table->addActionColumn()
-        ->addParam('gibbonPersonID')
-        ->addParam('surname')
-        ->addParam('preferredName')
-        ->format(function ($row, $actions) {
-            $actions->addAction('import', __('Transfer'))
-                ->setURL('/modules/' . 'Attendance Summary' . '/attendance_record_transfer.php');
-        });
-
-    // Render the table with the student data
-    echo $table->render($students);
+if (!isActionAccessible($guid, $connection2, '/modules/Attendance Summary/attendance_record.php')) {
+    $page->addError(attendanceT('You do not have access to this page.'));
+    return;
 }
 
-// Debug output: print the $students array for troubleshooting purposes
-echo "<pre>";
-print_r($students);
-echo "</pre>";
+$gibbonFormGroupID = is_scalar($_GET['gibbonFormGroupID'] ?? null) ? trim((string) $_GET['gibbonFormGroupID']) : null;
+
+$page->breadcrumbs->add(attendanceT('Students by Form Group'));
+
+$form = Form::create('action', $session->get('absoluteURL') . '/index.php', 'get');
+$form->setTitle(attendanceT('Choose Form Group'))
+    ->setFactory(DatabaseFormFactory::create($pdo))
+    ->setClass('noIntBorder w-full');
+
+$form->addHiddenValue('q', '/modules/' . $session->get('module') . '/attendance_record.php');
+
+$row = $form->addRow();
+$row->addLabel('gibbonFormGroupID', attendanceT('Form Group'));
+$row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'), true)->selected($gibbonFormGroupID)->placeholder()->required();
+
+$row = $form->addRow();
+$row->addFooter();
+$row->addSearchSubmit($session);
+
+$page->write($form->getOutput());
+
+// Cancel out early if there's no form group selected
+if (!isset($gibbonFormGroupID)) {
+    return;
+}
+
+$formGroupGateway = $container->get(FormGroupGateway::class);
+$studentGateway = $container->get(StudentGateway::class);
+
+$criteria = $studentGateway->newQueryCriteria(true)
+    ->sortBy(['formGroup', 'surname', 'preferredName'])
+    ->pageSize(50)
+    ->fromArray($_GET);
+
+$students = $studentGateway->queryStudentEnrolmentByFormGroup($criteria, $gibbonFormGroupID != '*' ? $gibbonFormGroupID : null);
+
+$table = DataTable::createPaginated('studentsByFormGroup', $criteria);
+$table->setTitle(attendanceT('Report Data'));
+$table->setDescription(function () use ($gibbonFormGroupID, $formGroupGateway) {
+    $output = '';
+
+    if ($gibbonFormGroupID == '*') {
+        return $output;
+    }
+
+    if ($formGroup = $formGroupGateway->getFormGroupByID($gibbonFormGroupID)) {
+        $output .= '<b>' . attendanceT('Form Group') . '</b>: ' . htmlPrep($formGroup['name']);
+    }
+    if ($tutors = $formGroupGateway->selectTutorsByFormGroup($gibbonFormGroupID)->fetchAll()) {
+        $output .= '<br/><b>' . attendanceT('Tutors') . '</b>: ' . Format::nameList($tutors, 'Staff');
+    }
+
+    return $output;
+});
+
+$table->addColumn('student', attendanceT('Student'))
+    ->width('30%')
+    ->sortable(['surname', 'preferredName'])
+    ->format(function ($person) {
+        return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>' . Format::userStatusInfo($person) . '</i></small>';
+    });
+
+$table->addColumn('yearGroup', attendanceT('Year Group'));
+$table->addColumn('formGroup', attendanceT('Form Group'));
+$table->addActionColumn()
+    ->addParam('gibbonPersonID')
+    ->addParam('surname')
+    ->addParam('preferredName')
+    ->format(function ($row, $actions) {
+        $actions->addAction('import', attendanceT('Transfer'))
+            ->setURL('/modules/Attendance Summary/attendance_record_transfer.php');
+    });
+
+$page->write($table->render($students));

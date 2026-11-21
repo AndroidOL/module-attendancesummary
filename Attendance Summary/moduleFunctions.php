@@ -10,637 +10,1213 @@ the Free Software Foundation, either version 3 of the License, or
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Import required classes from the Gibbon framework
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Domain\DataSet;
-use Gibbon\Module\HelpDesk\Data\Setting;
-use Gibbon\Module\HelpDesk\Data\SettingManager;
-use Psr\Container\ContainerInterface;
+use Gibbon\Services\Format;
 
-/**
- * Splits a comma-separated string, trims each element, and filters out empty ones.
- *
- * @param string $commaSeparatedString The comma-separated string
- * @return array An array of trimmed strings
- */
-function explodeTrim($commaSeparatedString) {
-    // This function splits the string and trims each element.
-    return array_filter(array_map('trim', explode(',', $commaSeparatedString)));
+function attendanceT($text, array $params = []): string
+{
+    global $session;
+
+    if (function_exists('__m') && is_object($session) && method_exists($session, 'has') && $session->has('module')) {
+        $translated = __m($text, $params);
+
+        return $translated !== $text ? $translated : __($text, $params);
+    }
+
+    return __($text, $params);
 }
 
 /**
- * Retrieves roles from the container.
+ * Default score awarded to each attendance type when calculating attendance rates.
  *
- * @param ContainerInterface $container The dependency injection container.
- * @return array An associative array of role IDs mapped to their translated names and categories.
+ * A record's type is matched by substring against these keywords; when several
+ * keywords match, the lowest (strictest) score is used. See getAttendanceScore().
+ *
+ * @return array
  */
-function getRoles(ContainerInterface $container) {
-    $roleGateway = $container->get(RoleGateway::class);
-    $criteria = $roleGateway->newQueryCriteria()
-        ->sortBy(['gibbonRole.name']);
-
-    return array_reduce($roleGateway->queryRoles($criteria)->toArray(), function ($group, $role) {
-        $group[$role['gibbonRoleID']] = __($role['name']) . ' (' . __($role['category']) . ')';
-        return $group; 
-    }, []);
-}
-
-/**
- * Provides an overview of the statistics from a data set of logs.
- *
- * @param DataSet $logs A DataSet object containing log entries.
- * @return array An array of items with each item containing a 'name' and 'value' (count).
- */
-function statsOverview(DataSet $logs) {
-    // Count occurrences of each title in the logs.
-    $items = array_count_values($logs->getColumn('title'));
-
-    // Sort the items by title.
-    ksort($items);
-
-    // Map the array so that each value becomes an array with 'name' and 'value' keys.
-    array_walk($items, function (&$value, $key) {
-        $value = ['name' => $key, 'value' => $value];
-    });
-
-    return $items;
-}
-
-/**
- * Formats an expandable section with a title and content.
- *
- * @param string $title The title of the section.
- * @param string $content The content of the section.
- * @return string The formatted HTML for the expandable section.
- */
-function formatExpandableSection($title, $content) {
-    $output = '';
-    $output .= '<h6>' . $title . '</h6></br>';
-    $output .= nl2brr($content);
-    return $output;
-}
-
-/**
- * Calculates a permission value based on given flags.
- *
- * @param string $staff   Default "N". "Y" means staff permission (value 8)
- * @param string $student Default "N". "Y" means student permission (value 4)
- * @param string $parent  Default "N". "Y" means parent permission (value 2)
- * @param string $other   Default "N". "Y" means other permission (value 1)
- * @return int The integer representation of the permission value.
- */
-function calcPermission($staff = "N", $student = "N", $parent = "N", $other = "N") {
-    // Ensure all inputs are strings; if not, set to "N".
-    $staff   = is_string($staff) ? $staff : "N";
-    $student = is_string($student) ? $student : "N";
-    $parent  = is_string($parent) ? $parent : "N";
-    $other   = is_string($other) ? $other : "N";
-
-    // Only treat the value as "Y" if it is exactly "Y"; otherwise, default to "N".
-    $staff   = ($staff === "Y") ? "Y" : "N";
-    $student = ($student === "Y") ? "Y" : "N";
-    $parent  = ($parent === "Y") ? "Y" : "N";
-    $other   = ($other === "Y") ? "Y" : "N";
-
-    $value = 0;
-    // Map permissions to their binary values:
-    // staff -> 8 (binary 1000)
-    // student -> 4 (binary 0100)
-    // parent -> 2 (binary 0010)
-    // other -> 1 (binary 0001)
-    if ($staff === "Y") {
-        $value |= 8;
-    }
-    if ($student === "Y") {
-        $value |= 4;
-    }
-    if ($parent === "Y") {
-        $value |= 2;
-    }
-    if ($other === "Y") {
-        $value |= 1;
-    }
-    return $value;
-}
-
-/**
- * Converts an integer (0-15) to a 4-character binary string, replacing 1 with "Y" and 0 with "N".
- *
- * @param int $num The number to convert.
- * @return string The converted string (e.g. 15 becomes "YYYY", 0 becomes "NNNN").
- */
-function convertIntToYN($num) {
-    // If the number is not between 0 and 15, default to 0.
-    if ($num < 0 || $num > 15) {
-        $num = 0;
-    }
-    // Convert the number to a binary string and pad it to 4 digits.
-    $binary = str_pad(decbin($num), 4, '0', STR_PAD_LEFT);
-    // Replace '1' with 'Y' and '0' with 'N'.
-    $result = strtr($binary, ['1' => 'Y', '0' => 'N']);
-    return $result;
-}
-
-/**
- * Gets the value at a specific bit position (1 to 4) from a number (0-15).
- *
- * Bit positions are counted from the right: position 1 is the least significant bit.
- *
- * @param int $num The input number.
- * @param int $position The bit position (1-4).
- * @return int Returns 1 or 0 as a character 'Y' or 'N'.
- */
-function getBitAtPosition($num, $position) {
-    // Convert the value to integer if it is numeric.
-    $value = (is_string($num) && is_numeric($num)) ? intval($num, 10) : (int)$num;
-    if ($value < 0 || $value > 15) {
-        $value = 0;
-    }
-    if ($position < 1 || $position > 4) {
-        return 0;
-    }
-    // Shift right (4 - $position) bits and return 'Y' if the bit is 1, otherwise 'N'.
-    return (($value >> (4 - $position)) & 1) ? 'Y' : 'N';
-}
-
-/**
- * Validates and returns a date range.
- *
- * @param string $start_date_input The start date input from the request.
- * @param string $end_date_input The end date input from the request.
- * @return array An array containing the start and end dates in 'YYYY-MM-DD' format.
- */
-function getValidatedDates($start_date_input, $end_date_input) {
-    // Define today's date.
-    $today = new DateTime();
-
-    // Default values: end date is today; start date is 7 days ago.
-    $default_end   = clone $today;
-    $default_start = (clone $today)->modify('-7 days');
-
-    // Process start date input.
-    if (empty($start_date_input)) {
-        $start_dt = clone $default_start;
-    } else {
-        try {
-            $start_dt = new DateTime($start_date_input);
-        } catch (Exception $e) {
-            $start_dt = clone $default_start;
-        }
-    }
-
-    // Process end date input.
-    if (empty($end_date_input)) {
-        $end_dt = clone $default_end;
-    } else {
-        try {
-            $end_dt = new DateTime($end_date_input);
-        } catch (Exception $e) {
-            $end_dt = clone $default_end;
-        }
-    }
-
-    // If the start date is later than the end date, swap them.
-    if ($start_dt > $end_dt) {
-        $temp = $start_dt;
-        $start_dt = $end_dt;
-        $end_dt = $temp;
-    }
-
-    // If the end date is later than today, set it to today.
-    if ($end_dt > $today) {
-        $end_dt = clone $today;
-    }
-
-    // If the start date is later than today, set it to yesterday.
-    if ($start_dt > $today) {
-        $start_dt = (clone $today)->modify('-1 day');
-    }
-
-    // If the end date is earlier than 365 days ago, set it to 365 days ago.
-    $past365 = (clone $today)->modify('-365 days');
-    if ($end_dt < $past365) {
-        $end_dt = clone $past365;
-    }
-
-    // If the range is longer than 90 days, adjust the start date to 90 days before the end date.
-    $interval = $end_dt->diff($start_dt);
-    $daysDiff = (int)$interval->format('%a');
-    if ($daysDiff > 90) {
-        $start_dt = (clone $end_dt)->modify('-90 days');
-    }
-
-    // Return the formatted dates.
+function getAttendanceScoreConfig()
+{
     return [
-        $start_dt->format('Y-m-d'),
-        $end_dt->format('Y-m-d')
+        '旷课'     => 0.0,
+        '事假'     => 0.0,
+        '被停课'   => 0.0,
+        'Absent'   => 0.0,
+        'Unexcused absence' => 0.0,
+        'Suspended' => 0.0,
+        '迟到'     => 0.7,
+        '早退'     => 0.7,
+        'Late'     => 0.7,
+        'Left early' => 0.7,
+        '病假'     => 0.5,
+        'Sick leave' => 0.5,
+        '公假'     => 1.0,
+        'Authorized absence' => 1.0,
+        '出勤'     => 1.0,
+        'Present'  => 1.0,
+        '无记录'   => 1.0,
+        'No record' => 1.0,
     ];
 }
 
 /**
- * Retrieves attendance records for a person within a given date range.
+ * Resolve a keyword in an attendance string to its configured score.
  *
- * @param PDO $connection2 The database connection.
- * @param string $start_date The start date in 'YYYY-MM-DD' format.
- * @param string $end_date The end date in 'YYYY-MM-DD' format.
- * @param string $gibbonPersonID The person's ID.
- * @return array An associative array mapping dates to attendance records.
+ * @param string $attendanceStr   Attendance type, e.g. "缺课 - 病假".
+ * @param array  $config          Keyword => score map (see getAttendanceScoreConfig()).
+ * @return float                  Lowest matched score, or 1.0 when nothing matches.
  */
-function getAttendanceRecords($connection2, $start_date, $end_date, $gibbonPersonID) {
-    // SQL query to retrieve attendance records within the specified date range.
-    $sql = "
-    WITH schedule AS (
-      SELECT 
-        cc.gibbonCourseClassID,
-        p.gibbonPersonID,
-        td.date AS course_date,
-        trc.gibbonTTDayRowClassID,
-        colrow.name AS periodName,
-        colrow.timeStart,
-        CONCAT(c.nameShort, '-', cc.nameShort) AS mergedCourseName
-      FROM gibboncourseclassperson AS p
-      JOIN gibboncourseclass AS cc 
-        ON p.gibbonCourseClassID = cc.gibbonCourseClassID
-      JOIN gibboncourse AS c 
-        ON cc.gibbonCourseID = c.gibbonCourseID
-      JOIN gibbonttdayrowclass AS trc 
-        ON cc.gibbonCourseClassID = trc.gibbonCourseClassID
-      JOIN gibbonttdaydate AS td 
-        ON trc.gibbonTTDayID = td.gibbonTTDayID
-      JOIN gibbonttcolumnrow AS colrow 
-        ON trc.gibbonTTColumnRowID = colrow.gibbonTTColumnRowID
-      JOIN gibbonperson AS per 
-        ON p.gibbonPersonID = per.gibbonPersonID
-      WHERE p.gibbonPersonID = :personID
-        AND per.gibbonRoleIDPrimary = '003'
-        AND td.date BETWEEN :startDate AND :endDate
-    ),
-    latest_attendance AS (
-      SELECT 
-          gibbonTTDayRowClassID,
-          gibbonCourseClassID,
-          gibbonPersonID,
-          date,
-          type,
-          timestampTaken,
-          ROW_NUMBER() OVER (
-             PARTITION BY gibbonTTDayRowClassID, gibbonCourseClassID, gibbonPersonID, date 
-             ORDER BY timestampTaken DESC
-          ) AS rn
-      FROM gibbonattendancelogperson
-      WHERE gibbonPersonID = :personID
-        AND date BETWEEN :startDate AND :endDate
-    )
-    SELECT 
-        s.mergedCourseName,
-        s.gibbonCourseClassID,
-        s.gibbonPersonID,
-        s.periodName,
-        s.timeStart,
-        s.course_date,
-        COALESCE(a.type, 'No Record') AS attendanceType,
-        a.timestampTaken AS latestTimestamp
-    FROM schedule AS s
-    LEFT JOIN latest_attendance AS a
-      ON a.gibbonTTDayRowClassID = s.gibbonTTDayRowClassID
-      AND a.gibbonCourseClassID = s.gibbonCourseClassID
-      AND a.gibbonPersonID = s.gibbonPersonID
-      AND a.date = s.course_date
-      AND a.rn = 1
-    ORDER BY s.course_date, s.timeStart, s.gibbonCourseClassID, s.gibbonPersonID;
-    ";
-
-    // Prepare and execute the SQL statement.
-    $stmt = $connection2->prepare($sql);
-    $stmt->execute([
-        'startDate' => $start_date,
-        'endDate'   => $end_date,
-        'personID'  => $gibbonPersonID
-    ]);
-
-    // Fetch all records as an associative array.
-    $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Organize the data in the format: {date => [attendance records]}
-    $attendanceData = [];
-    foreach ($records as $record) {
-        $date = $record['course_date'];
-        if (!isset($attendanceData[$date])) {
-            $attendanceData[$date] = [];
-        }
-        $attendanceData[$date][] = [
-            'course'     => $record['mergedCourseName'],
-            'period'     => $record['periodName'],
-            'courseID'   => $record['gibbonCourseClassID'],
-            'time_start' => $record['timeStart'],
-            'attendance' => $record['attendanceType'],
-            'timestamp'  => $record['latestTimestamp'],
-        ];
-    }
-
-    return $attendanceData;
-}
-
-/**
- * Returns a score for an attendance record based on keyword matching.
- *
- * @param string $attendanceStr The attendance record string, e.g., "Absent - Sick Leave"
- * @param array $config An associative array mapping keywords to scores.
- * @return float Returns the smallest matched score or 1.0 if no match is found.
- */
-function getAttendanceScore($attendanceStr, $config) {
+function getAttendanceScore($attendanceStr, array $config)
+{
     $matchedScores = [];
+
     foreach ($config as $keyword => $score) {
-        // If the attendance string contains the keyword...
-        if (strpos($attendanceStr, $keyword) !== false) {
+        if (stripos($attendanceStr, $keyword) !== false) {
             $matchedScores[] = $score;
         }
     }
-    // Return a default score of 1.0 if no keywords are matched.
-    if (empty($matchedScores)) {
-        return 1.0;
-    }
-    // If multiple matches occur, return the lowest (most severe) score.
-    return min($matchedScores);
+
+    return empty($matchedScores) ? 1.0 : min($matchedScores);
+}
+
+function attendanceIsNoRecord($attendanceType): bool
+{
+    return trim((string) $attendanceType) === '__NO_RECORD__';
+}
+
+function attendanceDisplayType($attendanceType): string
+{
+    return attendanceIsNoRecord($attendanceType) ? attendanceT('No record') : attendanceT((string) $attendanceType);
 }
 
 /**
- * Calculates daily attendance scores.
+ * Whether the current user may operate across all classes.
  *
- * @param array $attendanceData The attendance data, structured as:
- *   [
- *     '2025-03-03' => [
- *         [ 'course'=>..., 'period'=>..., 'time_start'=>..., 'attendance'=>..., 'timestamp'=>... ],
- *         ...
- *     ],
- *     '2025-03-04' => [ ... ],
- *     ...
- *   ]
- * @param array|null $config An optional configuration mapping attendance types to scores. Default:
- *   [
- *     'Absent'     => 0.0,
- *     'Personal Leave' => 0.0,
- *     'Suspended'  => 0.0,
- *     'Late'       => 0.7,
- *     'Early Leave'=> 0.7,
- *     'Sick Leave' => 0.5,
- *     'Official Leave' => 1.0,
- *     'Present'    => 1.0,
- *     'No Record'  => 1.0,
- *   ]
- * @return array An array in the format:
- *   [
- *      [ 'date' => '2025-03-03', 'Expected' => '9.0', 'Actual' => '4.7' ],
- *      [ 'date' => '2025-03-04', 'Expected' => '9.0', 'Actual' => '8.5' ],
- *      ...
- *   ]
+ * Local deployments may provide canViewAllAssessmentClasses() as an additional
+ * policy. Clean Gibbon installations fall back to the Formal Assessment "all"
+ * grouped action.
  */
-function calculateDailyAttendance($attendanceData, $config = null) {
-    // Default configuration
-    $defaultConfig = [
-        'Absent'           => 0.0,
-        'Personal Leave'   => 0.0,
-        'Suspended'        => 0.0,
-        'Late'             => 0.7,
-        'Early Leave'      => 0.7,
-        'Sick Leave'       => 0.5,
-        'Official Leave'   => 1.0,
-        'Present'          => 1.0,
-        'No Record'        => 1.0,
-    ];
-    
-    // Use the provided configuration or fall back to default
-    if ($config === null) {
-        $config = $defaultConfig;
+function attendanceCanViewAllClasses($gibbonPersonID): bool
+{
+    global $guid, $connection2;
+
+    if (function_exists('canViewAllAssessmentClasses') && canViewAllAssessmentClasses($gibbonPersonID)) {
+        return true;
     }
-    
-    $result = [];
-    
-    // Loop through each date's attendance records
-    foreach ($attendanceData as $date => $records) {
-        // Check if all records for the day are "No Record"
-        $allNoRecord = true;
-        foreach ($records as $record) {
-            if (trim($record['attendance']) !== 'No Record') {
-                $allNoRecord = false;
-                break;
-            }
+
+    if (empty($guid) || empty($connection2)) {
+        return false;
+    }
+
+    $highest = getHighestGroupedAction(
+        $guid,
+        '/modules/Formal Assessment/internalAssessment_write_data.php',
+        $connection2
+    );
+
+    return is_string($highest) && substr($highest, -4) === '_all';
+}
+
+/**
+ * Validate and normalise a requested date range.
+ *
+ * @param string|null $start_date_input
+ * @param string|null $end_date_input
+ * @return array  [start, end] both formatted 'Y-m-d'.
+ */
+function getValidatedDates($start_date_input, $end_date_input)
+{
+    $start_date_input = is_scalar($start_date_input) ? trim((string) $start_date_input) : '';
+    $end_date_input = is_scalar($end_date_input) ? trim((string) $end_date_input) : '';
+
+    $today = new DateTime();
+
+    $defaultEnd   = clone $today;
+    $defaultStart = (clone $today)->modify('-7 days');
+
+    try {
+        $startDate = empty($start_date_input) ? clone $defaultStart : new DateTime($start_date_input);
+    } catch (Exception $e) {
+        $startDate = clone $defaultStart;
+    }
+
+    try {
+        $endDate = empty($end_date_input) ? clone $defaultEnd : new DateTime($end_date_input);
+    } catch (Exception $e) {
+        $endDate = clone $defaultEnd;
+    }
+
+    if ($startDate > $endDate) {
+        [$startDate, $endDate] = [$endDate, $startDate];
+    }
+
+    if ($endDate > $today) {
+        $endDate = clone $today;
+    }
+
+    if ($startDate > $today) {
+        $startDate = (clone $today)->modify('-1 day');
+    }
+
+    // Clamp the range to the last 365 days and to a maximum span of 90 days.
+    $past365 = (clone $today)->modify('-365 days');
+    if ($endDate < $past365) {
+        $endDate = clone $past365;
+    }
+
+    if ($endDate->diff($startDate)->days > 90) {
+        $startDate = (clone $endDate)->modify('-90 days');
+    }
+
+    return [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')];
+}
+
+/**
+ * Get the first day of the school term that contains today.
+ *
+ * @param PDO    $connection2
+ * @param string $gibbonSchoolYearID
+ * @return string  'Y-m-d', falling back to today.
+ */
+function getTermFirstDay($connection2, $gibbonSchoolYearID)
+{
+    $sql = "SELECT firstDay FROM gibbonschoolyearterm
+            WHERE gibbonSchoolYearID = :gibbonSchoolYearID
+              AND CURDATE() BETWEEN firstDay AND lastDay
+            ORDER BY firstDay ASC LIMIT 1";
+
+    try {
+        $stmt = $connection2->prepare($sql);
+        $stmt->execute(['gibbonSchoolYearID' => $gibbonSchoolYearID]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!empty($row['firstDay'])) {
+            return (new DateTime($row['firstDay']))->format('Y-m-d');
         }
-        
-        if ($allNoRecord) {
-            // If all records are "No Record", set expected and actual scores to 0.
-            $result[] = [
-                'date'     => $date,
-                'Expected' => '0.0',
-                'Actual'   => '0.0'
-            ];
-            continue;
-        }
-        
-        // Expected score: if all classes are attended, equals the number of classes.
-        $standard = count($records) * 1.0;
-        $attendanceTotal = 0.0;
-        
-        foreach ($records as $record) {
-            $attendanceStr = $record['attendance'];
-            // Get the score for this record based on keyword matching.
-            $score = getAttendanceScore($attendanceStr, $config);
-            $attendanceTotal += $score;
-        }
-        
-        // Format the result to one decimal place.
-        $result[] = [
-            'date'     => $date,
-            'Expected' => number_format($standard, 1),
-            'Actual'   => number_format($attendanceTotal, 1)
+    } catch (Exception $e) {
+        // Fall through to today.
+    }
+
+    return date('Y-m-d');
+}
+
+/**
+ * Get the date a person joined the school (used to avoid counting days before enrolment).
+ *
+ * @param PDO    $connection2
+ * @param string $gibbonPersonID
+ * @return string|null  'Y-m-d' or null when unavailable.
+ */
+function getPersonStartDate($connection2, $gibbonPersonID)
+{
+    $sql = "SELECT dateStart FROM gibbonperson
+            WHERE gibbonPersonID = :gibbonPersonID
+            LIMIT 1";
+
+    try {
+        $stmt = $connection2->prepare($sql);
+        $stmt->execute(['gibbonPersonID' => $gibbonPersonID]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row['dateStart'] ?? null;
+    } catch (Exception $e) {
+        return null;
+    }
+}
+
+/**
+ * Determine the start date to use for a person's attendance, never earlier than enrolment.
+ *
+ * @param PDO    $connection2
+ * @param string $gibbonPersonID
+ * @param string $termFirstDay
+ * @return string  'Y-m-d'.
+ */
+function resolveAttendanceStartDate($connection2, $gibbonPersonID, $termFirstDay)
+{
+    $personStart = getPersonStartDate($connection2, $gibbonPersonID);
+
+    return (!empty($personStart) && $personStart > $termFirstDay) ? $personStart : $termFirstDay;
+}
+
+/**
+ * Build the shared CTE used to fetch a person's timetable attendance.
+ *
+ * The query pairs each scheduled lesson of a person's timetable with the latest
+ * attendance record for that lesson/date, then keeps a single row per
+ * date + period (preferring a real attendance record over the no-record sentinel).
+ *
+ * @param array  $personIDs          One or more gibbonPersonID values.
+ * @param string $countClassAsSchool 'N' excludes Class-context logs.
+ * @return string  SQL with positional placeholders (persons, dates, persons, dates).
+ */
+function buildAttendanceQuery(array $personIDs, $countClassAsSchool = 'Y')
+{
+    $placeholders = implode(',', array_fill(0, count($personIDs), '?'));
+    $classFilter  = ($countClassAsSchool == 'N') ? " AND context <> 'Class'" : '';
+
+    return "
+    WITH schedule AS (
+        SELECT
+            cc.gibbonCourseClassID,
+            p.gibbonPersonID,
+            td.date AS course_date,
+            trc.gibbonTTDayRowClassID,
+            colrow.name AS periodName,
+            colrow.timeStart,
+            CONCAT(c.nameShort, '-', cc.nameShort) AS mergedCourseName
+        FROM gibboncourseclassperson AS p
+        JOIN gibboncourseclass AS cc ON p.gibbonCourseClassID = cc.gibbonCourseClassID
+        JOIN gibboncourse AS c ON cc.gibbonCourseID = c.gibbonCourseID
+        JOIN gibbonttdayrowclass AS trc ON cc.gibbonCourseClassID = trc.gibbonCourseClassID
+        JOIN gibbonttdaydate AS td ON trc.gibbonTTDayID = td.gibbonTTDayID
+        JOIN gibbonttcolumnrow AS colrow ON trc.gibbonTTColumnRowID = colrow.gibbonTTColumnRowID
+        JOIN gibbonperson AS per ON p.gibbonPersonID = per.gibbonPersonID
+        WHERE p.gibbonPersonID IN ({$placeholders})
+            AND per.gibbonRoleIDPrimary = '003'
+            AND td.date BETWEEN ? AND ?
+    ),
+    latest_attendance AS (
+        SELECT
+            gibbonTTDayRowClassID,
+            gibbonCourseClassID,
+            gibbonPersonID,
+            date,
+            type,
+            timestampTaken,
+            ROW_NUMBER() OVER (
+                PARTITION BY gibbonTTDayRowClassID, gibbonCourseClassID, gibbonPersonID, date
+                ORDER BY timestampTaken DESC, gibbonAttendanceLogPersonID DESC
+            ) AS rn
+        FROM gibbonattendancelogperson
+        WHERE gibbonPersonID IN ({$placeholders})
+            AND date BETWEEN ? AND ?{$classFilter}
+    ),
+    raw_result AS (
+        SELECT
+            s.mergedCourseName,
+            s.gibbonCourseClassID,
+            s.gibbonPersonID,
+            s.periodName,
+            s.timeStart,
+            s.course_date,
+            COALESCE(a.type, '__NO_RECORD__') AS attendanceType,
+            a.timestampTaken AS latestTimestamp
+        FROM schedule AS s
+        LEFT JOIN latest_attendance AS a
+            ON a.gibbonTTDayRowClassID = s.gibbonTTDayRowClassID
+            AND a.gibbonCourseClassID = s.gibbonCourseClassID
+            AND a.gibbonPersonID = s.gibbonPersonID
+            AND a.date = s.course_date
+            AND a.rn = 1
+    )
+    SELECT
+        mergedCourseName,
+        gibbonCourseClassID,
+        gibbonPersonID,
+        periodName,
+        timeStart,
+        course_date,
+        attendanceType,
+        latestTimestamp
+    FROM (
+        SELECT
+            *,
+            ROW_NUMBER() OVER (
+                PARTITION BY gibbonPersonID, course_date, periodName
+                ORDER BY CASE WHEN attendanceType = '__NO_RECORD__' THEN 2 ELSE 1 END, timeStart, gibbonCourseClassID
+            ) AS rn
+        FROM raw_result
+    ) AS t
+    WHERE rn = 1
+    ORDER BY gibbonPersonID, course_date, timeStart, gibbonCourseClassID";
+}
+
+/**
+ * Fetch timetable attendance for one or more people in a single query.
+ *
+ * @param PDO    $connection2
+ * @param string $startDate
+ * @param string $endDate
+ * @param array  $personIDs
+ * @param string $countClassAsSchool
+ * @return array  [gibbonPersonID => [course_date => [lesson records]]].
+ */
+function getAttendanceRecordsForPersons($connection2, $startDate, $endDate, array $personIDs, $countClassAsSchool = 'Y')
+{
+    $personIDs = array_values(array_unique(array_filter($personIDs)));
+    if (empty($personIDs)) {
+        return [];
+    }
+
+    $bindings = array_merge($personIDs, [$startDate, $endDate], $personIDs, [$startDate, $endDate]);
+
+    $stmt = $connection2->prepare(buildAttendanceQuery($personIDs, $countClassAsSchool));
+    $stmt->execute($bindings);
+
+    $recordsByPerson = [];
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $recordsByPerson[$row['gibbonPersonID']][$row['course_date']][] = [
+            'course'     => $row['mergedCourseName'],
+            'period'     => $row['periodName'],
+            'courseID'   => $row['gibbonCourseClassID'],
+            'time_start' => $row['timeStart'],
+            'attendance' => $row['attendanceType'],
+            'timestamp'  => $row['latestTimestamp'],
         ];
     }
-    
+
+    return $recordsByPerson;
+}
+
+/**
+ * Fetch timetable attendance for a single person, grouped by date.
+ *
+ * @param PDO    $connection2
+ * @param string $start_date
+ * @param string $end_date
+ * @param string $gibbonPersonID
+ * @param string $countClassAsSchool
+ * @return array  [course_date => [lesson records]].
+ */
+function getAttendanceRecords($connection2, $start_date, $end_date, $gibbonPersonID, $countClassAsSchool = 'Y')
+{
+    $records = getAttendanceRecordsForPersons($connection2, $start_date, $end_date, [$gibbonPersonID], $countClassAsSchool);
+
+    return $records[$gibbonPersonID] ?? [];
+}
+
+/**
+ * Count a person's attendance types per date (for attendance-trend charts).
+ *
+ * @param PDO    $connection2
+ * @param string $start_date
+ * @param string $end_date
+ * @param string $gibbonPersonID
+ * @param string $countClassAsSchool
+ * @return array  List of ['name', 'reason', 'count', 'date'] rows.
+ */
+function getAttendanceSummary($connection2, $start_date, $end_date, $gibbonPersonID, $countClassAsSchool = 'Y')
+{
+    $records = getAttendanceRecords($connection2, $start_date, $end_date, $gibbonPersonID, $countClassAsSchool);
+
+    $result = [];
+    foreach ($records as $date => $lessons) {
+        $typeCounts = [];
+        foreach ($lessons as $lesson) {
+            $type = $lesson['attendance'];
+            $typeCounts[$type] = ($typeCounts[$type] ?? 0) + 1;
+        }
+
+        foreach ($typeCounts as $type => $count) {
+            $result[] = ['name' => $type, 'reason' => '', 'count' => $count, 'date' => $date];
+        }
+    }
+
     return $result;
 }
 
 /**
- * Filters the form data to retrieve entries starting with "transfer-" that are set to "on",
- * and returns a new array with each element containing gibbonPersonID, gibbonCourseClassID, and gibbonTTDayRowClassID.
+ * Convert daily attendance into a per-day score breakdown.
  *
- * @param array $data The submitted form data.
- * @return array The formatted array of transfer data.
+ * @param array      $attendanceData  [course_date => [lesson records]].
+ * @param array|null $config          Keyword => score map; defaults to getAttendanceScoreConfig().
+ * @return array  List of ['date', 'standard', 'attendance'] rows.
  */
-function getTransferData(array $data) {
+function calculateDailyAttendance(array $attendanceData, $config = null)
+{
+    $config = $config ?? getAttendanceScoreConfig();
+
     $result = [];
-    // Get the global gibbonPersonID and gibbonCourseClassID from the form data.
-    $personID = isset($data['gibbonPersonID']) ? $data['gibbonPersonID'] : null;
-    $courseClassID = isset($data['gibbonCourseClassID']) ? $data['gibbonCourseClassID'] : null;
-    
-    // Loop through all data items.
+    foreach ($attendanceData as $date => $lessons) {
+        // A day where every lesson has no record is treated as no data at all.
+        $hasRecord = false;
+        foreach ($lessons as $lesson) {
+            if (!attendanceIsNoRecord($lesson['attendance'])) {
+                $hasRecord = true;
+                break;
+            }
+        }
+
+        if (!$hasRecord) {
+            $result[] = ['date' => $date, 'standard' => '0.0', 'attendance' => '0.0'];
+            continue;
+        }
+
+        $standard = count($lessons) * 1.0;
+        $score = 0.0;
+        foreach ($lessons as $lesson) {
+            $score += getAttendanceScore($lesson['attendance'], $config);
+        }
+
+        $result[] = [
+            'date'     => $date,
+            'standard'   => number_format($standard, 1),
+            'attendance' => number_format($score, 1),
+        ];
+    }
+
+    return $result;
+}
+
+/**
+ * Calculate the attendance rate string shown in the student list.
+ *
+ * @param PDO     $connection2
+ * @param DataSet $studentsDataSet   Student rows (each containing gibbonPersonID).
+ * @param string  $gibbonSchoolYearID
+ * @param string  $countClassAsSchool
+ * @return DataSet  The same data set, with attendanceRate / attendanceDetail added.
+ */
+function getAllStudentsAttendanceRate($connection2, DataSet $studentsDataSet, $gibbonSchoolYearID, $countClassAsSchool = 'Y')
+{
+    $termFirstDay = getTermFirstDay($connection2, $gibbonSchoolYearID);
+    $endDate      = (new DateTime('last Friday'))->format('Y-m-d');
+
+    $personIDs = [];
+    foreach ($studentsDataSet->toArray() as $student) {
+        if (!empty($student['gibbonPersonID'])) {
+            $personIDs[] = $student['gibbonPersonID'];
+        }
+    }
+
+    if (empty($personIDs)) {
+        return new DataSet([]);
+    }
+
+    // One query for the whole set of students, rather than one per student.
+    $recordsByPerson = getAttendanceRecordsForPersons($connection2, $termFirstDay, $endDate, $personIDs, $countClassAsSchool);
+
+    $attendanceRates = [];
+    foreach ($personIDs as $personID) {
+        $totalStandard = 0.0;
+        $totalScore = 0.0;
+
+        foreach (calculateDailyAttendance($recordsByPerson[$personID] ?? []) as $day) {
+            $totalStandard += floatval($day['standard']);
+            $totalScore += floatval($day['attendance']);
+        }
+
+        if (abs($totalScore - $totalStandard) < 0.0001) {
+            $attendanceRates[$personID] = '100%, ' . attendanceT('Present') . ' ' . $totalScore . ' - ' . attendanceT('Standard') . ' ' . $totalStandard;
+        } else {
+            $rate = ($totalStandard > 0) ? ($totalScore / $totalStandard) : 0.0;
+            $attendanceRates[$personID] = number_format($rate * 100, 1) . '%, ' . attendanceT('Present') . ' ' . $totalScore . ' - ' . attendanceT('Standard') . ' ' . $totalStandard;
+        }
+    }
+
+    $studentsDataSet->transform(function (&$row) use ($attendanceRates) {
+        $personID = $row['gibbonPersonID'];
+        $row['attendanceRate'] = $attendanceRates[$personID] ?? '0.0';
+        $row['attendanceDetail'] = '<a href="./index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=' . urlencode($personID) . '&subpage=Attendance">' . attendanceT('View Details') . '</a>';
+    });
+
+    return $studentsDataSet;
+}
+
+/**
+ * Attach the shared hover/background attributes used by the attendance tables.
+ *
+ * @param string $bgColor
+ * @return string
+ */
+function attendanceRowAttributes($bgColor)
+{
+    return ' data-bgcolor="' . $bgColor . '" style="background-color: ' . $bgColor . ';"'
+        . ' onmouseover="this.style.backgroundColor = hoverColor(this.getAttribute(\'data-bgcolor\'));"'
+        . ' onmouseout="this.style.backgroundColor = this.getAttribute(\'data-bgcolor\');"';
+}
+
+/**
+ * Return the background colour for an attendance rate (percentage).
+ *
+ * @param float $rate
+ * @return string  Hex colour.
+ */
+function getBgColor($rate)
+{
+    if ($rate < 40) {
+        return '#FFCCCC';
+    } elseif ($rate < 60) {
+        return '#FFE6CC';
+    } elseif ($rate < 80) {
+        return '#FFFFCC';
+    } elseif ($rate < 99) {
+        return '#FFFFF0';
+    }
+
+    return '#FFFFFF';
+}
+
+/**
+ * Get the localised short weekday name for a date.
+ *
+ * @param string $date  'Y-m-d'.
+ * @return string
+ */
+function getWeekDayName($date)
+{
+    $dayNames = [
+        'Monday'    => attendanceT('Monday'),
+        'Tuesday'   => attendanceT('Tuesday'),
+        'Wednesday' => attendanceT('Wednesday'),
+        'Thursday'  => attendanceT('Thursday'),
+        'Friday'    => attendanceT('Friday'),
+        'Saturday'  => attendanceT('Saturday'),
+        'Sunday'    => attendanceT('Sunday'),
+    ];
+
+    $day = date('l', strtotime($date));
+
+    return $dayNames[$day] ?? $day;
+}
+
+/**
+ * Sum the standard/attendance figures for the days between two dates.
+ *
+ * @param array    $dailySummary  [date => ['standard' => ..., 'attendance' => ...]].
+ * @param DateTime $start
+ * @param DateTime $end           Inclusive.
+ * @return array  [standard, attendance].
+ */
+function sumDailyRange(array $dailySummary, DateTime $start, DateTime $end)
+{
+    $standard = 0.0;
+    $attendance = 0.0;
+
+    $day = clone $start;
+    while ($day <= $end) {
+        $key = $day->format('Y-m-d');
+        if (isset($dailySummary[$key])) {
+            $standard += floatval($dailySummary[$key]['standard']);
+            $attendance += floatval($dailySummary[$key]['attendance']);
+        }
+        $day->modify('+1 day');
+    }
+
+    return [$standard, $attendance];
+}
+
+/**
+ * Aggregate daily attendance into weekly, monthly and whole-term summaries.
+ *
+ * @param array  $allDailyAttendance  Output of calculateDailyAttendance().
+ * @param string $termFirstDay        'Y-m-d'.
+ * @param string $endDate             'Y-m-d'.
+ * @return array
+ */
+function calculateAttendancePeriodSummaries(array $allDailyAttendance, $termFirstDay, $endDate)
+{
+    $dailySummary = [];
+    foreach ($allDailyAttendance as $record) {
+        $dailySummary[$record['date']] = $record;
+    }
+
+    $termStart = new DateTime($termFirstDay);
+    $queryEnd  = new DateTime($endDate);
+
+    // Weekly buckets of 7 days, starting from the first day of term.
+    $weeklySummary = [];
+    $weekNumber = 1;
+    $weekStart = clone $termStart;
+    while ($weekStart <= $queryEnd) {
+        $weekEnd = clone $weekStart;
+        $weekEnd->modify('+6 days');
+        if ($weekEnd > $queryEnd) {
+            $weekEnd = clone $queryEnd;
+        }
+
+        [$standard, $attendance] = sumDailyRange($dailySummary, $weekStart, $weekEnd);
+        $weeklySummary[] = [
+            'weekNumber' => $weekNumber,
+            'weekStart'  => $weekStart->format('Y-m-d'),
+            'weekEnd'    => $weekEnd->format('Y-m-d'),
+            'standard'   => $standard,
+            'attendance' => $attendance,
+            'rate'       => ($standard > 0) ? round(($attendance / $standard) * 100) : 0,
+        ];
+
+        $weekNumber++;
+        $weekStart->modify('+7 days');
+    }
+
+    // Calendar-month buckets.
+    $monthlySummary = [];
+    $monthStart = clone $termStart;
+    while ($monthStart <= $queryEnd) {
+        $monthKey  = $monthStart->format('Y-m');
+        $start     = ($monthKey === $termStart->format('Y-m')) ? new DateTime($termFirstDay) : new DateTime($monthStart->format('Y-m-01'));
+        $end       = clone $monthStart;
+        $end->modify('last day of this month');
+        if ($end > $queryEnd) {
+            $end = clone $queryEnd;
+        }
+
+        [$standard, $attendance] = sumDailyRange($dailySummary, $start, $end);
+        $monthlySummary[] = [
+            'month'      => $monthKey,
+            'monthStart' => $start->format('Y-m-d'),
+            'monthEnd'   => $end->format('Y-m-d'),
+            'standard'   => $standard,
+            'attendance' => $attendance,
+            'rate'       => ($standard > 0) ? round(($attendance / $standard) * 100) : 0,
+        ];
+
+        $monthStart->modify('first day of next month');
+    }
+
+    // Group each week under the month in which it starts.
+    $groupedWeekly = [];
+    foreach ($weeklySummary as $week) {
+        $groupedWeekly[date('Y-m', strtotime($week['weekStart']))][] = $week;
+    }
+
+    // Whole-term totals.
+    $termStandard = 0.0;
+    $termAttendance = 0.0;
+    foreach ($allDailyAttendance as $record) {
+        $recordDate = new DateTime($record['date']);
+        if ($recordDate >= $termStart && $recordDate <= $queryEnd) {
+            $termStandard += floatval($record['standard']);
+            $termAttendance += floatval($record['attendance']);
+        }
+    }
+
+    return [
+        'weekly'         => $weeklySummary,
+        'monthly'        => $monthlySummary,
+        'groupedWeekly'  => $groupedWeekly,
+        'termStandard'   => $termStandard,
+        'termAttendance' => $termAttendance,
+        'termRate'       => ($termStandard > 0) ? round(($termAttendance / $termStandard) * 100, 1) : 0,
+    ];
+}
+
+/**
+ * Render the daily attendance table, with an expandable per-lesson detail row.
+ *
+ * @param array $dailyAttendance   Rows from calculateDailyAttendance() (already date-filtered).
+ * @param array $attendanceRecords [course_date => [lesson records]].
+ * @return string  HTML.
+ */
+function renderAttendanceDailyTable(array $dailyAttendance, array $attendanceRecords)
+{
+    $output = '<table class="attendanceSummaryTable"><thead><tr>';
+    $output .= '<th>' . attendanceT('Date') . '</th>';
+    $output .= '<th>' . attendanceT('Weekday') . '</th>';
+    $output .= '<th>' . attendanceT('Standard') . '</th>';
+    $output .= '<th>' . attendanceT('Day') . '</th>';
+    $output .= '<th>' . attendanceT('Attendance Rate') . '</th>';
+    $output .= '<th>' . attendanceT('Actions') . '</th>';
+    $output .= '</tr></thead><tbody>';
+
+    foreach ($dailyAttendance as $record) {
+        $dateStr    = $record['date'];
+        $standard   = floatval($record['standard']);
+        $attendance = floatval($record['attendance']);
+        $rate       = ($standard > 0) ? round(($attendance / $standard) * 100) : 0;
+        $bgColor    = ($standard == 0 && $attendance == 0) ? '#E0E0E0' : getBgColor($rate);
+
+        $output .= '<tr' . attendanceRowAttributes($bgColor) . '>';
+        $output .= '<td>' . htmlPrep($dateStr) . '</td>';
+        $output .= '<td>' . htmlPrep(getWeekDayName($dateStr)) . '</td>';
+
+        if ($standard == 0 && $attendance == 0) {
+            $output .= '<td colspan="3">' . attendanceT('No record') . '</td>';
+        } else {
+            $output .= '<td>' . htmlPrep($record['standard']) . '</td>';
+            $output .= '<td>' . htmlPrep($record['attendance']) . '</td>';
+            $output .= '<td>' . $rate . '%</td>';
+        }
+
+        $output .= '<td><button type="button" class="attendanceSummaryToggle" onclick="toggleDetails(\'' . htmlPrep($dateStr) . '\')">' . attendanceT('View Details') . '</button></td>';
+        $output .= '</tr>';
+
+        $output .= '<tr id="details-' . htmlPrep($dateStr) . '" class="attendanceSummaryDetails"><td colspan="6">';
+
+        if (!empty($attendanceRecords[$dateStr])) {
+            $output .= '<table class="attendanceSummaryTable"><thead><tr>';
+            $output .= '<th>' . attendanceT('Course') . '</th>';
+            $output .= '<th>' . attendanceT('Period') . '</th>';
+            $output .= '<th>' . attendanceT('Lesson Time') . '</th>';
+            $output .= '<th>' . attendanceT('Status') . '</th>';
+            $output .= '</tr></thead><tbody>';
+
+            foreach ($attendanceRecords[$dateStr] as $lesson) {
+                $output .= '<tr>';
+                $output .= '<td>' . htmlPrep($lesson['course']) . '</td>';
+                $output .= '<td>' . htmlPrep($lesson['period']) . '</td>';
+                $output .= '<td>' . htmlPrep($lesson['time_start']) . '</td>';
+                $output .= '<td>' . htmlPrep($lesson['attendance']) . '</td>';
+                $output .= '</tr>';
+            }
+
+            $output .= '</tbody></table>';
+        } else {
+            $output .= attendanceT('No detailed records.');
+        }
+
+        $output .= '</td></tr>';
+    }
+
+    return $output . '</tbody></table>';
+}
+
+/**
+ * Render the weekly/monthly/term summary table.
+ *
+ * @param array $summary  Output of calculateAttendancePeriodSummaries().
+ * @return string  HTML.
+ */
+function renderAttendancePeriodTable(array $summary)
+{
+    $output = '<table class="attendanceSummaryTable"><thead><tr>';
+    $output .= '<th>' . attendanceT('Summary') . '</th>';
+    $output .= '<th>' . attendanceT('Date Range') . '</th>';
+    $output .= '<th>' . attendanceT('Standard') . '</th>';
+    $output .= '<th>' . attendanceT('Present') . '</th>';
+    $output .= '<th>' . attendanceT('Attendance Rate') . '</th>';
+    $output .= '</tr></thead><tbody>';
+
+    foreach ($summary['monthly'] as $month) {
+        $output .= '<tr class="month-row"' . attendanceRowAttributes('#B8DAFF') . '>';
+        $output .= '<td>' . htmlPrep($month['month']) . attendanceT(' (Monthly)') . '</td>';
+        $output .= '<td>' . htmlPrep($month['monthStart']) . ' ~ ' . htmlPrep($month['monthEnd']) . '</td>';
+        $output .= '<td>' . htmlPrep($month['standard']) . '</td>';
+        $output .= '<td>' . htmlPrep($month['attendance']) . '</td>';
+        $output .= '<td>' . htmlPrep($month['rate']) . '%</td>';
+        $output .= '</tr>';
+
+        foreach ($summary['groupedWeekly'][$month['month']] ?? [] as $week) {
+            $bgColor = ($week['standard'] == 0 && $week['attendance'] == 0) ? '#E0E0E0' : getBgColor($week['rate']);
+
+            $output .= '<tr' . attendanceRowAttributes($bgColor) . '>';
+            $output .= '<td>' . sprintf(attendanceT('Week %d'), $week['weekNumber']) . '</td>';
+            $output .= '<td>' . htmlPrep($week['weekStart']) . ' ~ ' . htmlPrep($week['weekEnd']) . '</td>';
+            $output .= '<td>' . htmlPrep($week['standard']) . '</td>';
+            $output .= '<td>' . htmlPrep($week['attendance']) . '</td>';
+            $output .= '<td>' . htmlPrep($week['rate']) . '%</td>';
+            $output .= '</tr>';
+        }
+    }
+
+    $output .= '<tr' . attendanceRowAttributes('#E0E0E0') . '>';
+    $output .= '<td colspan="5">' . sprintf(
+        attendanceT('Overall term attendance: standard total %s, attendance total %s, rate %s%%'),
+        $summary['termStandard'],
+        $summary['termAttendance'],
+        $summary['termRate']
+    ) . '</td>';
+    $output .= '</tr>';
+
+    return $output . '</tbody></table>';
+}
+
+/**
+ * Extract the transfer selections from submitted form data.
+ *
+ * @param array $data  Form data; picks up "transfer-*" keys set to "on".
+ * @return array  List of ['gibbonPersonID', 'gibbonCourseClassID', 'gibbonTTDayRowClassID'].
+ */
+function getTransferData(array $data)
+{
+    $personID      = is_scalar($data['gibbonPersonID'] ?? null) ? (string) $data['gibbonPersonID'] : '';
+    $courseClassID = is_scalar($data['gibbonCourseClassID'] ?? null) ? (string) $data['gibbonCourseClassID'] : '';
+
+    $result = [];
     foreach ($data as $key => $value) {
-        // Check if the key starts with "transfer-" and the value is "on"
         if (strpos($key, 'transfer-') === 0 && $value === 'on') {
-            // Extract the part after "transfer-" as the gibbonTTDayRowClassID
-            $transferId = substr($key, strlen('transfer-'));
             $result[] = [
                 'gibbonPersonID'        => $personID,
                 'gibbonCourseClassID'   => $courseClassID,
-                'gibbonTTDayRowClassID' => $transferId
+                'gibbonTTDayRowClassID' => substr($key, strlen('transfer-')),
             ];
         }
     }
-    
+
     return $result;
 }
 
 /**
- * Generates a new transfer data array based on the submitted data and SQL query results.
+ * Validate a class/student pair for the attendance transfer workflow.
  *
- * @param array $submittedData The submitted data array, e.g.:
- * [
- *     [
- *         'gibbonPersonID' => '0000000068',
- *         'gibbonCourseClassID' => '00000185',
- *         'gibbonTTDayRowClassID' => '000000000341'
- *     ],
- *     ...
- * ]
+ * The class must belong to the current school year, the current user must be
+ * able to manage it, and the selected student must be enrolled in it.
  *
- * @param array $sqlData The SQL query results array, e.g.:
- * [
- *     [
- *         'gibbonTTDayRowClassID' => '000000000184',
- *         'gibbonCourseClassID' => '00000175',
- *         'courseName' => 'Japanese Intermediate II - G9',
- *         'dayName' => 'Monday Scheduling',
- *         'gibbonTTColumnRowID' => '00000001',
- *         'periodName' => 'First Period',
- *         'timeStart' => '08:15:00',
- *         'timeEnd' => '09:00:00'
- *     ],
- *     ...
- * ]
- *
- * @return array Returns a new array structured like:
- * [
- *     [
- *         'gibbonPersonID' => '0000000068',
- *         'gibbonCourseClassID_OLD' => '00000185',
- *         'gibbonCourseClassName_OLD' => 'Japanese Beginner I - G9',
- *         'gibbonTTDayRowClassID_OLD' => '000000000341',
- *         'gibbonTTDayRowClassName_OLD' => 'First Period',
- *         'gibbonTTDayName' => 'Monday Scheduling',
- *         'gibbonTTColumnRowID' => '00000001',
- *         'transferableList' => [
- *             [
- *                 'gibbonCourseClassID_NEW' => '00000175',
- *                 'gibbonCourseClassName_NEW' => 'Japanese Intermediate II - G9',
- *                 'gibbonTTDayRowClassID_NEW' => '000000000184',
- *                 'gibbonTTDayRowClassName_NEW' => 'First Period'
- *             ],
- *             ...
- *         ]
- *     ],
- *     ...
- * ]
+ * @return array|false  Class row, or false when access is not allowed.
  */
-function generateTransferData($submittedData, $sqlData) {
-    $result = array();
-    
-    // Loop through each submitted record.
+function getAttendanceTransferClass($pdo, $gibbonCourseClassID, $gibbonPersonID, $gibbonStudentID, $gibbonSchoolYearID)
+{
+    foreach ([$gibbonCourseClassID, $gibbonPersonID, $gibbonStudentID, $gibbonSchoolYearID] as $value) {
+        if (!is_scalar($value) || (string) $value === '') {
+            return false;
+        }
+    }
+
+    $class = $pdo->selectOne(
+        "SELECT cc.gibbonCourseClassID, CONCAT(c.nameShort, '.', cc.nameShort) AS name
+         FROM gibbonCourseClass AS cc
+         JOIN gibbonCourse AS c ON c.gibbonCourseID = cc.gibbonCourseID
+         WHERE cc.gibbonCourseClassID = :gibbonCourseClassID
+           AND c.gibbonSchoolYearID = :gibbonSchoolYearID",
+        ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID' => $gibbonSchoolYearID]
+    );
+
+    if (empty($class)) {
+        return false;
+    }
+
+    if (!attendanceCanViewAllClasses($gibbonPersonID)) {
+        $isTeacher = $pdo->selectOne(
+            "SELECT 1 FROM gibbonCourseClassPerson
+             WHERE gibbonCourseClassID = :gibbonCourseClassID
+               AND gibbonPersonID = :gibbonPersonID
+               AND role IN ('Teacher', 'Assistant', 'Technician')
+             LIMIT 1",
+            ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID]
+        );
+
+        if (empty($isTeacher)) {
+            return false;
+        }
+    }
+
+    $isStudent = $pdo->selectOne(
+        "SELECT 1 FROM gibbonCourseClassPerson
+         WHERE gibbonCourseClassID = :gibbonCourseClassID
+           AND gibbonPersonID = :gibbonStudentID
+           AND role = 'Student'
+         LIMIT 1",
+        ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonStudentID' => $gibbonStudentID]
+    );
+
+    return empty($isStudent) ? false : $class;
+}
+
+/**
+ * Expand transfer selections into old/new record pairs, with transferable alternatives.
+ *
+ * @param array $submittedData  Output of getTransferData().
+ * @param array $sqlData        Rows describing the timetable lessons of the source class.
+ * @return array
+ */
+function generateTransferData($submittedData, $sqlData)
+{
+    // Index the source lessons once, rather than scanning the whole list per selection.
+    $lessonsByRowID = [];
+    foreach ($sqlData as $row) {
+        $lessonsByRowID[$row['gibbonTTDayRowClassID']] = $row;
+    }
+
+    $result = [];
     foreach ($submittedData as $submitted) {
         $oldRowID = $submitted['gibbonTTDayRowClassID'];
         $oldCourseClassID = $submitted['gibbonCourseClassID'];
-        $gibbonPersonID = $submitted['gibbonPersonID'];
-        
-        // Find the matching old record in the SQL data based on gibbonTTDayRowClassID.
-        $oldRecord = null;
-        foreach ($sqlData as $row) {
-            if ($row['gibbonTTDayRowClassID'] == $oldRowID) {
-                $oldRecord = $row;
-                break;
-            }
-        }
-        
-        // If no matching record is found, skip this submission.
-        if (!$oldRecord) {
+
+        if (!isset($lessonsByRowID[$oldRowID])) {
             continue;
         }
-        
-        // Extract relevant information from the old record.
-        $oldCourseClassName = $oldRecord['courseName'];
-        $oldPeriodName = $oldRecord['periodName'];
+
+        $oldRecord = $lessonsByRowID[$oldRowID];
         $ttColumnRowID = $oldRecord['gibbonTTColumnRowID'];
-        $ttDayName = $oldRecord['dayName'];
-        
-        // Look for other transferable records with the same gibbonTTColumnRowID, excluding the current course.
-        $transferableList = array();
+
+        $transferableList = [];
         foreach ($sqlData as $row) {
             if ($row['gibbonTTColumnRowID'] == $ttColumnRowID && $row['gibbonCourseClassID'] != $oldCourseClassID) {
-                $transferableList[] = array(
-                    'gibbonCourseClassID_NEW'    => $row['gibbonCourseClassID'],
-                    'gibbonCourseClassName_NEW'  => $row['courseName'],
-                    'gibbonTTDayRowClassID_NEW'  => $row['gibbonTTDayRowClassID'],
-                    'gibbonTTDayRowClassName_NEW'=> $row['periodName']
-                    // Additional fields such as dayName, timeStart, timeEnd can be added if needed.
-                );
+                $transferableList[] = [
+                    'gibbonCourseClassID_NEW'     => $row['gibbonCourseClassID'],
+                    'gibbonCourseClassName_NEW'   => $row['courseName'],
+                    'gibbonTTDayRowClassID_NEW'   => $row['gibbonTTDayRowClassID'],
+                    'gibbonTTDayRowClassName_NEW' => $row['periodName'],
+                ];
             }
         }
-        
-        // Create a new record for this submission.
-        $newRecord = array(
-            'gibbonPersonID'              => $gibbonPersonID,
+
+        usort($transferableList, function ($a, $b) {
+            return strcmp($a['gibbonCourseClassName_NEW'], $b['gibbonCourseClassName_NEW']);
+        });
+
+        $result[] = [
+            'gibbonPersonID'              => $submitted['gibbonPersonID'],
             'gibbonCourseClassID_OLD'     => $oldCourseClassID,
-            'gibbonCourseClassName_OLD'   => $oldCourseClassName,
+            'gibbonCourseClassName_OLD'   => $oldRecord['courseName'],
             'gibbonTTDayRowClassID_OLD'   => $oldRowID,
-            'gibbonTTDayRowClassName_OLD' => $oldPeriodName,
-            'gibbonTTDayName'             => $ttDayName,
+            'gibbonTTDayRowClassName_OLD' => $oldRecord['periodName'],
+            'gibbonTTDayName'             => $oldRecord['dayName'],
             'gibbonTTColumnRowID'         => $ttColumnRowID,
-            'transferableList'            => $transferableList
-        );
-        
-        $result[] = $newRecord;
+            'transferableList'            => $transferableList,
+        ];
     }
-    
+
     return $result;
 }
 
 /**
- * Removes alphanumeric characters (letters and digits) from a string.
+ * Count a person's attendance logs for a class lesson within a date range.
  *
- * @param string $input The original string.
- * @return string The processed string with letters and numbers removed.
+ * @param PDO    $pdo
+ * @param string $gibbonPersonID
+ * @param string $gibbonCourseClassID
+ * @param string $gibbonTTDayRowClassID
+ * @param string $start_date
+ * @param string $end_date
+ * @return int  -1 when no rows, -2 on error.
  */
-function removeAlphaNumeric($input) {
+function getAttendanceLogCount($pdo, $gibbonPersonID, $gibbonCourseClassID, $gibbonTTDayRowClassID, $start_date, $end_date)
+{
+    $sql = "SELECT count(gibbonAttendanceLogPersonID) AS count
+            FROM gibbonattendancelogperson
+            WHERE gibbonCourseClassID = :gibbonCourseClassID
+              AND gibbonTTDayRowClassID = :gibbonTTDayRowClassID
+              AND context = 'Class'
+              AND gibbonPersonID = :gibbonPersonID
+              AND date BETWEEN :start_date AND :end_date";
+
+    try {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            'gibbonCourseClassID'   => $gibbonCourseClassID,
+            'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID,
+            'gibbonPersonID'        => $gibbonPersonID,
+            'start_date'            => $start_date,
+            'end_date'              => $end_date,
+        ]);
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row ? (int) $row['count'] : -1;
+    } catch (PDOException $e) {
+        return -2;
+    }
+}
+
+/**
+ * Strip digits and latin letters from a string (e.g. "1周一排课" => "周一排课").
+ *
+ * @param string $input
+ * @return string
+ */
+function removeAlphaNumeric($input)
+{
     return preg_replace('/[A-Za-z0-9]/', '', $input);
 }
 
 /**
- * Returns a background color based on the attendance rate.
+ * Parse and validate the submitted attendance replacement data.
  *
- * - Attendance rate < 40%: light red.
- * - 40% ≤ Attendance rate < 60%: light orange.
- * - 60% ≤ Attendance rate < 80%: light yellow.
- * - Attendance rate ≥ 80%: white.
+ * Replacement fields are named "replacement-{OLD_COURSE}_{OLD_ROW}" with the
+ * value "{NEW_COURSE}.{NEW_ROW}". Each pair is only kept when the old and new
+ * timetable rows share the same column row and TT day.
  *
- * @param float $rate The attendance rate percentage.
- * @return string The corresponding background color in hexadecimal.
+ * @param PDO   $pdo
+ * @param array $data
+ * @return array  ['gibbonStudentID', 'start_date', 'end_date', 'replacement' => [...]]
  */
-function getBgColor($rate) {
-    if ($rate < 40) {
-        return "#FFCCCC"; // light red
-    } elseif ($rate < 60) {
-        return "#FFE6CC"; // light orange
-    } elseif ($rate < 80) {
-        return "#FFFFCC"; // light yellow
-    } elseif ($rate < 99) {
-        return "#FFFFF0"; // off-white
-    } else {
-        return "#FFFFFF"; // white
+function parseAttendance($pdo, $data)
+{
+    $result = [
+        'gibbonStudentID' => is_scalar($data['gibbonStudentID'] ?? null) ? (string) $data['gibbonStudentID'] : '',
+        'start_date'      => is_scalar($data['start_date'] ?? null) ? (string) $data['start_date'] : '',
+        'end_date'        => is_scalar($data['end_date'] ?? null) ? (string) $data['end_date'] : '',
+        'replacement'     => [],
+    ];
+
+    $replacements = [];
+    $ttDayRowIDs = [];
+
+    foreach ($data as $key => $value) {
+        if (strpos($key, 'replacement-') !== 0 || !is_scalar($value)) {
+            continue;
+        }
+
+        $parts = explode('_', substr($key, strlen('replacement-')));
+        $newParts = explode('.', $value);
+        if (count($parts) != 2 || count($newParts) != 2) {
+            continue;
+        }
+
+        $ttDayRowIDs[] = $parts[1];
+        $ttDayRowIDs[] = $newParts[1];
+
+        $replacements[] = [
+            'gibbonCourseClassID_OLD'   => $parts[0],
+            'gibbonTTDayRowClassID_OLD' => $parts[1],
+            'gibbonCourseClassID_NEW'   => $newParts[0],
+            'gibbonTTDayRowClassID_NEW' => $newParts[1],
+        ];
+    }
+
+    $ttDayRowIDs = array_values(array_unique($ttDayRowIDs));
+    if (empty($ttDayRowIDs)) {
+        return $result;
+    }
+
+    $placeholders = implode(',', array_fill(0, count($ttDayRowIDs), '?'));
+    $sql = "SELECT gibbonTTDayRowClassID, gibbonCourseClassID, gibbonTTColumnRowID, gibbonTTDayID
+            FROM gibbonttdayrowclass
+            WHERE gibbonTTDayRowClassID IN ({$placeholders})";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($ttDayRowIDs);
+
+    $rows = [];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $rows[$row['gibbonTTDayRowClassID']] = $row;
+    }
+
+    foreach ($replacements as $replacement) {
+        $oldID = $replacement['gibbonTTDayRowClassID_OLD'];
+        $newID = $replacement['gibbonTTDayRowClassID_NEW'];
+
+        if (!isset($rows[$oldID], $rows[$newID])) {
+            continue;
+        }
+
+        if ((string) $rows[$oldID]['gibbonCourseClassID'] === (string) $replacement['gibbonCourseClassID_OLD']
+            && (string) $rows[$newID]['gibbonCourseClassID'] === (string) $replacement['gibbonCourseClassID_NEW']
+            && $rows[$oldID]['gibbonTTColumnRowID'] === $rows[$newID]['gibbonTTColumnRowID']
+            && $rows[$oldID]['gibbonTTDayID'] === $rows[$newID]['gibbonTTDayID']) {
+            $result['replacement'][] = $replacement;
+        }
+    }
+
+    return $result;
+}
+
+/**
+ * Apply attendance replacements inside a transaction and log each transfer.
+ *
+ * @param PDO    $pdo             Transactional connection.
+ * @param array  $data            Output of parseAttendance().
+ * @param string $gibbonPersonID  Submitter's gibbonPersonID.
+ * @param string $url             Redirect URL to append the result code to.
+ * @return string  The original URL with &return=success0 or &return=error2 appended.
+ */
+function processAttendanceTransfer($pdo, $data, $gibbonPersonID, $url)
+{
+    $url .= '&gibbonPersonID=' . urlencode((string) $data['gibbonStudentID']);
+
+    $updateSQL = "UPDATE gibbonattendancelogperson
+                  SET gibbonCourseClassID = :newCourseID,
+                      gibbonTTDayRowClassID = :newScheduleID
+                  WHERE gibbonPersonID = :gibbonPersonID
+                    AND gibbonCourseClassID = :oldCourseID
+                    AND gibbonTTDayRowClassID = :oldScheduleID
+                    AND context = 'Class'
+                    AND date BETWEEN :start_date AND :end_date";
+
+    $insertSQL = "INSERT INTO attendance_transfer_record
+                  (submitterID, oldCourseID, oldScheduleID, newCourseID, newScheduleID, affectedCount, startDate, endDate)
+                  VALUES (:submitterID, :oldCourseID, :oldScheduleID, :newCourseID, :newScheduleID, :affectedCount, :start_date, :end_date)";
+
+    try {
+        $pdo->beginTransaction();
+
+        $submitterID = !empty($gibbonPersonID) ? $gibbonPersonID : $data['gibbonStudentID'];
+
+        foreach ($data['replacement'] as $replacement) {
+            $stmtUpdate = $pdo->prepare($updateSQL);
+            $stmtUpdate->execute([
+                'newCourseID'    => $replacement['gibbonCourseClassID_NEW'],
+                'newScheduleID'  => $replacement['gibbonTTDayRowClassID_NEW'],
+                'gibbonPersonID' => $data['gibbonStudentID'],
+                'oldCourseID'    => $replacement['gibbonCourseClassID_OLD'],
+                'oldScheduleID'  => $replacement['gibbonTTDayRowClassID_OLD'],
+                'start_date'     => $data['start_date'],
+                'end_date'       => $data['end_date'],
+            ]);
+
+            $stmtInsert = $pdo->prepare($insertSQL);
+            $stmtInsert->execute([
+                'submitterID'   => $submitterID,
+                'oldCourseID'   => $replacement['gibbonCourseClassID_OLD'],
+                'oldScheduleID' => $replacement['gibbonTTDayRowClassID_OLD'],
+                'newCourseID'   => $replacement['gibbonCourseClassID_NEW'],
+                'newScheduleID' => $replacement['gibbonTTDayRowClassID_NEW'],
+                'affectedCount' => $stmtUpdate->rowCount(),
+                'start_date'    => $data['start_date'],
+                'end_date'      => $data['end_date'],
+            ]);
+        }
+
+        $pdo->commit();
+
+        return $url . '&return=success0';
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+
+        return $url . '&return=error2';
     }
 }
-?>
+
+// Get the last N school days from currentDate within the last 100.
+function getLastNSchoolDays($guid, $connection2, $date, $n = 5, $inclusive = false)
+{
+    $timestamp = Format::timestamp($date);
+    if ($inclusive == true) {
+        $timestamp += 86400;
+    }
+
+    $count = 0;
+    $spin = 1;
+    $max = max($n, 100);
+    $lastNSchoolDays = [];
+    while ($count < $n and $spin <= $max) {
+        $date = date('Y-m-d', ($timestamp - ($spin * 86400)));
+        if (isSchoolOpen($guid, $date, $connection2)) {
+            $lastNSchoolDays[$count] = $date;
+            ++$count;
+        }
+        ++$spin;
+    }
+
+    return $lastNSchoolDays;
+}
+
+/**
+ * Prevent spreadsheet applications from evaluating user-controlled cell values.
+ */
+function attendanceCsvSafeCell($value): string
+{
+    $value = (string) $value;
+
+    return preg_match('/^[\x00-\x20]*[=+\-@]/', $value) ? "'".$value : $value;
+}
+
+/**
+ * Send a UTF-8 CSV download and stop the request.
+ *
+ * @param string $filename
+ * @param array  $header
+ * @param array  $rows
+ */
+function sendAttendanceCsv($filename, array $header, array $rows)
+{
+    if (headers_sent()) {
+        return;
+    }
+
+    $filename = preg_replace('/[^A-Za-z0-9._-]/', '-', $filename) ?: 'attendance.csv';
+
+    header('Content-Type: text/csv; charset=UTF-8');
+    header('Content-Disposition: attachment; filename="'.$filename.'"');
+    header('Cache-Control: no-store, no-cache, must-revalidate');
+
+    $output = fopen('php://output', 'w');
+    fwrite($output, "\xEF\xBB\xBF");
+    fputcsv($output, $header, ',', '"', '');
+    foreach ($rows as $row) {
+        $row = array_map('attendanceCsvSafeCell', $row);
+        fputcsv($output, $row, ',', '"', '');
+    }
+    fclose($output);
+    exit;
+}

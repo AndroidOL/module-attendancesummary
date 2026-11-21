@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
-v0.0.00
--------
-Version details here...
+v1.0.0
+------
+- Added school-wide analytics, alerts, CSV export and print views.
+- Added full attendance history by school day and by course.
+- Added role-aware attendance transfer with CSRF, class/student validation,
+  transactions and an audit table.
+- Added English source strings and Simplified Chinese translations.
+- Added regression tests for scoring and CSV formula protection.

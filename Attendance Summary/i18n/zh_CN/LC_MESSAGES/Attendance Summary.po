@@ -1,0 +1,392 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Attendance Summary 1.0.0\n"
+"Language: zh_CN\n"
+"PO-Revision-Date: 2026-11-21 11:00+0800\n"
+"Last-Translator: AndroidOL\n"
+"Language-Team: Gibbon zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "%s Attendance Analysis (%s to %s)"
+msgstr "%s 考勤分析（%s 至 %s）"
+
+msgid "%s Attendance Summary (as of %s)"
+msgstr "%s 考勤汇总（截至 %s）"
+
+msgid "%s Course Attendance Summary (%s to %s)"
+msgstr "%s 课程考勤汇总（%s 至 %s）"
+
+msgid "%s School Year"
+msgstr "%s 学年"
+
+msgid " (Monthly)"
+msgstr "（月统计）"
+
+msgid "Absence Details"
+msgstr "缺勤明细"
+
+msgid "Absence Type Summary"
+msgstr "缺勤类型统计"
+
+msgid "Absent"
+msgstr "缺勤"
+
+msgid "Actions"
+msgstr "操作"
+
+msgid "Alert Threshold"
+msgstr "预警阈值"
+
+msgid "All"
+msgstr "全部"
+
+msgid "All (Since Enrolment)"
+msgstr "全部（入学至今）"
+
+msgid "All Classes"
+msgstr "所有课程"
+
+msgid "Attendance"
+msgstr "考勤信息"
+
+msgid "Attendance Analysis and Alerts"
+msgstr "考勤分析与预警"
+
+msgid "Attendance History (Courses)"
+msgstr "全周期考勤汇总（课程）"
+
+msgid "Attendance History (School Days)"
+msgstr "全周期考勤汇总（出勤日）"
+
+msgid "Attendance Rate"
+msgstr "出勤率"
+
+msgid "Attendance Rate to %s"
+msgstr "至 %s 出勤率"
+
+msgid "Attendance records"
+msgstr "考勤记录"
+
+msgid "Attendance records transferred."
+msgstr "考勤记录迁移完成。"
+
+msgid "Charts"
+msgstr "图表统计"
+
+msgid "Choose Class"
+msgstr "选择课程"
+
+msgid "Choose Replacement Classes"
+msgstr "选择新课程信息"
+
+msgid "Class"
+msgstr "班级"
+
+msgid "Class Attendance Summary"
+msgstr "班级出勤汇总"
+
+msgid "Class Name"
+msgstr "课程名称"
+
+msgid "Confirm Attendance Transfer"
+msgstr "转移考勤记录确认"
+
+msgid "Confirm Timetable Lessons"
+msgstr "排课信息确认"
+
+msgid "Course"
+msgstr "课程"
+
+msgid "Current"
+msgstr "当前"
+
+msgid "Current Class"
+msgstr "当前课程"
+
+msgid "Daily Details"
+msgstr "每日明细"
+
+msgid "Date"
+msgstr "日期"
+
+msgid "Date of Birth"
+msgstr "出生日期"
+
+msgid "Date Range"
+msgstr "日期范围"
+
+msgid "Day"
+msgstr "当日"
+
+msgid "Day Attendance"
+msgstr "当日考勤"
+
+msgid "Days"
+msgstr "天数"
+
+msgid "Details"
+msgstr "详情"
+
+msgid "Departure Date"
+msgstr "离校日期"
+
+msgid "End Time"
+msgstr "结束时间"
+
+msgid "Enrolment History"
+msgstr "就读经历"
+
+msgid "Exceptions"
+msgstr "异常明细"
+
+msgid "Expected"
+msgstr "应出勤"
+
+msgid "Export CSV"
+msgstr "导出 CSV"
+
+msgid "Friday"
+msgstr "周五"
+
+msgid "Full History"
+msgstr "全周期"
+
+msgid "Full History (Courses)"
+msgstr "全周期（课程）"
+
+msgid "Full History (School Days)"
+msgstr "全周期（出勤日）"
+
+msgid "Gender"
+msgstr "性别"
+
+msgid "Late"
+msgstr "迟到"
+
+msgid "Late / Left Early"
+msgstr "迟到/早退"
+
+msgid "Late Details"
+msgstr "迟到明细"
+
+msgid "Left Early"
+msgstr "早退"
+
+msgid "Left Early Details"
+msgstr "早退明细"
+
+msgid "Left School"
+msgstr "已离校"
+
+msgid "Lesson"
+msgstr "课时名称"
+
+msgid "Lesson Time"
+msgstr "上课时间"
+
+msgid "Low Attendance Warning (below %s%%)"
+msgstr "低出勤预警（低于 %s%%）"
+
+msgid "Monday"
+msgstr "周一"
+
+msgid "My Classes"
+msgstr "我的课程"
+
+msgid "No attendance records for this student in the selected scope."
+msgstr "该学生在所选范围内没有考勤记录。"
+
+msgid "No attendance records to display."
+msgstr "没有可显示的考勤记录。"
+
+msgid "No children are linked to this account."
+msgstr "尚未设置子女信息"
+
+msgid "No course attendance records for this student in the selected scope."
+msgstr "该学生在所选范围内没有课程考勤记录。"
+
+msgid "No detailed records."
+msgstr "没有详细记录。"
+
+msgid "Non-school Day"
+msgstr "非上课日"
+
+msgid "No record"
+msgstr "无记录"
+
+msgid "No replacement class"
+msgstr "无可替换课程"
+
+msgid "No scoped school days or attendance records are available yet."
+msgstr "该范围内还没有可统计的上课日或考勤记录。"
+
+msgid "No students are below this attendance rate."
+msgstr "没有低于该出勤率的学生。"
+
+msgid "No transferable classes were found."
+msgstr "没有可迁移的课程。"
+
+msgid "Overall term attendance: standard total %s, attendance total %s, rate %s%%"
+msgstr "学期综合出勤率：标准总计 %s ，出勤总计 %s ，出勤率 %s%%"
+
+msgid "Period"
+msgstr "节次"
+
+msgid "Period: %s to %s"
+msgstr "操作时间：%s ~ %s"
+
+msgid "Present"
+msgstr "出勤"
+
+msgid "Print"
+msgstr "打印"
+
+msgid "Reason"
+msgstr "原因"
+
+msgid " records"
+msgstr "条"
+
+msgid "Replacement Class"
+msgstr "替换课程"
+
+msgid "Saturday"
+msgstr "周六"
+
+msgid "School Days"
+msgstr "上课天数"
+
+msgid "School Year"
+msgstr "学年"
+
+msgid "School Year / Course"
+msgstr "学年 / 课程"
+
+msgid "School Year / Term"
+msgstr "学年 / 学期"
+
+msgid "Scope"
+msgstr "统计范围"
+
+msgid "Select a class."
+msgstr "请选择对应课程！"
+
+msgid "Select a student."
+msgstr "请选择对应学生！"
+
+msgid "Select a valid date range."
+msgstr "请选择操作时间范围！"
+
+msgid "Standard"
+msgstr "标准"
+
+msgid "Enrolment Date"
+msgstr "入学日期"
+
+msgid "Start Time"
+msgstr "开始时间"
+
+msgid "Status"
+msgstr "状态"
+
+msgid "Student"
+msgstr "学生"
+
+msgid "Students"
+msgstr "人数"
+
+msgid "Students below this percentage appear in the alert list."
+msgstr "出勤率低于该百分比的学生会出现在预警名单中。"
+
+msgid "Summary"
+msgstr "统计类别"
+
+msgid "Sunday"
+msgstr "周日"
+
+msgid "Term"
+msgstr "学期"
+
+msgid "The submitted data is invalid. Select the records again."
+msgstr "提交的数据无效，请重新选择。"
+
+msgid "Thursday"
+msgstr "周四"
+
+msgid "Timetable Day"
+msgstr "周期名称"
+
+msgid "Timetable Lessons"
+msgstr "排课信息"
+
+msgid "Total"
+msgstr "总计"
+
+msgid "Transfer"
+msgstr "是否迁移"
+
+msgid "Transfer Attendance"
+msgstr "转移考勤记录"
+
+msgid "Transfer Attendance Records"
+msgstr "迁移考勤记录"
+
+msgid "Transfer failed. Try again shortly."
+msgstr "迁移失败，请稍后重试。"
+
+msgid "Tuesday"
+msgstr "周二"
+
+msgid "Type"
+msgstr "类型"
+
+msgid "Unassigned Form Group"
+msgstr "未分班"
+
+msgid "Unassigned Year Group"
+msgstr "未分年级"
+
+msgid "Unclassified"
+msgstr "未分类"
+
+msgid "Unknown"
+msgstr "未知"
+
+msgid "Unknown School Year"
+msgstr "未知学年"
+
+msgid "Update Dates"
+msgstr "更新日期"
+
+msgid "View Attendance"
+msgstr "查看考勤信息"
+
+msgid "View Details"
+msgstr "查看详情"
+
+msgid "View Timetable"
+msgstr "查看排课"
+
+msgid "Wednesday"
+msgstr "周三"
+
+msgid "Week %d"
+msgstr "第%d周"
+
+msgid "Weekday"
+msgstr "星期"
+
+msgid "Year Group"
+msgstr "年级"
+
+msgid "You do not have access to this page."
+msgstr "您没有权限访问该页面。"
+
+msgid "You do not have permission to perform this action."
+msgstr "您没有权限执行该操作。"
+
+msgid "Your session expired. Refresh the page and try again."
+msgstr "会话已过期，请刷新页面后重试。"
+
