@@ -146,5 +146,15 @@ namespace Gibbon\Module\Attendance\Tests {
             $this->assertStringContainsString('new Button(', $moduleFunctions);
             $this->assertStringNotContainsString('<button type="button"', $moduleFunctions);
         }
+
+        public function testTranslationMetadataMatchesInstalledModuleVersion()
+        {
+            $po = file_get_contents(dirname(__DIR__).'/i18n/zh_CN/LC_MESSAGES/Attendance Summary.po');
+
+            $this->assertStringContainsString('Project-Id-Version: Attendance Summary 1.1.3', $po);
+            $this->assertStringNotContainsString('Project-Id-Version: Attendance Summary 1.1.2', $po);
+            $this->assertMatchesRegularExpression('/POT-Creation-Date: 2026-11-21 18:23\+0800/', $po);
+            $this->assertMatchesRegularExpression('/PO-Revision-Date: 2026-11-21 18:24\+0800/', $po);
+        }
     }
 }
