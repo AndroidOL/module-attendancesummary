@@ -95,8 +95,8 @@ namespace Gibbon\Module\Attendance\Tests {
                 $this->assertStringContainsString('validateCsrfToken', $source);
                 $this->assertStringContainsString("REQUEST_METHOD", $source);
             }
-            $this->assertStringContainsString("\$version     = '1.1.2'", $manifest);
-            $this->assertStringContainsString("\$moduleVersion = '1.1.2'", $version);
+            $this->assertStringContainsString("\$version     = '1.1.3'", $manifest);
+            $this->assertStringContainsString("\$moduleVersion = '1.1.3'", $version);
             $this->assertStringContainsString("'name'                      => 'View Attendance Follow-up'", $manifest);
             $this->assertStringContainsString("'name'                      => 'Manage Attendance Follow-up'", $manifest);
             $this->assertStringContainsString("'defaultPermissionTeacher'  => 'Y'", $manifest);
@@ -134,6 +134,7 @@ namespace Gibbon\Module\Attendance\Tests {
             $this->assertStringContainsString('/modules/System Admin/systemSettings.php', $retention);
             $this->assertStringContainsString('/modules/Attendance Summary/attendance_followup_create.php', $summary);
             $this->assertStringContainsString("(string) \$session->get('gibbonPersonID')", $summary);
+            $this->assertStringContainsString("require_once __DIR__ . '/followupFunctions.php'", $summary);
             $this->assertStringContainsString('$followUpStudentIDs = $canCreateFollowUp', $summary);
             $this->assertStringContainsString('isset($followUpStudentIDs[', $summary);
             $this->assertStringContainsString("\$followUpHeaderAction->addParam('gibbonFormGroupID'", $summary);

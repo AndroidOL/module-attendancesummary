@@ -27,6 +27,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 
 require_once __DIR__ . '/moduleFunctions.php';
+require_once __DIR__ . '/followupFunctions.php';
 
 $page->breadcrumbs->add(attendanceT('View Attendance'));
 
