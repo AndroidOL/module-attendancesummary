@@ -82,6 +82,7 @@ namespace Gibbon\Module\Attendance\Tests {
             $note = file_get_contents($base.'/attendance_followup_noteProcess.php');
             $export = file_get_contents($base.'/attendance_followup_export.php');
             $retention = file_get_contents($base.'/attendance_followup_retentionProcess.php');
+            $summary = file_get_contents($base.'/attendance_summary.php');
             $functions = file_get_contents($base.'/followupFunctions.php');
             $moduleFunctions = file_get_contents($base.'/moduleFunctions.php');
             $version = file_get_contents($base.'/version.php');
@@ -121,6 +122,10 @@ namespace Gibbon\Module\Attendance\Tests {
             $this->assertStringContainsString('sendAttendanceCsv', $export);
             $this->assertStringContainsString('The CSV was not generated.', $export);
             $this->assertStringContainsString('/modules/System Admin/systemSettings.php', $retention);
+            $this->assertStringContainsString('/modules/Attendance Summary/attendance_followup_create.php', $summary);
+            $this->assertStringContainsString("addParam('reason', 'low_attendance')", $summary);
+            $this->assertStringContainsString("addParam('start', \$followUpStartDate)", $summary);
+            $this->assertStringContainsString("addParam('end', \$followUpEndDate)", $summary);
             $this->assertStringContainsString('ON DELETE CASCADE', $manifest);
             $this->assertStringContainsString('new Button(', $moduleFunctions);
             $this->assertStringNotContainsString('<button type="button"', $moduleFunctions);
