@@ -153,8 +153,20 @@ namespace Gibbon\Module\Attendance\Tests {
 
             $this->assertStringContainsString('Project-Id-Version: Attendance Summary 1.1.3', $po);
             $this->assertStringNotContainsString('Project-Id-Version: Attendance Summary 1.1.2', $po);
-            $this->assertMatchesRegularExpression('/POT-Creation-Date: 2026-11-21 18:23\+0800/', $po);
-            $this->assertMatchesRegularExpression('/PO-Revision-Date: 2026-11-21 18:24\+0800/', $po);
+            $this->assertMatchesRegularExpression('/POT-Creation-Date: 2026-11-21 18:29\+0800/', $po);
+            $this->assertMatchesRegularExpression('/PO-Revision-Date: 2026-11-21 18:30\+0800/', $po);
+            foreach ([
+                '%s School Year',
+                'All',
+                'Unassigned Form Group',
+                'Unassigned Year Group',
+                'Unclassified',
+                'All (Since Enrolment)',
+                'Unknown School Year',
+            ] as $activeString) {
+                $this->assertStringContainsString('msgid "'.$activeString.'"', $po);
+                $this->assertStringNotContainsString('#~ msgid "'.$activeString.'"', $po);
+            }
         }
     }
 }

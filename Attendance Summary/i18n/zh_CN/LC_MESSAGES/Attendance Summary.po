@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Attendance Summary 1.1.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-21 18:23+0800\n"
-"PO-Revision-Date: 2026-11-21 18:24+0800\n"
+"POT-Creation-Date: 2026-11-21 18:29+0800\n"
+"PO-Revision-Date: 2026-11-21 18:30+0800\n"
 "Last-Translator: AndroidOL\n"
 "Language-Team: Gibbon zh_CN\n"
 "Language: zh_CN\n"
@@ -169,6 +169,7 @@ msgstr "课堂考勤记录"
 #: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:286
 #: ⁨Attendance Summary/moduleFunctions.php⁩:246
 #: ⁨Attendance Summary/moduleFunctions.php⁩:889
+#: ⁨Attendance Summary/src/AttendanceLifecycle.php⁩:319
 msgid "No record"
 msgstr "无记录"
 
@@ -1427,24 +1428,33 @@ msgid ""
 "Overall term attendance: standard total %s, attendance total %s, rate %s%%"
 msgstr "学期综合出勤率：标准总计 %s ，出勤总计 %s ，出勤率 %s%%"
 
+#: ⁨Attendance Summary/src/AttendanceAnalytics.php⁩:107
+#: ⁨Attendance Summary/src/AttendanceAnalytics.php⁩:136
+#: ⁨Attendance Summary/src/AttendanceLifecycle.php⁩:104
 #, php-format
-#~ msgid "%s School Year"
-#~ msgstr "%s 学年"
+msgid "%s School Year"
+msgstr "%s 学年"
 
-#~ msgid "All"
-#~ msgstr "全部"
+#: ⁨Attendance Summary/src/AttendanceAnalytics.php⁩:139
+msgid "All"
+msgstr "全部"
 
-#~ msgid "Unassigned Form Group"
-#~ msgstr "未分班"
+#: ⁨Attendance Summary/src/AttendanceAnalytics.php⁩:301
+msgid "Unassigned Form Group"
+msgstr "未分班"
 
-#~ msgid "Unassigned Year Group"
-#~ msgstr "未分年级"
+#: ⁨Attendance Summary/src/AttendanceAnalytics.php⁩:302
+msgid "Unassigned Year Group"
+msgstr "未分年级"
 
-#~ msgid "Unclassified"
-#~ msgstr "未分类"
+#: ⁨Attendance Summary/src/AttendanceAnalytics.php⁩:344
+msgid "Unclassified"
+msgstr "未分类"
 
-#~ msgid "All (Since Enrolment)"
-#~ msgstr "全部（入学至今）"
+#: ⁨Attendance Summary/src/AttendanceLifecycle.php⁩:101
+msgid "All (Since Enrolment)"
+msgstr "全部（入学至今）"
 
-#~ msgid "Unknown School Year"
-#~ msgstr "未知学年"
+#: ⁨Attendance Summary/src/AttendanceLifecycleCourse.php⁩:143
+msgid "Unknown School Year"
+msgstr "未知学年"
