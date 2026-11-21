@@ -25,7 +25,7 @@ $description = 'View, analyse and transfer student attendance.';            // S
 $entryURL    = "attendance_summary.php";   // The landing page for the unit, used in the main menu
 $type        = "Additional";  // Do not change.
 $category    = 'Other';            // The main menu area to place the module in
-$version     = '1.0.4';            // Version number
+$version     = '1.0.5';            // Version number
 $author      = 'Tianhao Wu';            // Your name
 $url         = 'https://gibbonedu.org';            // Your URL
 

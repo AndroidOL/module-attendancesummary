@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.0.5
+------
+- Preserve attendance calendar, rate and legend colors when printing.
+
 v1.0.4
 ------
 - Separate no-record student-days into a data-quality queue instead of treating

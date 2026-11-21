@@ -277,6 +277,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         grid-template-columns: repeat(4, 1fr) !important;
         gap: 0.4rem;
     }
+
+    .attendanceLifecycleCalDay,
+    .attendanceLifecycleRate,
+    .attendanceLifecycleDot,
+    .attendanceLifecycleLegendItem i {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
 }
 
 /* ---- Attendance Analytics dashboard ---- */
