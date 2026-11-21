@@ -173,6 +173,16 @@ if (!$isPrint) {
         ->directLink()
         ->displayLabel();
 
+    $printForm->addHeaderAction('export', attendanceT('Export CSV'))
+        ->setURL('/index.php')
+        ->addParam('q', '/modules/Attendance Summary/attendance_lifecycle_course.php')
+        ->addParam('gibbonPersonID', $gibbonPersonID)
+        ->addParam('scope', $scope)
+        ->addParam('export', 'csv')
+        ->setIcon('download')
+        ->directLink()
+        ->displayLabel();
+
     $output .= '<div class="attendanceLifecycleNoPrint">' . $printForm->getOutput() . '</div>';
 }
 
@@ -226,6 +236,32 @@ $courseRows[] = [
     'rate'       => $report['totalRate'],
     'kind'       => 'total',
 ];
+
+if (($_GET['export'] ?? '') === 'csv') {
+    $csvRows = [];
+    foreach ($courseRows as $row) {
+        $csvRows[] = [
+            $row['name'],
+            $row['lessons'],
+            $num($row['standard']),
+            $num($row['attendance']),
+            $row['none'],
+            $row['rate'],
+        ];
+    }
+    sendAttendanceCsv(
+        'attendance-lifecycle-course-'.date('Ymd').'.csv',
+        [
+            attendanceT('School Year / Course'),
+            attendanceT('Period'),
+            attendanceT('Standard'),
+            attendanceT('Present'),
+            attendanceT('No record'),
+            attendanceT('Attendance Rate'),
+        ],
+        $csvRows
+    );
+}
 
 $table = DataTable::create('attendanceLifecycleCourseSummary');
 $table->setTitle(sprintf(attendanceT('%s Course Attendance Summary (%s to %s)'), htmlPrep($name), htmlPrep($report['dateStart']), htmlPrep($report['dateEnd'])));

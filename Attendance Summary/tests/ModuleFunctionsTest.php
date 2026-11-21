@@ -69,5 +69,13 @@ namespace Gibbon\Module\Attendance\Tests {
         ]);
         $this->assertCount(0, $invalid['replacement']);
     }
+
+    public function testInvalidOrRelativeDatesFallBackToTheSafeDefaultRange()
+    {
+        [$start, $end] = \getValidatedDates('next week', '2026-02-30');
+
+        $this->assertSame((new \DateTime())->format('Y-m-d'), $end);
+        $this->assertSame((new \DateTime('-7 days'))->format('Y-m-d'), $start);
+    }
     }
 }

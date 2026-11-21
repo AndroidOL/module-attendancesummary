@@ -140,17 +140,20 @@ function getValidatedDates($start_date_input, $end_date_input)
     $defaultEnd   = clone $today;
     $defaultStart = (clone $today)->modify('-7 days');
 
-    try {
-        $startDate = empty($start_date_input) ? clone $defaultStart : new DateTime($start_date_input);
-    } catch (Exception $e) {
-        $startDate = clone $defaultStart;
-    }
+    $parseDate = function ($value) {
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/D', $value)) {
+            return null;
+        }
 
-    try {
-        $endDate = empty($end_date_input) ? clone $defaultEnd : new DateTime($end_date_input);
-    } catch (Exception $e) {
-        $endDate = clone $defaultEnd;
-    }
+        $parsed = DateTime::createFromFormat('!Y-m-d', $value);
+
+        return $parsed && $parsed->format('Y-m-d') === $value ? $parsed : null;
+    };
+
+    $startDate = empty($start_date_input) ? clone $defaultStart : $parseDate($start_date_input);
+    $endDate = empty($end_date_input) ? clone $defaultEnd : $parseDate($end_date_input);
+    $startDate = $startDate ?: clone $defaultStart;
+    $endDate = $endDate ?: clone $defaultEnd;
 
     if ($startDate > $endDate) {
         [$startDate, $endDate] = [$endDate, $startDate];

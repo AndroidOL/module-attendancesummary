@@ -25,7 +25,7 @@ The transfer audit table is created during module installation.
 - View attendance across the whole enrolment history by school day or course.
 - Analyse attendance by class, year group, weekday and month.
 - Identify students below a configurable attendance threshold.
-- Export CSV and print reports.
+- Export CSV and print reports, including the course-history summary.
 - Transfer class-context attendance records with authorization, CSRF,
   transaction rollback and an audit record.
 

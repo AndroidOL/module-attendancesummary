@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+v1.0.1
+------
+- Add CSV export for the full attendance history by course.
+- Reject relative or malformed date inputs and fall back to the safe default range.
+- Require transfer schedule rows to match the submitted source and target classes.
+- Expand English attendance-score matching.
+
 v1.0.0
 ------
 - Added school-wide analytics, alerts, CSV export and print views.

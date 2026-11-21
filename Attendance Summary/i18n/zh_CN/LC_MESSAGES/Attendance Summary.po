@@ -73,7 +73,7 @@ msgid "Attendance records transferred."
 msgstr "考勤记录迁移完成。"
 
 msgid "Charts"
-msgstr "图表统计"
+msgstr "图表"
 
 msgid "Choose Class"
 msgstr "选择课程"
@@ -149,6 +149,9 @@ msgstr "导出 CSV"
 
 msgid "Friday"
 msgstr "周五"
+
+msgid "Full Name"
+msgstr "姓名"
 
 msgid "Full History"
 msgstr "全周期"
@@ -235,7 +238,7 @@ msgid "Period"
 msgstr "节次"
 
 msgid "Period: %s to %s"
-msgstr "操作时间：%s ~ %s"
+msgstr "时段：%s 至 %s"
 
 msgid "Present"
 msgstr "出勤"
@@ -301,7 +304,7 @@ msgid "Students below this percentage appear in the alert list."
 msgstr "出勤率低于该百分比的学生会出现在预警名单中。"
 
 msgid "Summary"
-msgstr "统计类别"
+msgstr "汇总项"
 
 msgid "Sunday"
 msgstr "周日"
@@ -316,7 +319,7 @@ msgid "Thursday"
 msgstr "周四"
 
 msgid "Timetable Day"
-msgstr "周期名称"
+msgstr "课表日"
 
 msgid "Timetable Lessons"
 msgstr "排课信息"
@@ -389,4 +392,3 @@ msgstr "您没有权限执行该操作。"
 
 msgid "Your session expired. Refresh the page and try again."
 msgstr "会话已过期，请刷新页面后重试。"
-
