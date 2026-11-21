@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+v1.1.1
+------
+- Register the Attendance Follow-up actions and default Administrator/Teacher
+  permissions during module updates so existing installations receive the new
+  worklist menu while data visibility remains form-group/all-student scoped.
+
 v1.1.0
 ------
 - Add a private Attendance Follow-up worklist tied to low-attendance and

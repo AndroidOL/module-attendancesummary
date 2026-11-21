@@ -45,8 +45,9 @@ The module installs six actions:
 - Manage Attendance Follow-up
 
 Schools should review the default role assignments before enabling the module.
-The follow-up actions are administrator-only by default; grant View or Manage
-to the staff roles responsible for attendance follow-up.
+The two follow-up actions are granted to Administrators and Teachers by default;
+individual case visibility remains limited to current form-group tutors,
+creators/current owners and all-student staff.
 
 ## Attendance definitions
 

@@ -94,11 +94,11 @@ namespace Gibbon\Module\Attendance\Tests {
                 $this->assertStringContainsString('validateCsrfToken', $source);
                 $this->assertStringContainsString("REQUEST_METHOD", $source);
             }
-            $this->assertStringContainsString("\$version     = '1.1.0'", $manifest);
-            $this->assertStringContainsString("\$moduleVersion = '1.1.0'", $version);
+            $this->assertStringContainsString("\$version     = '1.1.1'", $manifest);
+            $this->assertStringContainsString("\$moduleVersion = '1.1.1'", $version);
             $this->assertStringContainsString("'name'                      => 'View Attendance Follow-up'", $manifest);
             $this->assertStringContainsString("'name'                      => 'Manage Attendance Follow-up'", $manifest);
-            $this->assertStringContainsString("'defaultPermissionTeacher'  => 'N'", $manifest);
+            $this->assertStringContainsString("'defaultPermissionTeacher'  => 'Y'", $manifest);
             $this->assertStringContainsString('gibbonPersonIDTutor2', $functions);
             $this->assertStringContainsString('followUp.gibbonPersonIDCreator', $functions);
             $this->assertStringContainsString('followUp.gibbonPersonIDOwner', $functions);
@@ -112,6 +112,11 @@ namespace Gibbon\Module\Attendance\Tests {
             $this->assertStringContainsString('attendanceFollowUpRecordEvent', $update);
             $this->assertStringContainsString('gibbonPersonIDActor=:actorID', $functions);
             $this->assertStringNotContainsString('actorPersonID=:actorPersonID', $functions);
+            $this->assertStringContainsString('INSERT INTO gibbonAction', $changedb);
+            $this->assertStringContainsString("'View Attendance Follow-up'", $changedb);
+            $this->assertStringContainsString("'Manage Attendance Follow-up'", $changedb);
+            $this->assertStringContainsString('INSERT IGNORE INTO gibbonPermission', $changedb);
+            $this->assertStringContainsString("SELECT '002', action.gibbonActionID", $changedb);
             $this->assertStringContainsString('maxLength(2000)', $view);
             $this->assertStringContainsString('sendAttendanceCsv', $export);
             $this->assertStringContainsString('The CSV was not generated.', $export);
