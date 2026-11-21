@@ -36,6 +36,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Attendance Summary/attend
 }
 
 $gibbonFormGroupID = is_scalar($_GET['gibbonFormGroupID'] ?? null) ? trim((string) $_GET['gibbonFormGroupID']) : null;
+$gibbonPersonID = (string) $session->get('gibbonPersonID');
 
 $page->breadcrumbs->add(attendanceT('Students by Form Group'));
 

@@ -95,8 +95,8 @@ namespace Gibbon\Module\Attendance\Tests {
                 $this->assertStringContainsString('validateCsrfToken', $source);
                 $this->assertStringContainsString("REQUEST_METHOD", $source);
             }
-            $this->assertStringContainsString("\$version     = '1.1.1'", $manifest);
-            $this->assertStringContainsString("\$moduleVersion = '1.1.1'", $version);
+            $this->assertStringContainsString("\$version     = '1.1.2'", $manifest);
+            $this->assertStringContainsString("\$moduleVersion = '1.1.2'", $version);
             $this->assertStringContainsString("'name'                      => 'View Attendance Follow-up'", $manifest);
             $this->assertStringContainsString("'name'                      => 'Manage Attendance Follow-up'", $manifest);
             $this->assertStringContainsString("'defaultPermissionTeacher'  => 'Y'", $manifest);
@@ -118,12 +118,13 @@ namespace Gibbon\Module\Attendance\Tests {
             $this->assertStringContainsString("'Manage Attendance Follow-up'", $changedb);
             $this->assertStringContainsString('INSERT INTO gibbonPermission', $changedb);
             $this->assertStringContainsString("SELECT '002', action.gibbonActionID", $changedb);
-            $this->assertSame(4, substr_count($changedb, 'AND NOT EXISTS ('));
+            $this->assertSame(8, substr_count($changedb, 'AND NOT EXISTS ('));
             $this->assertStringContainsString('maxLength(2000)', $view);
             $this->assertStringContainsString('sendAttendanceCsv', $export);
             $this->assertStringContainsString('The CSV was not generated.', $export);
             $this->assertStringContainsString('/modules/System Admin/systemSettings.php', $retention);
             $this->assertStringContainsString('/modules/Attendance Summary/attendance_followup_create.php', $summary);
+            $this->assertStringContainsString("(string) \$session->get('gibbonPersonID')", $summary);
             $this->assertStringContainsString('$followUpStudentIDs = $canCreateFollowUp', $summary);
             $this->assertStringContainsString('isset($followUpStudentIDs[', $summary);
             $this->assertStringContainsString("\$followUpHeaderAction->addParam('gibbonFormGroupID'", $summary);

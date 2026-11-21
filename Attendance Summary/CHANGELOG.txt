@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+v1.1.2
+------
+- Fix the form-group attendance summary to resolve the current staff person
+  before calculating quick Follow-up access.
+- Re-run action/permission registration for installations already marked 1.1.1,
+  using repeat-safe checks.
+
 v1.1.1
 ------
 - Register the Attendance Follow-up actions and default Administrator/Teacher
