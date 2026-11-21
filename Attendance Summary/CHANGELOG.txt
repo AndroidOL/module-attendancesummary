@@ -1,6 +1,17 @@
 CHANGELOG
 =========
 
+v1.1.0
+------
+- Add a private Attendance Follow-up worklist tied to low-attendance and
+  no-record cases.
+- Add owner, status, due-date and resolution workflows with append-only
+  coordination notes and an audit timeline.
+- Restrict case access to current form-group tutors and all-student staff.
+- Retain cases until the source school year end plus 12 months, with an
+  administrator-only audited retention purge.
+- Add formula-safe CSV export scoped to cases the current manager can access.
+
 v1.0.5
 ------
 - Preserve attendance calendar, rate and legend colors when printing.

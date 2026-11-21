@@ -21,11 +21,11 @@ along with this program.  If not, see <http:// www.gnu.org/licenses/>.
 
 // Basic variables
 $name        = 'Attendance Summary';            // The name of the module as it appears to users. Needs to be unique to installation. Also the name of the folder that holds the unit.
-$description = 'View, analyse and transfer student attendance.';            // Short text description
+$description = 'View, analyse, follow up and transfer student attendance.';            // Short text description
 $entryURL    = "attendance_summary.php";   // The landing page for the unit, used in the main menu
 $type        = "Additional";  // Do not change.
 $category    = 'Other';            // The main menu area to place the module in
-$version     = '1.0.5';            // Version number
+$version     = '1.1.0';            // Version number
 $author      = 'Tianhao Wu';            // Your name
 $url         = 'https://gibbonedu.org';            // Your URL
 
@@ -43,6 +43,73 @@ $moduleTables[] = 'CREATE TABLE `attendance_transfer_record` (
     `endDate` DATE DEFAULT NULL,
     PRIMARY KEY (`transferID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
+
+$moduleTables[] = 'CREATE TABLE `attendance_follow_up` (
+    `followUpID` INT(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonPersonIDStudent` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonFormGroupID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `reasonCode` VARCHAR(30) NOT NULL,
+    `sourceDateStart` DATE NOT NULL,
+    `sourceDateEnd` DATE NOT NULL,
+    `status` VARCHAR(20) NOT NULL DEFAULT \'open\',
+    `gibbonPersonIDOwner` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDCreator` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `dueDate` DATE NOT NULL,
+    `resolutionCode` VARCHAR(30) DEFAULT NULL,
+    `activeKey` CHAR(64) DEFAULT NULL,
+    `revision` INT(10) UNSIGNED NOT NULL DEFAULT 1,
+    `retentionUntil` DATE NOT NULL,
+    `resolvedAt` DATETIME DEFAULT NULL,
+    `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `gibbonPersonIDLastEdit` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    PRIMARY KEY (`followUpID`),
+    UNIQUE KEY `activeKey` (`activeKey`),
+    KEY `studentYear` (`gibbonPersonIDStudent`, `gibbonSchoolYearID`),
+    KEY `ownerStatus` (`gibbonPersonIDOwner`, `status`),
+    KEY `dueDate` (`dueDate`),
+    KEY `retentionUntil` (`retentionUntil`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;';
+
+$moduleTables[] = 'CREATE TABLE `attendance_follow_up_note` (
+    `noteID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `followUpID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDAuthor` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `noteText` TEXT NOT NULL,
+    `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`noteID`),
+    KEY `followUpID` (`followUpID`),
+    CONSTRAINT `attendanceFollowUpNoteCase`
+      FOREIGN KEY (`followUpID`) REFERENCES `attendance_follow_up` (`followUpID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;';
+
+$moduleTables[] = 'CREATE TABLE `attendance_follow_up_event` (
+    `eventID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `followUpID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDActor` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `eventType` VARCHAR(40) NOT NULL,
+    `fieldName` VARCHAR(40) DEFAULT NULL,
+    `oldValue` VARCHAR(255) DEFAULT NULL,
+    `newValue` VARCHAR(255) DEFAULT NULL,
+    `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`eventID`),
+    KEY `followUpID` (`followUpID`),
+    CONSTRAINT `attendanceFollowUpEventCase`
+      FOREIGN KEY (`followUpID`) REFERENCES `attendance_follow_up` (`followUpID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;';
+
+$moduleTables[] = 'CREATE TABLE `attendance_follow_up_retention_log` (
+    `purgeID` INT(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonPersonIDActor` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NOT NULL,
+    `caseCount` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+    `noteCount` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+    `eventCount` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+    `purgedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`purgeID`),
+    KEY `schoolYear` (`gibbonSchoolYearID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;';
 
 // Add gibbonSettings entries
 $gibbonSetting[] = "INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Attendance Summary', 'scoreAbsence', 'Absence Score', 'Score for unexcused or personal absence.', '0');";
@@ -82,6 +149,46 @@ $actionRows[] = [
     'categoryPermissionStudent' => 'N', // Should this action be available to user roles in the Student category?
     'categoryPermissionParent'  => 'N', // Should this action be available to user roles in the Parent category?
     'categoryPermissionOther'   => 'N', // Should this action be available to user roles in the Other category?
+];
+
+$actionRows[] = [
+    'name'                      => 'View Attendance Follow-up',
+    'precedence'                => '0',
+    'category'                  => 'Follow-up',
+    'description'               => 'View assigned attendance follow-up cases and append-only coordination notes.',
+    'URLList'                   => 'attendance_followup.php, attendance_followup_view.php',
+    'entryURL'                  => 'attendance_followup.php',
+    'entrySidebar'              => 'Y',
+    'menuShow'                  => 'Y',
+    'defaultPermissionAdmin'    => 'Y',
+    'defaultPermissionTeacher'  => 'N',
+    'defaultPermissionStudent'  => 'N',
+    'defaultPermissionParent'   => 'N',
+    'defaultPermissionSupport'  => 'N',
+    'categoryPermissionStaff'   => 'Y',
+    'categoryPermissionStudent' => 'N',
+    'categoryPermissionParent'  => 'N',
+    'categoryPermissionOther'   => 'N',
+];
+
+$actionRows[] = [
+    'name'                      => 'Manage Attendance Follow-up',
+    'precedence'                => '1',
+    'category'                  => 'Follow-up',
+    'description'               => 'Create, assign and update attendance follow-up cases, notes and retention.',
+    'URLList'                   => 'attendance_followup.php, attendance_followup_view.php, attendance_followup_create.php, attendance_followup_createProcess.php, attendance_followup_updateProcess.php, attendance_followup_noteProcess.php, attendance_followup_export.php, attendance_followup_retention.php, attendance_followup_retentionProcess.php',
+    'entryURL'                  => 'attendance_followup.php',
+    'entrySidebar'              => 'Y',
+    'menuShow'                  => 'Y',
+    'defaultPermissionAdmin'    => 'Y',
+    'defaultPermissionTeacher'  => 'N',
+    'defaultPermissionStudent'  => 'N',
+    'defaultPermissionParent'   => 'N',
+    'defaultPermissionSupport'  => 'N',
+    'categoryPermissionStaff'   => 'Y',
+    'categoryPermissionStudent' => 'N',
+    'categoryPermissionParent'  => 'N',
+    'categoryPermissionOther'   => 'N',
 ];
 $actionRows[] = [
     'name'                      => 'View Attendance Trends', // The name of the action (appears to user in the right hand side module menu)

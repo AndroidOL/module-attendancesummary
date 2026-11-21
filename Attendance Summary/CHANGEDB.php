@@ -4,6 +4,73 @@
 $sql = [];
 $count = 0;
 
+// v1.1.0
+$sql[$count][0] = "1.1.0";
+$sql[$count][1] = "CREATE TABLE IF NOT EXISTS `attendance_follow_up` (
+    `followUpID` INT(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonPersonIDStudent` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonFormGroupID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `reasonCode` VARCHAR(30) NOT NULL,
+    `sourceDateStart` DATE NOT NULL,
+    `sourceDateEnd` DATE NOT NULL,
+    `status` VARCHAR(20) NOT NULL DEFAULT 'open',
+    `gibbonPersonIDOwner` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDCreator` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `dueDate` DATE NOT NULL,
+    `resolutionCode` VARCHAR(30) DEFAULT NULL,
+    `activeKey` CHAR(64) DEFAULT NULL,
+    `revision` INT(10) UNSIGNED NOT NULL DEFAULT 1,
+    `retentionUntil` DATE NOT NULL,
+    `resolvedAt` DATETIME DEFAULT NULL,
+    `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `gibbonPersonIDLastEdit` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    PRIMARY KEY (`followUpID`),
+    UNIQUE KEY `activeKey` (`activeKey`),
+    KEY `studentYear` (`gibbonPersonIDStudent`, `gibbonSchoolYearID`),
+    KEY `ownerStatus` (`gibbonPersonIDOwner`, `status`),
+    KEY `dueDate` (`dueDate`),
+    KEY `retentionUntil` (`retentionUntil`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;end
+CREATE TABLE IF NOT EXISTS `attendance_follow_up_note` (
+    `noteID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `followUpID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDAuthor` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `noteText` TEXT NOT NULL,
+    `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`noteID`),
+    KEY `followUpID` (`followUpID`),
+    CONSTRAINT `attendanceFollowUpNoteCase`
+      FOREIGN KEY (`followUpID`) REFERENCES `attendance_follow_up` (`followUpID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;end
+CREATE TABLE IF NOT EXISTS `attendance_follow_up_event` (
+    `eventID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `followUpID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonPersonIDActor` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `eventType` VARCHAR(40) NOT NULL,
+    `fieldName` VARCHAR(40) DEFAULT NULL,
+    `oldValue` VARCHAR(255) DEFAULT NULL,
+    `newValue` VARCHAR(255) DEFAULT NULL,
+    `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`eventID`),
+    KEY `followUpID` (`followUpID`),
+    CONSTRAINT `attendanceFollowUpEventCase`
+      FOREIGN KEY (`followUpID`) REFERENCES `attendance_follow_up` (`followUpID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;end
+CREATE TABLE IF NOT EXISTS `attendance_follow_up_retention_log` (
+    `purgeID` INT(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+    `gibbonPersonIDActor` INT(10) UNSIGNED ZEROFILL NOT NULL,
+    `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NOT NULL,
+    `caseCount` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+    `noteCount` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+    `eventCount` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+    `purgedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`purgeID`),
+    KEY `schoolYear` (`gibbonSchoolYearID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;end";
+$count++;
+
 // v1.0.3
 $sql[$count][0] = "1.0.3";
 $sql[$count][1] = "INSERT INTO gibbonSetting (scope, name, nameDisplay, description, value) SELECT 'Attendance Summary', 'keywordsAbsence', 'Absence Keywords', 'Comma-separated attendance type keywords for absence and personal leave.', '旷课,事假,Absent,Unexcused absence' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM gibbonSetting WHERE scope='Attendance Summary' AND name='keywordsAbsence');end

@@ -364,3 +364,100 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     font-weight: 700;
     background: #e2e8f0;
 }
+
+.attendanceFollowUpCard {
+    margin: 1rem 0;
+    padding: 1rem 1.25rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    background: #ffffff;
+}
+
+.attendanceFollowUpCardHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.attendanceFollowUpCardHeader h2 {
+    margin: 0 0 0.25rem;
+}
+
+.attendanceFollowUpMeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem 1.25rem;
+    margin-top: 0.6rem;
+    color: #475569;
+    font-size: 0.86rem;
+}
+
+.attendanceFollowUpStatus {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 9999px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: #334155;
+    background: #e2e8f0;
+}
+
+.attendanceFollowUpStatus-open {
+    color: #92400e;
+    background: #fef3c7;
+}
+
+.attendanceFollowUpStatus-in_progress {
+    color: #1d4ed8;
+    background: #dbeafe;
+}
+
+.attendanceFollowUpStatus-resolved {
+    color: #166534;
+    background: #dcfce7;
+}
+
+.attendanceFollowUpOverdue {
+    color: #b91c1c;
+}
+
+.attendanceFollowUpSection {
+    margin-top: 1.5rem;
+}
+
+.attendanceFollowUpSection h3 {
+    margin-bottom: 0.6rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.attendanceFollowUpNote {
+    margin-bottom: 0.75rem;
+    padding: 0.75rem 0.9rem;
+    border-left: 3px solid #93c5fd;
+    border-radius: 0.25rem;
+    background: #f8fafc;
+}
+
+.attendanceFollowUpNote p {
+    margin: 0.4rem 0 0;
+    color: #1e293b;
+    overflow-wrap: anywhere;
+}
+
+.attendanceFollowUpEvents {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: #475569;
+}
+
+.attendanceFollowUpEvents li + li {
+    margin-top: 0.35rem;
+}
+
+@media print {
+    .attendanceFollowUpStatus {
+        border: 1px solid #cbd5e1;
+    }
+}

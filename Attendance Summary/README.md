@@ -26,20 +26,27 @@ The transfer audit table is created during module installation.
 - Analyse attendance by class, year group, weekday and month.
 - Identify students below a configurable attendance threshold.
 - Review no-record student-days in a separate data-quality queue.
+- Manage low-attendance and no-record cases in an assigned follow-up worklist.
+- Record append-only coordination notes, owners, due dates and audited status changes.
+- Retain and purge follow-up cases under the school’s approved retention policy.
 - Export CSV and print reports, including the course-history summary.
 - Transfer class-context attendance records with authorization, CSRF,
   transaction rollback and an audit record.
 
 ## Permissions
 
-The module installs four actions:
+The module installs six actions:
 
 - View Student Attendance
 - View Attendance Trends
 - View My Child's Attendance
 - Transfer Attendance Records
+- View Attendance Follow-up
+- Manage Attendance Follow-up
 
 Schools should review the default role assignments before enabling the module.
+The follow-up actions are administrator-only by default; grant View or Manage
+to the staff roles responsible for attendance follow-up.
 
 ## Attendance definitions
 
@@ -58,6 +65,19 @@ report GET requests, print and CSV exports never change that preference.
 
 The `Attendance` setting `countClassAsSchool` controls whether class-context
 attendance is included in day-based reports.
+
+## Attendance follow-up privacy
+
+Follow-up access is limited to current form-group tutors, the case creator and
+current owner, and staff granted all-student attendance access. Cases contain
+only action status, owner, due date and short coordination notes. Notes are
+append-only and must not contain
+diagnoses, medical details, safeguarding narratives, attachments or sensitive
+family information outside the approved process.
+
+Cases are retained until the source school year ends plus 12 months. A System
+Admin can purge expired cases through an audited retention action; this removes
+cases, notes and audit events together and records the administrator action.
 
 Existing course-history defaults are preserved, but administrators can change
 the weights and matching keywords in **Attendance Score Settings**. The values

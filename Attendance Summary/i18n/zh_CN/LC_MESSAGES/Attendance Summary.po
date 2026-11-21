@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Attendance Summary 1.0.5\n"
+"Project-Id-Version: Attendance Summary 1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-21 12:51+0800\n"
-"PO-Revision-Date: 2026-11-21 12:52+0800\n"
+"POT-Creation-Date: 2026-11-21 15:51+0800\n"
+"PO-Revision-Date: 2026-11-21 15:55+0800\n"
 "Last-Translator: AndroidOL\n"
 "Language-Team: Gibbon zh_CN\n"
 "Language: zh_CN\n"
@@ -11,592 +11,1443 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid " (Monthly)"
-msgstr "（月统计）"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:36
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:32
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:34
+#: ⁨Attendance Summary/attendance_summary.php⁩:31
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:28
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:54
+#: ⁨Attendance Summary/attendance_summary_view_myChild.php⁩:28
+#: ⁨Attendance Summary/attendance_summary_view_myChild.php⁩:62
+msgid "View Attendance"
+msgstr "查看考勤信息"
 
-msgid " records"
-msgstr "条"
-
-#, php-format
-msgid "%s Attendance Analysis (%s to %s)"
-msgstr "%s 考勤分析（%s 至 %s）"
-
-#, php-format
-msgid "%s Attendance Summary (as of %s)"
-msgstr "%s 考勤汇总（截至 %s）"
-
-#, php-format
-msgid "%s Course Attendance Summary (%s to %s)"
-msgstr "%s 课程考勤汇总（%s 至 %s）"
-
-#, php-format
-msgid "%s School Year"
-msgstr "%s 学年"
-
-#, php-format
-msgid "%s no-record student-days affect %s students in this scope."
-msgstr "%s 个无记录学生日，涉及本范围内的 %s 名学生。"
-
-msgid "Absence Details"
-msgstr "缺勤明细"
-
-msgid "Absence Type Summary"
-msgstr "缺勤类型统计"
-
-msgid "Absent"
-msgstr "缺勤"
-
-msgid "Actions"
-msgstr "操作"
-
-msgid "Alert Threshold"
-msgstr "预警阈值"
-
-msgid "All"
-msgstr "全部"
-
-msgid "All (Since Enrolment)"
-msgstr "全部（入学至今）"
-
-msgid "All Classes"
-msgstr "所有课程"
-
-msgid "Attendance"
-msgstr "考勤信息"
-
+#: ⁨Attendance Summary/attendance_analytics.php⁩:37
+#: ⁨Attendance Summary/attendance_analytics.php⁩:131
 msgid "Attendance Analysis and Alerts"
 msgstr "考勤分析与预警"
 
-msgid "Attendance Data Quality"
-msgstr "考勤数据质量"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:41
+#: ⁨Attendance Summary/attendance_followup.php⁩:24
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:23
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:18
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:28
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:25
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:37
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:39
+#: ⁨Attendance Summary/attendance_record.php⁩:34
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:38
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:138
+#: ⁨Attendance Summary/attendance_record_transferEdit.php⁩:30
+#: ⁨Attendance Summary/attendance_record_transferEdit.php⁩:49
+#: ⁨Attendance Summary/attendance_settings.php⁩:17
+#: ⁨Attendance Summary/attendance_summary.php⁩:34
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:31
+#: ⁨Attendance Summary/attendance_summary_view_myChild.php⁩:31
+msgid "You do not have access to this page."
+msgstr "您没有权限访问该页面。"
 
-msgid "Attendance Definitions"
-msgstr "考勤统计口径"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:46
+msgid "Your default alert threshold has been saved."
+msgstr "您的默认关注阈值已保存。"
 
-msgid "Attendance History (Courses)"
-msgstr "全周期考勤汇总（课程）"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:47
+msgid "The submitted threshold is invalid. Enter a value from 0 to 100."
+msgstr "提交的阈值无效，请输入 0 到 100 之间的数值。"
 
-msgid "Attendance History (School Days)"
-msgstr "全周期考勤汇总（出勤日）"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:48
+msgid "Unable to save your default threshold."
+msgstr "无法保存您的默认关注阈值。"
 
-msgid "Attendance Rate"
-msgstr "出勤率"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:49
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:32
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:37
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:38
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:34
+#: ⁨Attendance Summary/attendance_settings.php⁩:25
+msgid "Your session expired. Refresh the page and try again."
+msgstr "会话已过期，请刷新页面后重试。"
 
-#, php-format
-msgid "Attendance Rate to %s"
-msgstr "至 %s 出勤率"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:138
+#: ⁨Attendance Summary/attendance_analytics.php⁩:189
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:87
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:87
+msgid "Scope"
+msgstr "统计范围"
 
-msgid "Attendance Score Settings"
-msgstr "考勤评分设置"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:142
+#: ⁨Attendance Summary/attendance_analytics.php⁩:191
+msgid "Alert Threshold"
+msgstr "预警阈值"
 
-msgid "Attendance Trends"
-msgstr "考勤趋势"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:142
+msgid "Students below this percentage appear in the alert list."
+msgstr "出勤率低于该百分比的学生会出现在预警名单中。"
 
+#: ⁨Attendance Summary/attendance_analytics.php⁩:161
+msgid ""
+"Save the current alert threshold for your account without changing the "
+"report view."
+msgstr "保存当前关注阈值作为您的默认设置，不改变本次报表视图。"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:163
+msgid "Save as my default"
+msgstr "保存为我的默认值"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:164
+msgid "Reset to 90% and save"
+msgstr "恢复为 90% 并保存"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:177
 #, php-format
 msgid ""
 "Attendance rate = (Present + Partial) / (Present + Partial + Absent), for %s."
 msgstr ""
 "出勤率 =（出勤 + 部分出勤）/（出勤 + 部分出勤 + 缺勤），统计范围为 %s。"
 
-msgid "Attendance rate definition"
-msgstr "出勤率定义"
-
-msgid "Attendance records"
-msgstr "考勤记录"
-
-msgid "Attendance records transferred."
-msgstr "考勤记录迁移完成。"
-
-msgid "Attendance score settings saved."
-msgstr "考勤评分设置已保存。"
-
-msgid "Charts"
-msgstr "图表"
-
-msgid "Choose Class"
-msgstr "选择课程"
-
-msgid "Choose Date"
-msgstr "选择日期"
-
-msgid "Choose Form Group"
-msgstr "选择班级"
-
-msgid "Choose Replacement Classes"
-msgstr "选择新课程信息"
-
-msgid "Class"
-msgstr "班级"
-
-msgid "Class Attendance Summary"
-msgstr "班级出勤汇总"
-
-msgid "Class Name"
-msgstr "课程名称"
-
-msgid ""
-"Class-context attendance records are excluded by the school Attendance "
-"setting."
-msgstr "根据学校考勤设置，当前未纳入课堂考勤记录。"
-
-msgid ""
-"Class-context attendance records are included by the school Attendance "
-"setting."
-msgstr "根据学校考勤设置，当前已纳入课堂考勤记录。"
-
-msgid "Class-context records"
-msgstr "课堂考勤记录"
-
-msgid "Click a legend item to toggle visibility."
-msgstr "点击图例项可切换显示。"
-
-msgid ""
-"Comma or semicolon separated attendance type fragments. Matching is case-"
-"insensitive."
-msgstr "用逗号或分号分隔的考勤类型片段；匹配不区分大小写。"
-
-msgid "Confirm Attendance Transfer"
-msgstr "转移考勤记录确认"
-
-msgid "Confirm Timetable Lessons"
-msgstr "排课信息确认"
-
-msgid "Course"
-msgstr "课程"
-
-msgid "Current"
-msgstr "当前"
-
-msgid "Current Class"
-msgstr "当前课程"
-
-msgid "Daily Details"
-msgstr "每日明细"
-
-msgid "Date"
-msgstr "日期"
-
-msgid "Date Range"
-msgstr "日期范围"
-
-msgid "Date of Birth"
-msgstr "出生日期"
-
-msgid "Date range"
-msgstr "日期范围"
-
-msgid "Day"
-msgstr "当日"
-
-msgid "Day Attendance"
-msgstr "当日考勤"
-
-msgid "Days"
-msgstr "天数"
-
-msgid "Departure Date"
-msgstr "离校日期"
-
-msgid "Details"
-msgstr "详情"
-
-msgid "End Date"
-msgstr "结束日期"
-
-msgid "End Time"
-msgstr "结束时间"
-
-msgid "Enrolment Date"
-msgstr "入学日期"
-
-msgid "Enrolment History"
-msgstr "就读经历"
-
-msgid "Exceptions"
-msgstr "异常明细"
-
-msgid "Expected"
-msgstr "应出勤"
-
-msgid "Export CSV"
-msgstr "导出 CSV"
-
-msgid "Export Data Quality CSV"
-msgstr "导出数据质量 CSV"
-
-msgid "Form Group"
-msgstr "班级"
-
-msgid "Fri"
-msgstr "周五"
-
-msgid "Friday"
-msgstr "周五"
-
-msgid "Full History"
-msgstr "全周期"
-
-msgid "Full History (Courses)"
-msgstr "全周期（课程）"
-
-msgid "Full History (School Days)"
-msgstr "全周期（出勤日）"
-
-msgid "Full Name"
-msgstr "姓名"
-
-msgid "Gender"
-msgstr "性别"
-
-msgid "Late"
-msgstr "迟到"
-
-msgid "Late / Left Early"
-msgstr "迟到/早退"
-
-msgid "Late Details"
-msgstr "迟到明细"
-
+#: ⁨Attendance Summary/attendance_analytics.php⁩:180
 msgid "Late and left early count as partial attendance."
 msgstr "迟到和早退计为部分出勤。"
 
-msgid "Left Early"
-msgstr "早退"
-
-msgid "Left Early Details"
-msgstr "早退明细"
-
-msgid "Left School"
-msgstr "已离校"
-
-msgid "Lesson"
-msgstr "课时名称"
-
-msgid "Lesson Time"
-msgstr "上课时间"
-
-msgid "Historical attendance data is read-only. Change the scope to the current school year to open the attendance-entry page."
-msgstr "历史考勤数据为只读。请将范围切换至当前学年，才能打开考勤录入页面。"
-
-#, php-format
-msgid "Low Attendance (below %s%%)"
-msgstr "低出勤关注（低于 %s%%）"
-
-msgid "Matching Keywords"
-msgstr "匹配关键词"
-
-msgid "Mon"
-msgstr "周一"
-
-msgid "Monday"
-msgstr "周一"
-
-msgid "My Classes"
-msgstr "我的课程"
-
-msgid "N/A"
-msgstr "暂无数据"
-
-msgid "No attendance data gaps were found in this scope."
-msgstr "所选范围内未发现考勤数据缺失。"
-
-msgid "No attendance records for this student in the selected scope."
-msgstr "该学生在所选范围内没有考勤记录。"
-
-msgid "No attendance records to display."
-msgstr "没有可显示的考勤记录。"
-
-msgid "No children are linked to this account."
-msgstr "尚未设置子女信息"
-
-msgid "No course attendance records for this student in the selected scope."
-msgstr "该学生在所选范围内没有课程考勤记录。"
-
-msgid "No detailed records."
-msgstr "没有详细记录。"
-
-msgid "No record"
-msgstr "无记录"
-
-msgid "No replacement class"
-msgstr "无可替换课程"
-
-msgid "No scoped school days or attendance records are available yet."
-msgstr "该范围内还没有可统计的上课日或考勤记录。"
-
-msgid "No students with calculable attendance are below this rate."
-msgstr "没有可计算出勤率且低于该阈值的学生。"
-
-msgid "No transferable classes were found."
-msgstr "没有可迁移的课程。"
-
-msgid "No-record Attendance Queue"
-msgstr "无记录考勤待补队列"
-
+#: ⁨Attendance Summary/attendance_analytics.php⁩:181
 msgid ""
 "No-record days are excluded from the attendance-rate denominator. Expected "
 "counts school days only while each student is enrolled."
 msgstr "无记录日期不计入出勤率分母；应出勤只统计每名学生在读期间的上课日。"
 
-msgid "No-record days by class"
-msgstr "按班级统计的无记录日期"
-
-msgid "No-record handling"
-msgstr "无记录处理"
-
-msgid "Non-school Day"
-msgstr "非上课日"
-
-msgid "Open Attendance"
-msgstr "录入考勤"
-
-#, php-format
+#: ⁨Attendance Summary/attendance_analytics.php⁩:183
 msgid ""
-"Overall term attendance: standard total %s, attendance total %s, rate %s%%"
-msgstr "学期综合出勤率：标准总计 %s ，出勤总计 %s ，出勤率 %s%%"
+"Class-context attendance records are excluded by the school Attendance "
+"setting."
+msgstr "根据学校考勤设置，当前未纳入课堂考勤记录。"
 
+#: ⁨Attendance Summary/attendance_analytics.php⁩:184
+msgid ""
+"Class-context attendance records are included by the school Attendance "
+"setting."
+msgstr "根据学校考勤设置，当前已纳入课堂考勤记录。"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:185
+#, php-format
+msgid "The current alert threshold is %s."
+msgstr "当前关注阈值为 %s。"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:190
+msgid "Date range"
+msgstr "日期范围"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:192
+msgid "Attendance rate definition"
+msgstr "出勤率定义"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:193
 msgid "Partial attendance"
 msgstr "部分出勤"
 
-msgid "Period"
-msgstr "节次"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:194
+msgid "No-record handling"
+msgstr "无记录处理"
 
-#, php-format
-msgid "Period: %s to %s"
-msgstr "时段：%s 至 %s"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:195
+msgid "Class-context records"
+msgstr "课堂考勤记录"
 
+#: ⁨Attendance Summary/attendance_analytics.php⁩:196
+#: ⁨Attendance Summary/attendance_analytics.php⁩:218
+#: ⁨Attendance Summary/attendance_analytics.php⁩:236
+#: ⁨Attendance Summary/attendance_analytics.php⁩:314
+#: ⁨Attendance Summary/attendance_analytics.php⁩:359
+#: ⁨Attendance Summary/attendance_analytics.php⁩:377
+#: ⁨Attendance Summary/attendance_analytics.php⁩:516
+#: ⁨Attendance Summary/attendance_analytics.php⁩:549
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:122
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:144
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:256
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:285
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:454
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:259
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:286
+#: ⁨Attendance Summary/moduleFunctions.php⁩:245
+#: ⁨Attendance Summary/moduleFunctions.php⁩:888
+#: ⁨Attendance Summary/src/AttendanceLifecycle.php⁩:319
+msgid "No record"
+msgstr "无记录"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:218
+#: ⁨Attendance Summary/attendance_analytics.php⁩:532
+#: ⁨Attendance Summary/attendance_followup.php⁩:98
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:79
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:128
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:82
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:82
+#: ⁨Attendance Summary/attendance_record.php⁩:93
+#: ⁨Attendance Summary/attendance_summary.php⁩:100
+msgid "Student"
+msgstr "学生"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:218
+#: ⁨Attendance Summary/attendance_analytics.php⁩:236
+#: ⁨Attendance Summary/attendance_analytics.php⁩:357
+#: ⁨Attendance Summary/attendance_analytics.php⁩:376
+#: ⁨Attendance Summary/attendance_analytics.php⁩:499
+#: ⁨Attendance Summary/attendance_analytics.php⁩:533
+msgid "Class"
+msgstr "班级"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:218
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:198
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:148
+#: ⁨Attendance Summary/attendance_record.php⁩:100
+#: ⁨Attendance Summary/attendance_summary.php⁩:107
+msgid "Year Group"
+msgstr "年级"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:218
+#: ⁨Attendance Summary/attendance_analytics.php⁩:236
+#: ⁨Attendance Summary/attendance_analytics.php⁩:358
+#: ⁨Attendance Summary/attendance_analytics.php⁩:377
+#: ⁨Attendance Summary/attendance_analytics.php⁩:501
+#: ⁨Attendance Summary/attendance_analytics.php⁩:534
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:122
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:251
+msgid "Expected"
+msgstr "应出勤"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:218
+#: ⁨Attendance Summary/attendance_analytics.php⁩:504
+#: ⁨Attendance Summary/attendance_analytics.php⁩:537
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:122
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:136
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:252
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:285
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:451
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:258
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:283
+#: ⁨Attendance Summary/moduleFunctions.php⁩:660
+#: ⁨Attendance Summary/moduleFunctions.php⁩:663
+#: ⁨Attendance Summary/moduleFunctions.php⁩:940
 msgid "Present"
 msgstr "出勤"
 
+#: ⁨Attendance Summary/attendance_analytics.php⁩:218
+#: ⁨Attendance Summary/attendance_analytics.php⁩:312
+#: ⁨Attendance Summary/attendance_analytics.php⁩:507
+#: ⁨Attendance Summary/attendance_analytics.php⁩:540
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:122
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:142
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:253
+msgid "Late"
+msgstr "迟到"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:218
+#: ⁨Attendance Summary/attendance_analytics.php⁩:313
+#: ⁨Attendance Summary/attendance_analytics.php⁩:510
+#: ⁨Attendance Summary/attendance_analytics.php⁩:543
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:122
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:141
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:254
+msgid "Left Early"
+msgstr "早退"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:218
+#: ⁨Attendance Summary/attendance_analytics.php⁩:311
+#: ⁨Attendance Summary/attendance_analytics.php⁩:428
+#: ⁨Attendance Summary/attendance_analytics.php⁩:513
+#: ⁨Attendance Summary/attendance_analytics.php⁩:546
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:122
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:138
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:255
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:285
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:316
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:453
+msgid "Absent"
+msgstr "缺勤"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:218
+#: ⁨Attendance Summary/attendance_analytics.php⁩:308
+#: ⁨Attendance Summary/attendance_analytics.php⁩:418
+#: ⁨Attendance Summary/attendance_analytics.php⁩:450
+#: ⁨Attendance Summary/attendance_analytics.php⁩:472
+#: ⁨Attendance Summary/attendance_analytics.php⁩:519
+#: ⁨Attendance Summary/attendance_analytics.php⁩:552
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:122
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:257
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:307
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:354
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:260
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:287
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:310
+#: ⁨Attendance Summary/moduleFunctions.php⁩:872
+#: ⁨Attendance Summary/moduleFunctions.php⁩:941
+msgid "Attendance Rate"
+msgstr "出勤率"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:236
+#: ⁨Attendance Summary/attendance_analytics.php⁩:373
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:384
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:335
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:94
+#: ⁨Attendance Summary/moduleFunctions.php⁩:868
+msgid "Date"
+msgstr "日期"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:247
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:214
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:164
 msgid "Print"
 msgstr "打印"
 
-msgid "Reason"
-msgstr "原因"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:259
+#: ⁨Attendance Summary/attendance_followup.php⁩:84
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:226
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:176
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:100
+msgid "Export CSV"
+msgstr "导出 CSV"
 
-msgid "Replacement Class"
-msgstr "替换课程"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:269
+msgid "Export Data Quality CSV"
+msgstr "导出数据质量 CSV"
 
-msgid "Report Data"
-msgstr "报表数据"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:280
+#: ⁨Attendance Summary/attendance_followup.php⁩:19
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:19
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:20
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:19
+msgid "Attendance Follow-up"
+msgstr "考勤跟进"
 
-msgid "Reset to 90% and save"
-msgstr "恢复为 90% 并保存"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:290
+msgid "Attendance Definitions"
+msgstr "考勤统计口径"
 
+#: ⁨Attendance Summary/attendance_analytics.php⁩:298
+msgid "No scoped school days or attendance records are available yet."
+msgstr "该范围内还没有可统计的上课日或考勤记录。"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:304
+#, php-format
+msgid "%s Attendance Analysis (%s to %s)"
+msgstr "%s 考勤分析（%s 至 %s）"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:309
+#: ⁨Attendance Summary/attendance_analytics.php⁩:500
+msgid "Students"
+msgstr "人数"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:310
+msgid "School Days"
+msgstr "上课天数"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:328
+msgid "Attendance Data Quality"
+msgstr "考勤数据质量"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:331
+#: ⁨Attendance Summary/attendance_analytics.php⁩:372
+msgid "No attendance data gaps were found in this scope."
+msgstr "所选范围内未发现考勤数据缺失。"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:335
+#, php-format
+msgid "%s no-record student-days affect %s students in this scope."
+msgstr "%s 个无记录学生日，涉及本范围内的 %s 名学生。"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:339
 msgid ""
 "Review these records separately. A no-record day is a data gap, not an "
 "absence, and it is excluded from the attendance-rate denominator."
 msgstr ""
 "请单独处理这些记录。无记录表示数据缺失，不代表缺勤，也不计入出勤率分母。"
 
+#: ⁨Attendance Summary/attendance_analytics.php⁩:356
+msgid "No-record days by class"
+msgstr "按班级统计的无记录日期"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:363
+msgid "No-record Attendance Queue"
+msgstr "无记录考勤待补队列"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:366
 msgid ""
 "Rows are newest first. Use the action to open the original form-group "
 "attendance page."
 msgstr "记录按日期由新到旧排列。可使用操作按钮打开原始班级考勤录入页面。"
 
-msgid "Sat"
-msgstr "周六"
-
-msgid "Saturday"
-msgstr "周六"
-
-msgid "Save as my default"
-msgstr "保存为我的默认值"
-
+#: ⁨Attendance Summary/attendance_analytics.php⁩:368
 msgid ""
-"Save the current alert threshold for your account without changing the "
-"report view."
-msgstr "保存当前关注阈值作为您的默认设置，不改变本次报表视图。"
+"Historical attendance data is read-only. Change the scope to the current "
+"school year to open the attendance-entry page."
+msgstr "历史考勤数据为只读。请将范围切换至当前学年，才能打开考勤录入页面。"
 
-msgid "School Days"
-msgstr "上课天数"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:369
+msgid ""
+"You do not have permission to enter attendance. This queue is read-only."
+msgstr "您没有考勤录入权限，此队列为只读。"
 
-msgid "School Year"
-msgstr "学年"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:384
+msgid "Open Attendance"
+msgstr "录入考勤"
 
-msgid "School Year / Course"
-msgstr "学年 / 课程"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:399
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:280
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:294
+msgid "Charts"
+msgstr "图表"
 
-msgid "School Year / Term"
-msgstr "学年 / 学期"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:434
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:321
+#: ⁨Attendance Summary/moduleFunctions.php⁩:723
+msgid "Monday"
+msgstr "周一"
 
-msgid "Scope"
-msgstr "统计范围"
-
-msgid "Select a class."
-msgstr "请选择对应课程！"
-
-msgid "Select a student."
-msgstr "请选择对应学生！"
-
-msgid "Select a valid date range."
-msgstr "请选择操作时间范围！"
-
-msgid "Standard"
-msgstr "标准"
-
-msgid "Start Date"
-msgstr "开始日期"
-
-msgid "Start Time"
-msgstr "开始时间"
-
-msgid "Status"
-msgstr "状态"
-
-msgid "Student"
-msgstr "学生"
-
-msgid "Students"
-msgstr "人数"
-
-msgid "Students below this percentage appear in the alert list."
-msgstr "出勤率低于该百分比的学生会出现在预警名单中。"
-
-msgid "Students by Form Group"
-msgstr "按班级查看学生"
-
-msgid "Summary"
-msgstr "汇总项"
-
-msgid "Sun"
-msgstr "周日"
-
-msgid "Sunday"
-msgstr "周日"
-
-msgid "Term"
-msgstr "学期"
-
-#, php-format
-msgid "The current alert threshold is %s."
-msgstr "当前关注阈值为 %s。"
-
-msgid "The specified record does not exist."
-msgstr "指定记录不存在。"
-
-msgid "The submitted data is invalid."
-msgstr "提交的数据无效。"
-
-msgid "The submitted data is invalid. Select the records again."
-msgstr "提交的数据无效，请重新选择。"
-
-msgid "The submitted threshold is invalid. Enter a value from 0 to 100."
-msgstr "提交的阈值无效，请输入 0 到 100 之间的数值。"
-
-msgid "There are no records to display."
-msgstr "没有可显示的记录。"
-
-msgid "Thu"
-msgstr "周四"
-
-msgid "Thursday"
-msgstr "周四"
-
-msgid "Timetable Day"
-msgstr "课表日"
-
-msgid "Timetable Lessons"
-msgstr "排课信息"
-
-msgid "Total"
-msgstr "总计"
-
-msgid "Transfer"
-msgstr "是否迁移"
-
-msgid "Transfer Attendance"
-msgstr "转移考勤记录"
-
-msgid "Transfer Attendance Records"
-msgstr "迁移考勤记录"
-
-msgid "Transfer failed. Try again shortly."
-msgstr "迁移失败，请稍后重试。"
-
-msgid "Tue"
-msgstr "周二"
-
+#: ⁨Attendance Summary/attendance_analytics.php⁩:434
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:321
+#: ⁨Attendance Summary/moduleFunctions.php⁩:724
 msgid "Tuesday"
 msgstr "周二"
 
-msgid "Tutors"
-msgstr "导师"
-
-msgid "Type"
-msgstr "类型"
-
-msgid "Types"
-msgstr "类型"
-
-msgid "Unable to save your default threshold."
-msgstr "无法保存您的默认关注阈值。"
-
-msgid "Unassigned Form Group"
-msgstr "未分班"
-
-msgid "Unassigned Year Group"
-msgstr "未分年级"
-
-msgid "Unclassified"
-msgstr "未分类"
-
-msgid "Unknown"
-msgstr "未知"
-
-msgid "Unknown School Year"
-msgstr "未知学年"
-
-msgid "Update Dates"
-msgstr "更新日期"
-
-msgid "View"
-msgstr "查看"
-
-msgid "View Attendance"
-msgstr "查看考勤信息"
-
-msgid "View Details"
-msgstr "查看详情"
-
-msgid "View Timetable"
-msgstr "查看排课"
-
-msgid "Wed"
-msgstr "周三"
-
+#: ⁨Attendance Summary/attendance_analytics.php⁩:434
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:321
+#: ⁨Attendance Summary/moduleFunctions.php⁩:725
 msgid "Wednesday"
 msgstr "周三"
 
-#, php-format
-msgid "Week %d"
-msgstr "第%d周"
+#: ⁨Attendance Summary/attendance_analytics.php⁩:434
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:321
+#: ⁨Attendance Summary/moduleFunctions.php⁩:726
+msgid "Thursday"
+msgstr "周四"
 
+#: ⁨Attendance Summary/attendance_analytics.php⁩:434
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:321
+#: ⁨Attendance Summary/moduleFunctions.php⁩:727
+msgid "Friday"
+msgstr "周五"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:434
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:321
+#: ⁨Attendance Summary/moduleFunctions.php⁩:728
+msgid "Saturday"
+msgstr "周六"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:434
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:321
+#: ⁨Attendance Summary/moduleFunctions.php⁩:729
+msgid "Sunday"
+msgstr "周日"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:483
+#: ⁨Attendance Summary/attendance_analytics.php⁩:493
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:275
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:231
+msgid "Total"
+msgstr "总计"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:490
+msgid "Class Attendance Summary"
+msgstr "班级出勤汇总"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:528
+#, php-format
+msgid "Low Attendance (below %s%%)"
+msgstr "低出勤关注（低于 %s%%）"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:530
+msgid "No students with calculable attendance are below this rate."
+msgstr "没有可计算出勤率且低于该阈值的学生。"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:558
+msgid "Full History"
+msgstr "全周期"
+
+#: ⁨Attendance Summary/attendance_analytics.php⁩:562
+#: ⁨Attendance Summary/attendance_followup.php⁩:80
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:20
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:122
+msgid "Create Follow-up"
+msgstr "创建跟进"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:39
+msgid "Find Follow-up Cases"
+msgstr "查找跟进个案"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:44
+msgid "Search"
+msgstr "搜索"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:44
+msgid "Student name or ID"
+msgstr "学生姓名或学号"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:48
+#: ⁨Attendance Summary/attendance_followup.php⁩:120
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:133
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:124
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:180
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:130
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:335
+#: ⁨Attendance Summary/moduleFunctions.php⁩:905
+msgid "Status"
+msgstr "状态"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:52
+#: ⁨Attendance Summary/attendance_followup.php⁩:108
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:87
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:130
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:89
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:384
+msgid "Reason"
+msgstr "原因"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:56
+#: ⁨Attendance Summary/attendance_followup.php⁩:111
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:134
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:90
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:120
+msgid "Owner"
+msgstr "负责人"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:58
+msgid "All Cases"
+msgstr "全部跟进"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:59
+msgid "Assigned to Me"
+msgstr "分配给我"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:63
+msgid "Overdue Only"
+msgstr "仅显示逾期"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:68
+msgid "Clear Filters"
+msgstr "清除筛选"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:74
+msgid "Attendance Follow-up Worklist"
+msgstr "考勤跟进工作台"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:75
+msgid ""
+"Cases contain action status and short coordination notes. They are retained "
+"until the school year end plus 12 months."
+msgstr "跟进个案用于记录行动状态和简短协调备注；保留至学年结束后的 12 个月。"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:77
+msgid "No follow-up cases match these filters."
+msgstr "没有符合筛选条件的跟进个案。"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:92
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:21
+msgid "Retention Cleanup"
+msgstr "保留期清理"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:107
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:129
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:85
+#: ⁨Attendance Summary/attendance_record.php⁩:50
+#: ⁨Attendance Summary/attendance_record.php⁩:84
+#: ⁨Attendance Summary/attendance_record.php⁩:101
+#: ⁨Attendance Summary/attendance_summary.php⁩:50
+#: ⁨Attendance Summary/attendance_summary.php⁩:91
+#: ⁨Attendance Summary/attendance_summary.php⁩:108
+msgid "Form Group"
+msgstr "班级"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:126
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:91
+msgid "Due"
+msgstr "到期"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:131
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:91
+msgid "Overdue"
+msgstr "逾期"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:134
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:138
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:68
+msgid "Notes"
+msgstr "备注"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:135
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:140
+msgid "Last Updated"
+msgstr "最后更新"
+
+#: ⁨Attendance Summary/attendance_followup.php⁩:141
+#: ⁨Attendance Summary/attendance_summary.php⁩:116
+msgid "View"
+msgstr "查看"
+
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:28
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:34
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:33
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:31
+#: ⁨Attendance Summary/attendance_settings.php⁩:23
+msgid "You do not have permission to perform this action."
+msgstr "您没有权限执行该操作。"
+
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:29
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:34
+msgid "The submitted follow-up data is invalid."
+msgstr "提交的考勤跟进数据无效。"
+
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:30
+msgid ""
+"An active follow-up already exists for this student, reason and source range."
+msgstr "该学生、原因和来源日期范围内已存在进行中的跟进个案。"
+
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:31
+msgid "No follow-up data was submitted."
+msgstr "未提交跟进数据。"
+
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:39
+msgid "No current students are available for follow-up with your access."
+msgstr "按当前权限没有可供跟进的在读学生。"
+
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:73
+msgid "Create Attendance Follow-up"
+msgstr "创建考勤跟进"
+
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:74
+msgid ""
+"Record only the minimum coordination status and notes. Do not enter "
+"diagnoses, safeguarding narratives, medical details or attachments."
+msgstr ""
+"仅记录最少的协调状态和备注。请勿录入诊断、安全保护叙述、医疗详情或附件。"
+
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:84
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:92
+msgid "Please select..."
+msgstr "请选择..."
+
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:95
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:131
+msgid "Source Date Start"
+msgstr "来源开始日期"
+
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:99
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:132
+msgid "Source Date End"
+msgstr "来源结束日期"
+
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:103
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:135
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:128
+msgid "Due Date"
+msgstr "到期日期"
+
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:107
+msgid "Opening Note"
+msgstr "初始备注"
+
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:107
+msgid "Optional, maximum 2000 characters."
+msgstr "选填，最多 2000 个字符。"
+
+#: ⁨Attendance Summary/attendance_followup_create.php⁩:111
+msgid "Initial Owner"
+msgstr "初始负责人"
+
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:29
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:46
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:128
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:104
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:53
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:46
+msgid "The specified record does not exist."
+msgstr "指定记录不存在。"
+
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:126
+msgid "Case ID"
+msgstr "跟进编号"
+
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:127
+msgid "Student ID"
+msgstr "学号"
+
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:136
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:96
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:132
+msgid "Outcome"
+msgstr "处理结果"
+
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:137
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:93
+msgid "Retain Until"
+msgstr "保留至"
+
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:139
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:94
+msgid "Created"
+msgstr "创建时间"
+
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:144
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:66
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:122
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:198
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:384
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:148
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:335
+msgid "School Year"
+msgstr "学年"
+
+#: ⁨Attendance Summary/attendance_followup_export.php⁩:145
+msgid "Exported"
+msgstr "导出时间"
+
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:33
+msgid ""
+"Expired follow-up cases were purged and the retention audit log was updated."
+msgstr "已清理过期跟进个案并更新保留期审核日志。"
+
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:35
+msgid "The purge confirmation was missing."
+msgstr "缺少清理确认。"
+
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:36
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:36
+msgid "No submitted data was received."
+msgstr "未收到提交的数据。"
+
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:63
+msgid "Expired Follow-up Cases"
+msgstr "已过期跟进个案"
+
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:64
+msgid ""
+"Retention is calculated as the source school year end plus 12 months. "
+"Purging removes cases, notes and audit events together and records an "
+"administrator audit row."
+msgstr ""
+"保留期为来源学年结束后的 12 个月。清理会同时删除个案、备注和审核事件，并记录"
+"管理员审核行。"
+
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:65
+msgid "No follow-up cases are currently due for retention cleanup."
+msgstr "当前没有需要保留期清理的跟进个案。"
+
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:67
+msgid "Cases"
+msgstr "个案数"
+
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:69
+msgid "Audit Events"
+msgstr "审核事件"
+
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:70
+msgid "Oldest Retention Date"
+msgstr "最早保留到期日"
+
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:81
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:90
+msgid "Purge Expired Cases"
+msgstr "清理过期个案"
+
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:82
+msgid ""
+"This action cannot be undone. Export any cases required by school policy "
+"before continuing."
+msgstr "此操作无法撤销。继续前请按学校政策导出所需个案。"
+
+#: ⁨Attendance Summary/attendance_followup_retention.php⁩:87
+msgid ""
+"I understand that expired cases, notes and events will be permanently "
+"removed."
+msgstr "我了解过期个案、备注和事件将被永久删除。"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:20
+msgid "View Follow-up"
+msgstr "查看跟进"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩
+msgid "View Attendance History"
+msgstr "查看考勤历史"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:30
+msgid "Follow-up case created."
+msgstr "跟进个案已创建。"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:31
+msgid "Follow-up case updated."
+msgstr "跟进个案已更新。"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:32
+msgid "Follow-up note added."
+msgstr "跟进备注已添加。"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:35
+msgid ""
+"Another active follow-up already uses this student, reason and source range."
+msgstr "另一条进行中的跟进已使用该学生、原因和来源日期范围。"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:37
+msgid "This follow-up changed in another tab. Reload before saving."
+msgstr "此跟进已在另一个标签页中更改。保存前请重新加载。"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:67
+msgid "Back to Worklist"
+msgstr "返回工作台"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:72
+msgid "Export This Case"
+msgstr "导出此跟进"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:92
+msgid "Source Dates"
+msgstr "来源日期"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:114
+msgid "Update Follow-up"
+msgstr "更新跟进"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:132
+msgid "Required when resolving a case."
+msgstr "解决个案时必填。"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:136
+msgid "Resolution Note"
+msgstr "解决备注"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:136
+msgid "Required when resolving a case. Maximum 2000 characters."
+msgstr "解决个案时必填，最多 2000 个字符。"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:141
+msgid "Save Follow-up"
+msgstr "保存跟进"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:150
+msgid "Add Coordination Note"
+msgstr "添加协调备注"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:151
+msgid ""
+"Notes are append-only. Do not enter diagnoses, medical details, safeguarding "
+"narratives or attachments."
+msgstr "备注只能追加。请勿录入诊断、医疗详情、安全保护叙述或附件。"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:155
+msgid "Note"
+msgstr "备注"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:155
+msgid "Maximum 2000 characters."
+msgstr "最多 2000 个字符。"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:159
+msgid "Add Note"
+msgstr "添加备注"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:180
+msgid "Coordination Notes"
+msgstr "协调备注"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:182
+msgid "No coordination notes have been added."
+msgstr "尚未添加协调备注。"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:195
+msgid "Case Created"
+msgstr "个案已创建"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:196
+msgid "Owner Changed"
+msgstr "负责人已变更"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩
+msgid "Outcome Changed"
+msgstr "处理结果已变更"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:197
+msgid "Status Changed"
+msgstr "状态变更"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:198
+msgid "Due Date Changed"
+msgstr "到期日期变更"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:199
+msgid "Note Added"
+msgstr "备注已添加"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:200
+msgid "Case Exported"
+msgstr "个案已导出"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:202
+msgid "Audit Timeline"
+msgstr "审核时间线"
+
+#: ⁨Attendance Summary/attendance_followup_view.php⁩:204
+msgid "No audit events are available."
+msgstr "暂无审核事件。"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:33
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:75
+msgid "Attendance History (School Days)"
+msgstr "全周期考勤汇总（出勤日）"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:182
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:132
+msgid "Gender"
+msgstr "性别"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:183
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:133
+msgid "Date of Birth"
+msgstr "出生日期"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:184
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:134
+msgid "Enrolment Date"
+msgstr "入学日期"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:185
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:135
+msgid "Departure Date"
+msgstr "离校日期"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:187
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:137
+msgid "Current"
+msgstr "当前"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:189
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:139
+msgid "Left School"
+msgstr "已离校"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:197
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:147
+msgid "Enrolment History"
+msgstr "就读经历"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:198
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:148
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:335
+#: ⁨Attendance Summary/moduleFunctions.php⁩:902
+msgid "Course"
+msgstr "课程"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:198
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:250
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:148
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:57
+#: ⁨Attendance Summary/moduleFunctions.php⁩:938
+msgid "Date Range"
+msgstr "日期范围"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:241
+msgid "No attendance records for this student in the selected scope."
+msgstr "该学生在所选范围内没有考勤记录。"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:247
+#, php-format
+msgid "%s Attendance Summary (as of %s)"
+msgstr "%s 考勤汇总（截至 %s）"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:249
+msgid "School Year / Term"
+msgstr "学年 / 学期"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:285
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:452
+msgid "Late / Left Early"
+msgstr "迟到/早退"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:361
+msgid "Absence Type Summary"
+msgstr "缺勤类型统计"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:362
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:384
+msgid "Type"
+msgstr "类型"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:362
+msgid "Days"
+msgstr "天数"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:371
+msgid "Absence Details"
+msgstr "缺勤明细"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:372
+msgid "Late Details"
+msgstr "迟到明细"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:373
+msgid "Left Early Details"
+msgstr "早退明细"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:384
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:335
+#: ⁨Attendance Summary/moduleFunctions.php⁩:869
 msgid "Weekday"
 msgstr "星期"
 
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:384
+msgid "Term"
+msgstr "学期"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:400
+msgid "Mon"
+msgstr "周一"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:400
+msgid "Tue"
+msgstr "周二"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:400
+msgid "Wed"
+msgstr "周三"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:400
+msgid "Thu"
+msgstr "周四"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:400
+msgid "Fri"
+msgstr "周五"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:400
+msgid "Sat"
+msgstr "周六"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:400
+msgid "Sun"
+msgstr "周日"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:447
+msgid "Daily Details"
+msgstr "每日明细"
+
+#: ⁨Attendance Summary/attendance_lifecycle.php⁩:458
+msgid "Non-school Day"
+msgstr "非上课日"
+
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:35
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:75
+msgid "Attendance History (Courses)"
+msgstr "全周期考勤汇总（课程）"
+
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:190
+msgid "No course attendance records for this student in the selected scope."
+msgstr "该学生在所选范围内没有课程考勤记录。"
+
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:255
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:278
+msgid "School Year / Course"
+msgstr "学年 / 课程"
+
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:256
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:279
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:325
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:335
+#: ⁨Attendance Summary/moduleFunctions.php⁩:903
+msgid "Period"
+msgstr "节次"
+
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:257
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:280
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:94
+#: ⁨Attendance Summary/moduleFunctions.php⁩:660
+#: ⁨Attendance Summary/moduleFunctions.php⁩:663
+#: ⁨Attendance Summary/moduleFunctions.php⁩:870
+#: ⁨Attendance Summary/moduleFunctions.php⁩:939
+msgid "Standard"
+msgstr "标准"
+
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:267
+#, php-format
+msgid "%s Course Attendance Summary (%s to %s)"
+msgstr "%s 课程考勤汇总（%s 至 %s）"
+
+#: ⁨Attendance Summary/attendance_lifecycle_course.php⁩:333
+msgid "Exceptions"
+msgstr "异常明细"
+
+#: ⁨Attendance Summary/attendance_record.php⁩:31
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:27
+msgid "Transfer Attendance"
+msgstr "转移考勤记录"
+
+#: ⁨Attendance Summary/attendance_record.php⁩:40
+#: ⁨Attendance Summary/attendance_summary.php⁩:40
+msgid "Students by Form Group"
+msgstr "按班级查看学生"
+
+#: ⁨Attendance Summary/attendance_record.php⁩:43
+#: ⁨Attendance Summary/attendance_summary.php⁩:43
+msgid "Choose Form Group"
+msgstr "选择班级"
+
+#: ⁨Attendance Summary/attendance_record.php⁩:75
+#: ⁨Attendance Summary/attendance_report.php⁩:172
+#: ⁨Attendance Summary/attendance_summary.php⁩:76
+msgid "Report Data"
+msgstr "报表数据"
+
+#: ⁨Attendance Summary/attendance_record.php⁩:87
+#: ⁨Attendance Summary/attendance_summary.php⁩:94
+msgid "Tutors"
+msgstr "导师"
+
+#: ⁨Attendance Summary/attendance_record.php⁩:107
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:190
+msgid "Transfer"
+msgstr "是否迁移"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:30
+msgid "Attendance records transferred."
+msgstr "考勤记录迁移完成。"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:32
+msgid "The submitted data is invalid. Select the records again."
+msgstr "提交的数据无效，请重新选择。"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:33
+msgid "Transfer failed. Try again shortly."
+msgstr "迁移失败，请稍后重试。"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:44
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:37
+msgid "Select a student."
+msgstr "请选择对应学生！"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:64
+msgid "Choose Class"
+msgstr "选择课程"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:88
+msgid "My Classes"
+msgstr "我的课程"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:106
+msgid "All Classes"
+msgstr "所有课程"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:111
+#: ⁨Attendance Summary/attendance_record_transferEdit.php⁩:99
+msgid "No transferable classes were found."
+msgstr "没有可迁移的课程。"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:116
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:145
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:185
+msgid "Class Name"
+msgstr "课程名称"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:122
+msgid "View Timetable"
+msgstr "查看排课"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:144
+msgid "Confirm Timetable Lessons"
+msgstr "排课信息确认"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:147
+msgid "Transfer Attendance Records"
+msgstr "迁移考勤记录"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:150
+#: ⁨Attendance Summary/attendance_report.php⁩:152
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:64
+#: ⁨Attendance Summary/attendance_summary_view_myChild.php⁩:76
+msgid "Start Date"
+msgstr "开始日期"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:154
+#: ⁨Attendance Summary/attendance_report.php⁩:156
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:68
+#: ⁨Attendance Summary/attendance_summary_view_myChild.php⁩:80
+msgid "End Date"
+msgstr "结束日期"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:179
+msgid "Timetable Lessons"
+msgstr "排课信息"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:180
+msgid "There are no records to display."
+msgstr "没有可显示的记录。"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:186
+msgid "Timetable Day"
+msgstr "课表日"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:187
+msgid "Lesson"
+msgstr "课时名称"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:188
+msgid "Start Time"
+msgstr "开始时间"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:189
+msgid "End Time"
+msgstr "结束时间"
+
+#: ⁨Attendance Summary/attendance_record_transfer.php⁩:207
+msgid "Choose Replacement Classes"
+msgstr "选择新课程信息"
+
+#: ⁨Attendance Summary/attendance_record_transferEdit.php⁩:27
+msgid "Confirm Attendance Transfer"
+msgstr "转移考勤记录确认"
+
+#: ⁨Attendance Summary/attendance_record_transferEdit.php⁩:37
+#: ⁨Attendance Summary/attendance_record_transferEdit.php⁩:55
+msgid "Select a class."
+msgstr "请选择对应课程！"
+
+#: ⁨Attendance Summary/attendance_record_transferEdit.php⁩:64
+msgid "Select a valid date range."
+msgstr "请选择操作时间范围！"
+
+#: ⁨Attendance Summary/attendance_record_transferEdit.php⁩:109
+#, php-format
+msgid "Period: %s to %s"
+msgstr "时段：%s 至 %s"
+
+#: ⁨Attendance Summary/attendance_record_transferEdit.php⁩:115
+msgid "Current Class"
+msgstr "当前课程"
+
+#: ⁨Attendance Summary/attendance_record_transferEdit.php⁩:116
+msgid "Replacement Class"
+msgstr "替换课程"
+
+#: ⁨Attendance Summary/attendance_record_transferEdit.php⁩:122
+msgid "Unknown"
+msgstr "未知"
+
+#: ⁨Attendance Summary/attendance_record_transferEdit.php⁩:123
+msgid "Attendance records"
+msgstr "考勤记录"
+
+#: ⁨Attendance Summary/attendance_record_transferEdit.php⁩:123
+msgid " records"
+msgstr "条"
+
+#: ⁨Attendance Summary/attendance_record_transferEdit.php⁩:137
+msgid "No replacement class"
+msgstr "无可替换课程"
+
+#: ⁨Attendance Summary/attendance_report.php⁩:34
+msgid "You do not have access to this action."
+msgstr "您没有权限执行此操作。"
+
+#: ⁨Attendance Summary/attendance_report.php⁩:37
+msgid "Attendance Trends"
+msgstr "考勤趋势"
+
+#: ⁨Attendance Summary/attendance_report.php⁩:74
+#: ⁨Attendance Summary/attendance_summary_view_myChild.php⁩:49
+msgid "No children are linked to this account."
+msgstr "尚未设置子女信息"
+
+#: ⁨Attendance Summary/attendance_report.php⁩:127
+msgid "Choose Date"
+msgstr "选择日期"
+
+#: ⁨Attendance Summary/attendance_report.php⁩:135
+#: ⁨Attendance Summary/attendance_report.php⁩:147
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:60
+#: ⁨Attendance Summary/attendance_summary_view_myChild.php⁩:66
+#: ⁨Attendance Summary/attendance_summary_view_myChild.php⁩:71
+msgid "Full Name"
+msgstr "姓名"
+
+#: ⁨Attendance Summary/attendance_report.php⁩:160
+msgid "Types"
+msgstr "类型"
+
+#: ⁨Attendance Summary/attendance_report.php⁩:175
+msgid "Click a legend item to toggle visibility."
+msgstr "点击图例项可切换显示。"
+
+#: ⁨Attendance Summary/attendance_settings.php⁩:13
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:112
+#: ⁨Attendance Summary/attendance_summary_view_myChild.php⁩:98
+msgid "Attendance"
+msgstr "考勤信息"
+
+#: ⁨Attendance Summary/attendance_settings.php⁩:14
+#: ⁨Attendance Summary/attendance_settings.php⁩:43
+#: ⁨Attendance Summary/attendance_summary.php⁩:78
+msgid "Attendance Score Settings"
+msgstr "考勤评分设置"
+
+#: ⁨Attendance Summary/attendance_settings.php⁩:22
+msgid "Attendance score settings saved."
+msgstr "考勤评分设置已保存。"
+
+#: ⁨Attendance Summary/attendance_settings.php⁩:24
+msgid "The submitted data is invalid."
+msgstr "提交的数据无效。"
+
+#: ⁨Attendance Summary/attendance_settings.php⁩:44
 msgid ""
 "Weights are used by the full attendance history by course. Values range from "
 "0 to 1, where 1 means full attendance."
 msgstr "权重用于全周期课程考勤；数值范围为 0 到 1，1 表示完整出勤。"
 
-msgid "Year Group"
-msgstr "年级"
+#: ⁨Attendance Summary/attendance_settings.php⁩:60
+msgid "Matching Keywords"
+msgstr "匹配关键词"
 
-msgid "You do not have access to this action."
-msgstr "您没有权限执行此操作。"
+#: ⁨Attendance Summary/attendance_settings.php⁩:61
+msgid ""
+"Comma or semicolon separated attendance type fragments. Matching is case-"
+"insensitive."
+msgstr "用逗号或分号分隔的考勤类型片段；匹配不区分大小写。"
 
-msgid "You do not have access to this page."
-msgstr "您没有权限访问该页面。"
+#: ⁨Attendance Summary/attendance_summary.php⁩:109
+#, php-format
+msgid "Attendance Rate to %s"
+msgstr "至 %s 出勤率"
 
-msgid "You do not have permission to perform this action."
-msgstr "您没有权限执行该操作。"
+#: ⁨Attendance Summary/attendance_summary.php⁩:110
+msgid "Details"
+msgstr "详情"
 
-msgid "You do not have permission to enter attendance. This queue is read-only."
-msgstr "您没有考勤录入权限，此队列为只读。"
+#: ⁨Attendance Summary/attendance_summary.php⁩:118
+msgid "Full History (School Days)"
+msgstr "全周期（出勤日）"
 
-msgid "Your default alert threshold has been saved."
-msgstr "您的默认关注阈值已保存。"
+#: ⁨Attendance Summary/attendance_summary.php⁩:121
+msgid "Full History (Courses)"
+msgstr "全周期（课程）"
 
-msgid "Your session expired. Refresh the page and try again."
-msgstr "会话已过期，请刷新页面后重试。"
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:72
+#: ⁨Attendance Summary/attendance_summary_view_myChild.php⁩:84
+msgid "Update Dates"
+msgstr "更新日期"
+
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:94
+msgid "Day Attendance"
+msgstr "当日考勤"
+
+#: ⁨Attendance Summary/attendance_summary_view.php⁩:114
+#: ⁨Attendance Summary/attendance_summary_view_myChild.php⁩:100
+msgid "No attendance records to display."
+msgstr "没有可显示的考勤记录。"
+
+#: ⁨Attendance Summary/followupFunctions.php⁩:17
+msgid "Open"
+msgstr "待处理"
+
+#: ⁨Attendance Summary/followupFunctions.php⁩:18
+msgid "In Progress"
+msgstr "处理中"
+
+#: ⁨Attendance Summary/followupFunctions.php⁩:19
+msgid "Resolved"
+msgstr "已解决"
+
+#: ⁨Attendance Summary/followupFunctions.php⁩:26
+msgid "No Record"
+msgstr "无记录"
+
+#: ⁨Attendance Summary/followupFunctions.php⁩:27
+msgid "Low Attendance"
+msgstr "低出勤"
+
+#: ⁨Attendance Summary/followupFunctions.php⁩:34
+msgid "Attendance Record Corrected"
+msgstr "考勤记录已更正"
+
+#: ⁨Attendance Summary/followupFunctions.php⁩:35
+msgid "Contact Completed"
+msgstr "已联系"
+
+#: ⁨Attendance Summary/followupFunctions.php⁩:36
+msgid "Monitoring"
+msgstr "持续观察"
+
+#: ⁨Attendance Summary/followupFunctions.php⁩:37
+msgid "Escalated"
+msgstr "已上报"
+
+#: ⁨Attendance Summary/followupFunctions.php⁩:38
+msgid "No Further Action"
+msgstr "无需进一步处理"
+
+#: ⁨Attendance Summary/moduleFunctions.php⁩:84
+msgid "N/A"
+msgstr "暂无数据"
+
+#: ⁨Attendance Summary/moduleFunctions.php⁩:670
+#: ⁨Attendance Summary/moduleFunctions.php⁩:895
+msgid "View Details"
+msgstr "查看详情"
+
+#: ⁨Attendance Summary/moduleFunctions.php⁩:871
+msgid "Day"
+msgstr "当日"
+
+#: ⁨Attendance Summary/moduleFunctions.php⁩:873
+msgid "Actions"
+msgstr "操作"
+
+#: ⁨Attendance Summary/moduleFunctions.php⁩:904
+msgid "Lesson Time"
+msgstr "上课时间"
+
+#: ⁨Attendance Summary/moduleFunctions.php⁩:919
+msgid "No detailed records."
+msgstr "没有详细记录。"
+
+#: ⁨Attendance Summary/moduleFunctions.php⁩:937
+msgid "Summary"
+msgstr "汇总项"
+
+#: ⁨Attendance Summary/moduleFunctions.php⁩:946
+msgid " (Monthly)"
+msgstr "（月统计）"
+
+#: ⁨Attendance Summary/moduleFunctions.php⁩:957
+#, php-format
+msgid "Week %d"
+msgstr "第%d周"
+
+#: ⁨Attendance Summary/moduleFunctions.php⁩:968
+#, php-format
+msgid ""
+"Overall term attendance: standard total %s, attendance total %s, rate %s%%"
+msgstr "学期综合出勤率：标准总计 %s ，出勤总计 %s ，出勤率 %s%%"
+
+#: ⁨Attendance Summary/src/AttendanceAnalytics.php⁩:107
+#: ⁨Attendance Summary/src/AttendanceAnalytics.php⁩:136
+#: ⁨Attendance Summary/src/AttendanceLifecycle.php⁩:104
+#, php-format
+msgid "%s School Year"
+msgstr "%s 学年"
+
+#: ⁨Attendance Summary/src/AttendanceAnalytics.php⁩:139
+msgid "All"
+msgstr "全部"
+
+#: ⁨Attendance Summary/src/AttendanceAnalytics.php⁩:301
+msgid "Unassigned Form Group"
+msgstr "未分班"
+
+#: ⁨Attendance Summary/src/AttendanceAnalytics.php⁩:302
+msgid "Unassigned Year Group"
+msgstr "未分年级"
+
+#: ⁨Attendance Summary/src/AttendanceAnalytics.php⁩:344
+msgid "Unclassified"
+msgstr "未分类"
+
+#: ⁨Attendance Summary/src/AttendanceLifecycle.php⁩:101
+msgid "All (Since Enrolment)"
+msgstr "全部（入学至今）"
+
+#: ⁨Attendance Summary/src/AttendanceLifecycleCourse.php⁩:143
+msgid "Unknown School Year"
+msgstr "未知学年"

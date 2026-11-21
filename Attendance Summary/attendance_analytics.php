@@ -171,6 +171,8 @@ $scopeSchoolYearID = $analytics->getScopeSchoolYearID($scope);
 $canOpenAttendance = $scopeSchoolYearID !== null
     && $scopeSchoolYearID === (string) $session->get('gibbonSchoolYearID')
     && isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byFormGroup.php');
+$canCreateFollowUp = $scopeSchoolYearID === (string) $session->get('gibbonSchoolYearID')
+    && isActionAccessible($guid, $connection2, '/modules/Attendance Summary/attendance_followup_create.php');
 
 $definitionLines = [
     sprintf(
@@ -275,6 +277,13 @@ if (!$isPrint) {
         ->setIcon('attendance')
         ->directLink()
         ->displayLabel();
+
+    if (isActionAccessible($guid, $connection2, '/modules/Attendance Summary/attendance_followup.php')) {
+        $actionForm->addHeaderAction('followUp', attendanceT('Attendance Follow-up'))
+            ->setURL('/modules/Attendance Summary/attendance_followup.php')
+            ->setIcon('markbook')
+            ->displayLabel();
+    }
 
     $output .= '<div class="attendanceLifecycleNoPrint">' . $actionForm->getOutput() . '</div>';
 }
@@ -547,10 +556,18 @@ $table->addColumn('rate', attendanceT('Attendance Rate'))->format(function ($stu
 });
 $table->addActionColumn()
     ->addParam('gibbonPersonID')
-    ->format(function ($student, $actions) {
+    ->format(function ($student, $actions) use ($report, $canCreateFollowUp) {
         $actions->addAction('lifecycle', attendanceT('Full History'))
             ->setIcon('attendance')
             ->setURL('/modules/Attendance Summary/attendance_lifecycle.php');
+        if ($canCreateFollowUp) {
+            $actions->addAction('followUp', attendanceT('Create Follow-up'))
+                ->setIcon('markbook')
+                ->setURL('/modules/Attendance Summary/attendance_followup_create.php')
+                ->addParam('reason', 'low_attendance')
+                ->addParam('start', $report['dateStart'])
+                ->addParam('end', $report['dateEnd']);
+        }
     });
 
 $output .= $table->render($report['atRisk']);
