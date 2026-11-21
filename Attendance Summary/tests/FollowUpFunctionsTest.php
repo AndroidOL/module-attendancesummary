@@ -114,6 +114,7 @@ namespace Gibbon\Module\Attendance\Tests {
             $this->assertStringNotContainsString('actorPersonID=:actorPersonID', $functions);
             $this->assertStringContainsString('maxLength(2000)', $view);
             $this->assertStringContainsString('sendAttendanceCsv', $export);
+            $this->assertStringContainsString('The CSV was not generated.', $export);
             $this->assertStringContainsString('/modules/System Admin/systemSettings.php', $retention);
             $this->assertStringContainsString('ON DELETE CASCADE', $manifest);
             $this->assertStringContainsString('new Button(', $moduleFunctions);

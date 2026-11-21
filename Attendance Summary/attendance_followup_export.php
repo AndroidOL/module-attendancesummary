@@ -137,6 +137,8 @@ if (!empty($caseIDs)) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
         }
+        $page->addError(attendanceT('Unable to record the export audit event. The CSV was not generated.'));
+        return;
     }
 }
 
