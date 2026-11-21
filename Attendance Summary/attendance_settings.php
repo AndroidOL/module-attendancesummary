@@ -27,15 +27,15 @@ $page->return->addReturns([
 
 $settingGateway = $container->get(SettingGateway::class);
 $settings = [
-    'scoreAbsence'           => ['Absence', 'Score for unexcused or personal absence.'],
-    'scoreSuspension'        => ['Suspension', 'Score for a suspension.'],
-    'scoreLate'              => ['Late', 'Score for lateness.'],
-    'scoreLeftEarly'         => ['Left Early', 'Score for leaving early.'],
-    'scoreSickLeave'         => ['Sick Leave', 'Score for sick leave.'],
-    'scoreAuthorizedAbsence' => ['Authorized Absence', 'Score for an authorized absence.'],
-    'scorePresent'           => ['Present', 'Score for attendance.'],
-    'scoreNoRecord'          => ['No Record', 'Score for an attendance type marked as no record.'],
-    'scoreUnknown'           => ['Unknown Type', 'Fallback score when an attendance type does not match a configured category.'],
+    'scoreAbsence'           => ['Absence', 'Score for unexcused or personal absence.', 'keywordsAbsence'],
+    'scoreSuspension'        => ['Suspension', 'Score for a suspension.', 'keywordsSuspension'],
+    'scoreLate'              => ['Late', 'Score for lateness.', 'keywordsLate'],
+    'scoreLeftEarly'         => ['Left Early', 'Score for leaving early.', 'keywordsLeftEarly'],
+    'scoreSickLeave'         => ['Sick Leave', 'Score for sick leave.', 'keywordsSickLeave'],
+    'scoreAuthorizedAbsence' => ['Authorized Absence', 'Score for an authorized absence.', 'keywordsAuthorizedAbsence'],
+    'scorePresent'           => ['Present', 'Score for attendance.', 'keywordsPresent'],
+    'scoreNoRecord'          => ['No Record', 'Score for an attendance type marked as no record.', 'keywordsNoRecord'],
+    'scoreUnknown'           => ['Unknown Type', 'Fallback score when an attendance type does not match a configured category.', null],
 ];
 
 $form = Form::create('attendanceScoreSettings', $session->get('absoluteURL').'/modules/Attendance Summary/attendance_settingsProcess.php', 'post');
@@ -43,7 +43,7 @@ $form->addHiddenValue('address', $session->get('address'));
 $form->setTitle(attendanceT('Attendance Score Settings'));
 $form->setDescription(attendanceT('Weights are used by the full attendance history by course. Values range from 0 to 1, where 1 means full attendance.'));
 
-foreach ($settings as $name => [$label, $description]) {
+foreach ($settings as $name => [$label, $description, $keywordSetting]) {
     $setting = $settingGateway->getSettingByScope('Attendance Summary', $name, true);
     $row = $form->addRow();
         $row->addLabel($name, attendanceT($label))->description(attendanceT($description));
@@ -53,6 +53,14 @@ foreach ($settings as $name => [$label, $description]) {
             ->step(0.01)
             ->required()
             ->setValue($setting['value'] ?? '');
+
+    if ($keywordSetting) {
+        $keyword = $settingGateway->getSettingByScope('Attendance Summary', $keywordSetting, true);
+        $row = $form->addRow();
+            $row->addLabel($keywordSetting, attendanceT('Matching Keywords'))
+                ->description(attendanceT('Comma or semicolon separated attendance type fragments. Matching is case-insensitive.'));
+            $row->addTextField($keywordSetting)->required()->maxLength(1000)->setValue($keyword['value'] ?? '');
+    }
 }
 
 $row = $form->addRow();

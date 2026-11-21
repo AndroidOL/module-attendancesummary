@@ -39,6 +39,20 @@ namespace Gibbon\Module\Attendance\Tests {
         $this->assertSame(0.9, \getAttendanceScore('Unknown type', $config));
     }
 
+    public function testAttendanceKeywordCategoriesAreConfigurable()
+    {
+        $config = \getAttendanceScoreConfig([
+            'scoreAbsence' => 0.1,
+            'scoreLate' => 0.6,
+            'keywordsAbsence' => 'Truant; AWOL',
+            'keywordsLate' => 'Tardy',
+        ]);
+
+        $this->assertSame(0.1, \getAttendanceScore('AWOL', $config));
+        $this->assertSame(0.6, \getAttendanceScore('Tardy', $config));
+        $this->assertSame(1.0, \getAttendanceScore('Absent', $config));
+    }
+
     public function testCsvCellsWithLeadingWhitespaceCannotStartAFormula()
     {
         $this->assertSame("'=1+1", \attendanceCsvSafeCell('=1+1'));

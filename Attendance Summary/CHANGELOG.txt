@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.0.3
+------
+- Make attendance type keyword groups configurable alongside their score weights.
+- Support comma- or semicolon-separated aliases for multilingual attendance data.
+
 v1.0.2
 ------
 - Move course-history attendance score weights into database-backed settings.

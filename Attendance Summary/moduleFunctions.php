@@ -42,7 +42,7 @@ function attendanceT($text, array $params = []): string
  *
  * @return array
  */
-function getAttendanceScoreConfig(?array $scores = null)
+function getAttendanceScoreConfig(?array $settings = null)
 {
     static $cached = null;
 
@@ -58,43 +58,69 @@ function getAttendanceScoreConfig(?array $scores = null)
         'scoreUnknown'           => 1.0,
     ];
 
-    if ($scores === null) {
+    $keywordDefaults = [
+        'scoreAbsence'           => ['setting' => 'keywordsAbsence', 'default' => '旷课,事假,Absent,Unexcused absence'],
+        'scoreSuspension'        => ['setting' => 'keywordsSuspension', 'default' => '被停课,Suspended'],
+        'scoreLate'              => ['setting' => 'keywordsLate', 'default' => '迟到,Late'],
+        'scoreLeftEarly'         => ['setting' => 'keywordsLeftEarly', 'default' => '早退,Left early'],
+        'scoreSickLeave'         => ['setting' => 'keywordsSickLeave', 'default' => '病假,Sick leave'],
+        'scoreAuthorizedAbsence' => ['setting' => 'keywordsAuthorizedAbsence', 'default' => '公假,Authorized absence'],
+        'scorePresent'           => ['setting' => 'keywordsPresent', 'default' => '出勤,Present'],
+        'scoreNoRecord'          => ['setting' => 'keywordsNoRecord', 'default' => '无记录,No record'],
+    ];
+
+    if ($settings === null) {
         if ($cached !== null) {
             return $cached;
         }
-        $scores = attendanceScoreSettings();
+        $settings = attendanceScoreSettings();
     }
 
     $resolved = [];
     foreach ($defaults as $key => $default) {
-        $value = $scores[$key] ?? $default;
+        $value = $settings[$key] ?? $default;
         $resolved[$key] = is_numeric($value) ? max(0.0, min(1.0, (float) $value)) : $default;
     }
 
-    $keywordGroups = [
-        'scoreAbsence'           => ['旷课', '事假', 'Absent', 'Unexcused absence'],
-        'scoreSuspension'        => ['被停课', 'Suspended'],
-        'scoreLate'              => ['迟到', 'Late'],
-        'scoreLeftEarly'         => ['早退', 'Left early'],
-        'scoreSickLeave'         => ['病假', 'Sick leave'],
-        'scoreAuthorizedAbsence' => ['公假', 'Authorized absence'],
-        'scorePresent'           => ['出勤', 'Present'],
-        'scoreNoRecord'          => ['无记录', 'No record'],
-    ];
-
     $config = [];
-    foreach ($keywordGroups as $key => $keywords) {
+    foreach ($keywordDefaults as $key => $keywordConfig) {
+        $keywordValue = $settings[$keywordConfig['setting']] ?? $keywordConfig['default'];
+        $keywords = attendanceParseKeywords($keywordValue);
         foreach ($keywords as $keyword) {
-            $config[$keyword] = $resolved[$key];
+            $config[$keyword] = isset($config[$keyword])
+                ? min($config[$keyword], $resolved[$key])
+                : $resolved[$key];
         }
     }
     $config['__UNKNOWN__'] = $resolved['scoreUnknown'];
 
-    if ($scores === null) {
+    if ($settings === null) {
         $cached = $config;
     }
 
     return $config;
+}
+
+function attendanceParseKeywords($value): array
+{
+    if (is_array($value)) {
+        $parts = $value;
+    } else {
+        $parts = preg_split('/[,;\r\n]+/', (string) $value) ?: [];
+    }
+
+    $keywords = [];
+    foreach ($parts as $part) {
+        if (!is_scalar($part)) {
+            continue;
+        }
+        $keyword = trim((string) $part);
+        if ($keyword !== '') {
+            $keywords[$keyword] = $keyword;
+        }
+    }
+
+    return array_values($keywords);
 }
 
 function attendanceScoreSettings(): array
@@ -118,6 +144,14 @@ function attendanceScoreSettings(): array
             'scorePresent',
             'scoreNoRecord',
             'scoreUnknown',
+            'keywordsAbsence',
+            'keywordsSuspension',
+            'keywordsLate',
+            'keywordsLeftEarly',
+            'keywordsSickLeave',
+            'keywordsAuthorizedAbsence',
+            'keywordsPresent',
+            'keywordsNoRecord',
         ] as $name) {
             $values[$name] = $gateway->getSettingByScope('Attendance Summary', $name);
         }

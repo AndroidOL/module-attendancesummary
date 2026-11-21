@@ -39,6 +39,16 @@ $names = [
     'scoreNoRecord',
     'scoreUnknown',
 ];
+$keywordNames = [
+    'keywordsAbsence',
+    'keywordsSuspension',
+    'keywordsLate',
+    'keywordsLeftEarly',
+    'keywordsSickLeave',
+    'keywordsAuthorizedAbsence',
+    'keywordsPresent',
+    'keywordsNoRecord',
+];
 
 $values = [];
 foreach ($names as $name) {
@@ -47,6 +57,13 @@ foreach ($names as $name) {
         $redirect('error1');
     }
     $values[$name] = number_format((float) $value, 4, '.', '');
+}
+foreach ($keywordNames as $name) {
+    $value = is_scalar($_POST[$name] ?? null) ? trim((string) $_POST[$name]) : '';
+    if ($value === '' || mb_strlen($value) > 1000 || empty(attendanceParseKeywords($value))) {
+        $redirect('error1');
+    }
+    $values[$name] = $value;
 }
 
 $settingGateway = $container->get(SettingGateway::class);

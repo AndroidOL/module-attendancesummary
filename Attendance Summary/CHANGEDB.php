@@ -4,6 +4,18 @@
 $sql = [];
 $count = 0;
 
+// v1.0.3
+$sql[$count][0] = "1.0.3";
+$sql[$count][1] = "INSERT INTO gibbonSetting (scope, name, nameDisplay, description, value) SELECT 'Attendance Summary', 'keywordsAbsence', 'Absence Keywords', 'Comma-separated attendance type keywords for absence and personal leave.', '旷课,事假,Absent,Unexcused absence' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM gibbonSetting WHERE scope='Attendance Summary' AND name='keywordsAbsence');end
+INSERT INTO gibbonSetting (scope, name, nameDisplay, description, value) SELECT 'Attendance Summary', 'keywordsSuspension', 'Suspension Keywords', 'Comma-separated attendance type keywords for suspension.', '被停课,Suspended' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM gibbonSetting WHERE scope='Attendance Summary' AND name='keywordsSuspension');end
+INSERT INTO gibbonSetting (scope, name, nameDisplay, description, value) SELECT 'Attendance Summary', 'keywordsLate', 'Late Keywords', 'Comma-separated attendance type keywords for lateness.', '迟到,Late' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM gibbonSetting WHERE scope='Attendance Summary' AND name='keywordsLate');end
+INSERT INTO gibbonSetting (scope, name, nameDisplay, description, value) SELECT 'Attendance Summary', 'keywordsLeftEarly', 'Left Early Keywords', 'Comma-separated attendance type keywords for leaving early.', '早退,Left early' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM gibbonSetting WHERE scope='Attendance Summary' AND name='keywordsLeftEarly');end
+INSERT INTO gibbonSetting (scope, name, nameDisplay, description, value) SELECT 'Attendance Summary', 'keywordsSickLeave', 'Sick Leave Keywords', 'Comma-separated attendance type keywords for sick leave.', '病假,Sick leave' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM gibbonSetting WHERE scope='Attendance Summary' AND name='keywordsSickLeave');end
+INSERT INTO gibbonSetting (scope, name, nameDisplay, description, value) SELECT 'Attendance Summary', 'keywordsAuthorizedAbsence', 'Authorized Absence Keywords', 'Comma-separated attendance type keywords for authorized absence.', '公假,Authorized absence' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM gibbonSetting WHERE scope='Attendance Summary' AND name='keywordsAuthorizedAbsence');end
+INSERT INTO gibbonSetting (scope, name, nameDisplay, description, value) SELECT 'Attendance Summary', 'keywordsPresent', 'Present Keywords', 'Comma-separated attendance type keywords for attendance.', '出勤,Present' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM gibbonSetting WHERE scope='Attendance Summary' AND name='keywordsPresent');end
+INSERT INTO gibbonSetting (scope, name, nameDisplay, description, value) SELECT 'Attendance Summary', 'keywordsNoRecord', 'No Record Keywords', 'Comma-separated attendance type keywords for no record.', '无记录,No record' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM gibbonSetting WHERE scope='Attendance Summary' AND name='keywordsNoRecord');end";
+$count++;
+
 // v1.0.2
 $sql[$count][0] = "1.0.2";
 $sql[$count][1] = "INSERT INTO gibbonSetting (scope, name, nameDisplay, description, value) SELECT 'Attendance Summary', 'scoreAbsence', 'Absence Score', 'Score for unexcused or personal absence.', '0' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM gibbonSetting WHERE scope='Attendance Summary' AND name='scoreAbsence');end

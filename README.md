@@ -50,8 +50,8 @@ The `Attendance` setting `countClassAsSchool` controls whether class-context
 attendance is included in day-based reports.
 
 Existing course-history defaults are preserved, but administrators can change
-the weights in **Attendance Score Settings**. The values are stored in
-`gibbonSetting` under the `Attendance Summary` scope.
+the weights and matching keywords in **Attendance Score Settings**. The values
+are stored in `gibbonSetting` under the `Attendance Summary` scope.
 
 ## Development
 
