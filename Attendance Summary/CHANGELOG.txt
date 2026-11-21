@@ -5,7 +5,8 @@ v1.1.1
 ------
 - Register the Attendance Follow-up actions and default Administrator/Teacher
   permissions during module updates so existing installations receive the new
-  worklist menu while data visibility remains form-group/all-student scoped.
+  worklist menu while data visibility remains form-group/all-student scoped;
+  repeated migration execution does not duplicate action permissions.
 - Add permission-aware Create Follow-up actions to the form-group attendance
   summary: a header action limited to the selected form group and a row action
   limited to students the current user can follow up, prefilled with the

@@ -45,13 +45,23 @@ SELECT '001', action.gibbonActionID
 FROM gibbonAction AS action
 JOIN gibbonModule AS module ON module.gibbonModuleID=action.gibbonModuleID
 WHERE module.name='Attendance Summary'
-  AND action.name IN ('View Attendance Follow-up', 'Manage Attendance Follow-up');end
-INSERT IGNORE INTO gibbonPermission (gibbonRoleID, gibbonActionID)
+  AND action.name IN ('View Attendance Follow-up', 'Manage Attendance Follow-up')
+  AND NOT EXISTS (
+      SELECT 1 FROM gibbonPermission AS permission
+      WHERE permission.gibbonRoleID='001'
+        AND permission.gibbonActionID=action.gibbonActionID
+  );end
+INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
 SELECT '002', action.gibbonActionID
 FROM gibbonAction AS action
 JOIN gibbonModule AS module ON module.gibbonModuleID=action.gibbonModuleID
 WHERE module.name='Attendance Summary'
-  AND action.name IN ('View Attendance Follow-up', 'Manage Attendance Follow-up');end";
+  AND action.name IN ('View Attendance Follow-up', 'Manage Attendance Follow-up')
+  AND NOT EXISTS (
+      SELECT 1 FROM gibbonPermission AS permission
+      WHERE permission.gibbonRoleID='002'
+        AND permission.gibbonActionID=action.gibbonActionID
+  );end";
 $count++;
 
 // v1.1.0
