@@ -25,6 +25,7 @@ The transfer audit table is created during module installation.
 - View attendance across the whole enrolment history by school day or course.
 - Analyse attendance by class, year group, weekday and month.
 - Identify students below a configurable attendance threshold.
+- Review no-record student-days in a separate data-quality queue.
 - Export CSV and print reports, including the course-history summary.
 - Transfer class-context attendance records with authorization, CSRF,
   transaction rollback and an audit record.
@@ -45,6 +46,15 @@ Schools should review the default role assignments before enabling the module.
 The day-based analysis excludes days with no record from the attendance-rate
 denominator. The course view uses a weighted score. Both definitions are
 implemented in `moduleFunctions.php` and are intentionally documented separately.
+
+An all-no-record student has no calculable attendance rate and is shown as
+`N/A`, not `0%`. No-record student-days are listed separately as data gaps and
+never enter the low-attendance list by themselves.
+
+The analytics page displays its active scope, date range, denominator and
+no-record handling to all viewers, and the same metadata is included in CSV
+exports. Each user can explicitly save a personal alert threshold; ordinary
+report GET requests, print and CSV exports never change that preference.
 
 The `Attendance` setting `countClassAsSchool` controls whether class-context
 attendance is included in day-based reports.

@@ -9,7 +9,8 @@
 
 ## Next candidates
 
-- Make weighted attendance scores configurable through module settings.
+- Add browser coverage for the no-record queue, saved threshold and analytics
+  print/CSV metadata.
 - Add indexes after profiling the production attendance-log query plans.
 - Add term/year comparison and scheduled report delivery.
 - Add an explicit teacher-scope policy setting for student-detail access.

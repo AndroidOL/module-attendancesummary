@@ -35,6 +35,59 @@ function attendanceT($text, array $params = []): string
 }
 
 /**
+ * Validate an attendance alert threshold.
+ *
+ * @return float|null  A value from 0 to 100, or null when invalid.
+ */
+function attendanceValidThreshold($value): ?float
+{
+    if (!is_scalar($value)) {
+        return null;
+    }
+
+    $value = trim((string) $value);
+    if ($value === '' || !is_numeric($value)) {
+        return null;
+    }
+
+    $threshold = (float) $value;
+    if (!is_finite($threshold) || $threshold < 0 || $threshold > 100) {
+        return null;
+    }
+
+    return round($threshold, 1);
+}
+
+/**
+ * Resolve a report threshold without persisting request data.
+ *
+ * Requested values take precedence, then the user's saved preference. Invalid
+ * or missing values fall back to 90%.
+ */
+function attendanceResolveThreshold($requested, $saved = null, float $default = 90.0): float
+{
+    if ($requested !== null && $requested !== '') {
+        return attendanceValidThreshold($requested) ?? $default;
+    }
+
+    $saved = attendanceValidThreshold($saved);
+
+    return $saved ?? $default;
+}
+
+/**
+ * Format a calculated attendance rate without turning "no data" into 0%.
+ */
+function attendanceFormatRate($rate): string
+{
+    if ($rate === null || $rate === '' || !is_numeric($rate)) {
+        return attendanceT('N/A');
+    }
+
+    return number_format((float) $rate, 1).'%';
+}
+
+/**
  * Default score awarded to each attendance type when calculating attendance rates.
  *
  * A record's type is matched by substring against these keywords; when several
@@ -641,6 +694,10 @@ function attendanceRowAttributes($bgColor)
  */
 function getBgColor($rate)
 {
+    if ($rate === null || $rate === '' || !is_numeric($rate)) {
+        return '#F3F4F6';
+    }
+
     if ($rate < 40) {
         return '#FFCCCC';
     } elseif ($rate < 60) {
@@ -1298,7 +1355,7 @@ function attendanceCsvSafeCell($value): string
  * @param array  $header
  * @param array  $rows
  */
-function sendAttendanceCsv($filename, array $header, array $rows)
+function sendAttendanceCsv($filename, array $header, array $rows, array $metadata = [])
 {
     if (headers_sent()) {
         return;
@@ -1312,6 +1369,14 @@ function sendAttendanceCsv($filename, array $header, array $rows)
 
     $output = fopen('php://output', 'w');
     fwrite($output, "\xEF\xBB\xBF");
+    foreach ($metadata as $row) {
+        $row = is_array($row) ? $row : [$row];
+        $row = array_map('attendanceCsvSafeCell', $row);
+        fputcsv($output, $row, ',', '"', '');
+    }
+    if (!empty($metadata)) {
+        fputcsv($output, [], ',', '"', '');
+    }
     fputcsv($output, $header, ',', '"', '');
     foreach ($rows as $row) {
         $row = array_map('attendanceCsvSafeCell', $row);

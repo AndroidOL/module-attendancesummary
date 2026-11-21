@@ -28,9 +28,10 @@ use Gibbon\Services\Format;
  * Attendance Analytics
  *
  * School-wide attendance analytics for one school year or term: rates per form
- * group / year group / weekday / month, an absence-type breakdown and an
- * at-risk student list. Uses the "end of day" attendance model (the last log
- * recorded for a date wins), matching StudentHistoryData and AttendanceLifecycle.
+ * group / year group / weekday / month, an absence-type breakdown, an
+ * at-risk student list and a separate data-quality queue. Uses the "end of day"
+ * attendance model (the last log recorded for a date wins), matching
+ * StudentHistoryData and AttendanceLifecycle.
  *
  * @version v1
  * @since   v1
@@ -139,6 +140,30 @@ class AttendanceAnalytics
     }
 
     /**
+     * Resolve the school year represented by a report scope.
+     */
+    public function getScopeSchoolYearID($scope): ?string
+    {
+        $this->loadCalendar();
+
+        list($scopeType, $scopeID) = array_pad(explode(':', $scope, 2), 2, '');
+
+        if ($scopeType == 'year' && isset($this->schoolYears[$scopeID])) {
+            return (string) $scopeID;
+        }
+
+        if ($scopeType == 'term') {
+            foreach ($this->terms as $term) {
+                if ((string) $term['gibbonSchoolYearTermID'] === (string) $scopeID) {
+                    return (string) $term['gibbonSchoolYearID'];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Analyse attendance for every student enrolled in the scope.
      *
      * @param string $scope
@@ -179,6 +204,12 @@ class AttendanceAnalytics
             'absentTypes'   => [],
             'students'      => [],
             'atRisk'        => [],
+            'dataQuality'   => [
+                'expectedStudentDays'  => 0,
+                'noRecordStudentDays'  => 0,
+                'studentsWithNoRecord' => 0,
+                'queue'                => [],
+            ],
         ];
 
         if (empty($terms)) {
@@ -219,7 +250,9 @@ class AttendanceAnalytics
         $result['schoolDays'] = count($dates);
 
         // ---- Students enrolled in the scope ----
-        $sql = "SELECT gibbonStudentEnrolment.gibbonPersonID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname,
+        $sql = "SELECT gibbonStudentEnrolment.gibbonPersonID, gibbonStudentEnrolment.gibbonFormGroupID,
+                       gibbonPerson.dateStart AS personStart, gibbonPerson.dateEnd AS personEnd,
+                       gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname,
                        gibbonFormGroup.name AS formGroupName, gibbonYearGroup.name AS yearGroupName
                 FROM gibbonStudentEnrolment
                 JOIN gibbonPerson ON gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID
@@ -241,6 +274,7 @@ class AttendanceAnalytics
         $byFormGroup = [];
         $byYearGroup = [];
         $weekdayCounts = [];
+        $dataQualityByGroupDate = [];
         $weekdayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
         // Per-date buckets let weekday/month totals be folded once per date instead
@@ -263,6 +297,7 @@ class AttendanceAnalytics
 
         foreach ($students as $student) {
             $personID = $student['gibbonPersonID'];
+            $formGroupID = (string) $student['gibbonFormGroupID'];
             $formGroup = $student['formGroupName'] !== '' ? $student['formGroupName'] : attendanceT('Unassigned Form Group');
             $yearGroup = $student['yearGroupName'] !== '' ? $student['yearGroupName'] : attendanceT('Unassigned Year Group');
 
@@ -276,13 +311,34 @@ class AttendanceAnalytics
             $byYearGroup[$yearGroup]['students']++;
 
             $studentCounts = $this->emptyCounts();
+            $studentExpectedDays = 0;
 
             foreach ($dates as $date) {
+                if (!self::isDateWithinEnrolment($date, $student['personStart'], $student['personEnd'])) {
+                    continue;
+                }
+
                 $record = $dailyStatus[$personID][$date] ?? null;
                 $status = $record['status'] ?? 'none';
 
+                $studentExpectedDays++;
                 $this->addStatus($studentCounts, $status, $record);
                 $this->addStatus($dateCounts[$date], $status, $record);
+
+                $queueKey = $formGroupID.'|'.$date;
+                if (!isset($dataQualityByGroupDate[$queueKey])) {
+                    $dataQualityByGroupDate[$queueKey] = [
+                        'gibbonFormGroupID' => $formGroupID,
+                        'formGroup'         => $formGroup,
+                        'date'              => $date,
+                        'expected'          => 0,
+                        'noRecord'          => 0,
+                    ];
+                }
+                $dataQualityByGroupDate[$queueKey]['expected']++;
+                if ($status == 'none') {
+                    $dataQualityByGroupDate[$queueKey]['noRecord']++;
+                }
 
                 if ($status == 'absent') {
                     $typeKey = ($record['type'] ?? '') !== '' ? $record['type'] : attendanceT('Unclassified');
@@ -293,6 +349,12 @@ class AttendanceAnalytics
             $this->addCounts($byFormGroup[$formGroup]['counts'], $studentCounts);
             $this->addCounts($byYearGroup[$yearGroup]['counts'], $studentCounts);
             $this->addCounts($result['overall'], $studentCounts);
+
+            $result['dataQuality']['expectedStudentDays'] += $studentExpectedDays;
+            $result['dataQuality']['noRecordStudentDays'] += $studentCounts['none'];
+            if ($studentCounts['none'] > 0) {
+                $result['dataQuality']['studentsWithNoRecord']++;
+            }
 
             $result['students'][] = [
                 'gibbonPersonID' => $personID,
@@ -331,9 +393,9 @@ class AttendanceAnalytics
         }
 
         // Lower rates first: the weakest groups/students surface at the top.
-        usort($result['formGroups'], function ($a, $b) { return $a['rate'] <=> $b['rate']; });
-        usort($result['yearGroups'], function ($a, $b) { return $a['rate'] <=> $b['rate']; });
-        usort($result['students'], function ($a, $b) { return $a['rate'] <=> $b['rate']; });
+        usort($result['formGroups'], [$this, 'compareRates']);
+        usort($result['yearGroups'], [$this, 'compareRates']);
+        usort($result['students'], [$this, 'compareRates']);
 
         foreach ($weekdayNames as $weekday) {
             if (!isset($weekdayCounts[$weekday])) continue;
@@ -350,8 +412,10 @@ class AttendanceAnalytics
 
         arsort($result['absentTypes']);
 
+        $result['dataQuality']['queue'] = self::filterDataQualityQueue($dataQualityByGroupDate);
+
         foreach ($result['students'] as $student) {
-            if ($student['rate'] < $threshold) {
+            if (self::isBelowThreshold($student['rate'], $threshold)) {
                 $result['atRisk'][] = $student;
             }
         }
@@ -476,11 +540,60 @@ class AttendanceAnalytics
         }
     }
 
-    protected function rate(array $counts)
+    public static function calculateRate(array $counts): ?float
     {
         $attended = $counts['present'] + $counts['partial'];
         $denominator = $attended + $counts['absent'];
 
-        return $denominator > 0 ? round(($attended / $denominator) * 100, 1) : 0.0;
+        return $denominator > 0 ? round(($attended / $denominator) * 100, 1) : null;
+    }
+
+    public static function isBelowThreshold($rate, $threshold): bool
+    {
+        return $rate !== null && is_numeric($rate) && (float) $rate < (float) $threshold;
+    }
+
+    public static function isDateWithinEnrolment($date, $dateStart, $dateEnd): bool
+    {
+        $date = (string) $date;
+        $dateStart = empty($dateStart) ? null : (string) $dateStart;
+        $dateEnd = empty($dateEnd) ? null : (string) $dateEnd;
+
+        return ($dateStart === null || $date >= $dateStart)
+            && ($dateEnd === null || $date <= $dateEnd);
+    }
+
+    public static function filterDataQualityQueue(array $rows): array
+    {
+        $rows = array_values(array_filter($rows, function ($row) {
+            return (int) ($row['noRecord'] ?? 0) > 0;
+        }));
+
+        usort($rows, function ($a, $b) {
+            return [(string) ($b['date'] ?? ''), (string) ($a['formGroup'] ?? '')]
+                <=> [(string) ($a['date'] ?? ''), (string) ($b['formGroup'] ?? '')];
+        });
+
+        return $rows;
+    }
+
+    protected function rate(array $counts): ?float
+    {
+        return self::calculateRate($counts);
+    }
+
+    protected function compareRates(array $a, array $b): int
+    {
+        if ($a['rate'] === null && $b['rate'] === null) {
+            return strcmp((string) ($a['name'] ?? ''), (string) ($b['name'] ?? ''));
+        }
+        if ($a['rate'] === null) {
+            return 1;
+        }
+        if ($b['rate'] === null) {
+            return -1;
+        }
+
+        return $a['rate'] <=> $b['rate'];
     }
 }

@@ -1,28 +1,41 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Attendance Summary 1.0.0\n"
-"Language: zh_CN\n"
-"PO-Revision-Date: 2026-11-21 11:00+0800\n"
+"Project-Id-Version: Attendance Summary 1.0.3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-21 12:51+0800\n"
+"PO-Revision-Date: 2026-11-21 12:52+0800\n"
 "Last-Translator: AndroidOL\n"
 "Language-Team: Gibbon zh_CN\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid " (Monthly)"
+msgstr "（月统计）"
+
+msgid " records"
+msgstr "条"
+
+#, php-format
 msgid "%s Attendance Analysis (%s to %s)"
 msgstr "%s 考勤分析（%s 至 %s）"
 
+#, php-format
 msgid "%s Attendance Summary (as of %s)"
 msgstr "%s 考勤汇总（截至 %s）"
 
+#, php-format
 msgid "%s Course Attendance Summary (%s to %s)"
 msgstr "%s 课程考勤汇总（%s 至 %s）"
 
+#, php-format
 msgid "%s School Year"
 msgstr "%s 学年"
 
-msgid " (Monthly)"
-msgstr "（月统计）"
+#, php-format
+msgid "%s no-record student-days affect %s students in this scope."
+msgstr "%s 个无记录学生日，涉及本范围内的 %s 名学生。"
 
 msgid "Absence Details"
 msgstr "缺勤明细"
@@ -32,51 +45,6 @@ msgstr "缺勤类型统计"
 
 msgid "Absent"
 msgstr "缺勤"
-
-msgid "Absence"
-msgstr "缺勤"
-
-msgid "Score for unexcused or personal absence."
-msgstr "无故缺勤或个人事假的评分。"
-
-msgid "Suspension"
-msgstr "停课"
-
-msgid "Score for a suspension."
-msgstr "被停课的评分。"
-
-msgid "Score for lateness."
-msgstr "迟到的评分。"
-
-msgid "Score for leaving early."
-msgstr "早退的评分。"
-
-msgid "Sick Leave"
-msgstr "病假"
-
-msgid "Score for sick leave."
-msgstr "病假的评分。"
-
-msgid "Authorized Absence"
-msgstr "公假"
-
-msgid "Score for an authorized absence."
-msgstr "公假的评分。"
-
-msgid "Score for attendance."
-msgstr "出勤的评分。"
-
-msgid "No Record"
-msgstr "无记录"
-
-msgid "Score for an attendance type marked as no record."
-msgstr "无记录考勤类型的评分。"
-
-msgid "Unknown Type"
-msgstr "未知类型"
-
-msgid "Fallback score when an attendance type does not match a configured category."
-msgstr "考勤类型未匹配任何配置类别时使用的评分。"
 
 msgid "Actions"
 msgstr "操作"
@@ -96,17 +64,14 @@ msgstr "所有课程"
 msgid "Attendance"
 msgstr "考勤信息"
 
-msgid "Attendance Score Settings"
-msgstr "考勤评分设置"
-
-msgid "Attendance score settings saved."
-msgstr "考勤评分设置已保存。"
-
-msgid "Weights are used by the full attendance history by course. Values range from 0 to 1, where 1 means full attendance."
-msgstr "权重用于全周期课程考勤；数值范围为 0 到 1，1 表示完整出勤。"
-
 msgid "Attendance Analysis and Alerts"
 msgstr "考勤分析与预警"
+
+msgid "Attendance Data Quality"
+msgstr "考勤数据质量"
+
+msgid "Attendance Definitions"
+msgstr "考勤统计口径"
 
 msgid "Attendance History (Courses)"
 msgstr "全周期考勤汇总（课程）"
@@ -117,8 +82,24 @@ msgstr "全周期考勤汇总（出勤日）"
 msgid "Attendance Rate"
 msgstr "出勤率"
 
+#, php-format
 msgid "Attendance Rate to %s"
 msgstr "至 %s 出勤率"
+
+msgid "Attendance Score Settings"
+msgstr "考勤评分设置"
+
+msgid "Attendance Trends"
+msgstr "考勤趋势"
+
+#, php-format
+msgid ""
+"Attendance rate = (Present + Partial) / (Present + Partial + Absent), for %s."
+msgstr ""
+"出勤率 =（出勤 + 部分出勤）/（出勤 + 部分出勤 + 缺勤），统计范围为 %s。"
+
+msgid "Attendance rate definition"
+msgstr "出勤率定义"
 
 msgid "Attendance records"
 msgstr "考勤记录"
@@ -126,11 +107,20 @@ msgstr "考勤记录"
 msgid "Attendance records transferred."
 msgstr "考勤记录迁移完成。"
 
+msgid "Attendance score settings saved."
+msgstr "考勤评分设置已保存。"
+
 msgid "Charts"
 msgstr "图表"
 
 msgid "Choose Class"
 msgstr "选择课程"
+
+msgid "Choose Date"
+msgstr "选择日期"
+
+msgid "Choose Form Group"
+msgstr "选择班级"
 
 msgid "Choose Replacement Classes"
 msgstr "选择新课程信息"
@@ -143,6 +133,27 @@ msgstr "班级出勤汇总"
 
 msgid "Class Name"
 msgstr "课程名称"
+
+msgid ""
+"Class-context attendance records are excluded by the school Attendance "
+"setting."
+msgstr "根据学校考勤设置，当前未纳入课堂考勤记录。"
+
+msgid ""
+"Class-context attendance records are included by the school Attendance "
+"setting."
+msgstr "根据学校考勤设置，当前已纳入课堂考勤记录。"
+
+msgid "Class-context records"
+msgstr "课堂考勤记录"
+
+msgid "Click a legend item to toggle visibility."
+msgstr "点击图例项可切换显示。"
+
+msgid ""
+"Comma or semicolon separated attendance type fragments. Matching is case-"
+"insensitive."
+msgstr "用逗号或分号分隔的考勤类型片段；匹配不区分大小写。"
 
 msgid "Confirm Attendance Transfer"
 msgstr "转移考勤记录确认"
@@ -165,10 +176,13 @@ msgstr "每日明细"
 msgid "Date"
 msgstr "日期"
 
+msgid "Date Range"
+msgstr "日期范围"
+
 msgid "Date of Birth"
 msgstr "出生日期"
 
-msgid "Date Range"
+msgid "Date range"
 msgstr "日期范围"
 
 msgid "Day"
@@ -180,14 +194,20 @@ msgstr "当日考勤"
 msgid "Days"
 msgstr "天数"
 
-msgid "Details"
-msgstr "详情"
-
 msgid "Departure Date"
 msgstr "离校日期"
 
+msgid "Details"
+msgstr "详情"
+
+msgid "End Date"
+msgstr "结束日期"
+
 msgid "End Time"
 msgstr "结束时间"
+
+msgid "Enrolment Date"
+msgstr "入学日期"
 
 msgid "Enrolment History"
 msgstr "就读经历"
@@ -201,11 +221,17 @@ msgstr "应出勤"
 msgid "Export CSV"
 msgstr "导出 CSV"
 
-msgid "Friday"
+msgid "Export Data Quality CSV"
+msgstr "导出数据质量 CSV"
+
+msgid "Form Group"
+msgstr "班级"
+
+msgid "Fri"
 msgstr "周五"
 
-msgid "Full Name"
-msgstr "姓名"
+msgid "Friday"
+msgstr "周五"
 
 msgid "Full History"
 msgstr "全周期"
@@ -215,6 +241,9 @@ msgstr "全周期（课程）"
 
 msgid "Full History (School Days)"
 msgstr "全周期（出勤日）"
+
+msgid "Full Name"
+msgstr "姓名"
 
 msgid "Gender"
 msgstr "性别"
@@ -227,6 +256,9 @@ msgstr "迟到/早退"
 
 msgid "Late Details"
 msgstr "迟到明细"
+
+msgid "Late and left early count as partial attendance."
+msgstr "迟到和早退计为部分出勤。"
 
 msgid "Left Early"
 msgstr "早退"
@@ -243,14 +275,30 @@ msgstr "课时名称"
 msgid "Lesson Time"
 msgstr "上课时间"
 
-msgid "Low Attendance Warning (below %s%%)"
-msgstr "低出勤预警（低于 %s%%）"
+msgid "Historical attendance data is read-only. Change the scope to the current school year to open the attendance-entry page."
+msgstr "历史考勤数据为只读。请将范围切换至当前学年，才能打开考勤录入页面。"
+
+#, php-format
+msgid "Low Attendance (below %s%%)"
+msgstr "低出勤关注（低于 %s%%）"
+
+msgid "Matching Keywords"
+msgstr "匹配关键词"
+
+msgid "Mon"
+msgstr "周一"
 
 msgid "Monday"
 msgstr "周一"
 
 msgid "My Classes"
 msgstr "我的课程"
+
+msgid "N/A"
+msgstr "暂无数据"
+
+msgid "No attendance data gaps were found in this scope."
+msgstr "所选范围内未发现考勤数据缺失。"
 
 msgid "No attendance records for this student in the selected scope."
 msgstr "该学生在所选范围内没有考勤记录。"
@@ -267,9 +315,6 @@ msgstr "该学生在所选范围内没有课程考勤记录。"
 msgid "No detailed records."
 msgstr "没有详细记录。"
 
-msgid "Non-school Day"
-msgstr "非上课日"
-
 msgid "No record"
 msgstr "无记录"
 
@@ -279,18 +324,44 @@ msgstr "无可替换课程"
 msgid "No scoped school days or attendance records are available yet."
 msgstr "该范围内还没有可统计的上课日或考勤记录。"
 
-msgid "No students are below this attendance rate."
-msgstr "没有低于该出勤率的学生。"
+msgid "No students with calculable attendance are below this rate."
+msgstr "没有可计算出勤率且低于该阈值的学生。"
 
 msgid "No transferable classes were found."
 msgstr "没有可迁移的课程。"
 
-msgid "Overall term attendance: standard total %s, attendance total %s, rate %s%%"
+msgid "No-record Attendance Queue"
+msgstr "无记录考勤待补队列"
+
+msgid ""
+"No-record days are excluded from the attendance-rate denominator. Expected "
+"counts school days only while each student is enrolled."
+msgstr "无记录日期不计入出勤率分母；应出勤只统计每名学生在读期间的上课日。"
+
+msgid "No-record days by class"
+msgstr "按班级统计的无记录日期"
+
+msgid "No-record handling"
+msgstr "无记录处理"
+
+msgid "Non-school Day"
+msgstr "非上课日"
+
+msgid "Open Attendance"
+msgstr "录入考勤"
+
+#, php-format
+msgid ""
+"Overall term attendance: standard total %s, attendance total %s, rate %s%%"
 msgstr "学期综合出勤率：标准总计 %s ，出勤总计 %s ，出勤率 %s%%"
+
+msgid "Partial attendance"
+msgstr "部分出勤"
 
 msgid "Period"
 msgstr "节次"
 
+#, php-format
 msgid "Period: %s to %s"
 msgstr "时段：%s 至 %s"
 
@@ -303,14 +374,39 @@ msgstr "打印"
 msgid "Reason"
 msgstr "原因"
 
-msgid " records"
-msgstr "条"
-
 msgid "Replacement Class"
 msgstr "替换课程"
 
+msgid "Report Data"
+msgstr "报表数据"
+
+msgid "Reset to 90% and save"
+msgstr "恢复为 90% 并保存"
+
+msgid ""
+"Review these records separately. A no-record day is a data gap, not an "
+"absence, and it is excluded from the attendance-rate denominator."
+msgstr ""
+"请单独处理这些记录。无记录表示数据缺失，不代表缺勤，也不计入出勤率分母。"
+
+msgid ""
+"Rows are newest first. Use the action to open the original form-group "
+"attendance page."
+msgstr "记录按日期由新到旧排列。可使用操作按钮打开原始班级考勤录入页面。"
+
+msgid "Sat"
+msgstr "周六"
+
 msgid "Saturday"
 msgstr "周六"
+
+msgid "Save as my default"
+msgstr "保存为我的默认值"
+
+msgid ""
+"Save the current alert threshold for your account without changing the "
+"report view."
+msgstr "保存当前关注阈值作为您的默认设置，不改变本次报表视图。"
 
 msgid "School Days"
 msgstr "上课天数"
@@ -339,8 +435,8 @@ msgstr "请选择操作时间范围！"
 msgid "Standard"
 msgstr "标准"
 
-msgid "Enrolment Date"
-msgstr "入学日期"
+msgid "Start Date"
+msgstr "开始日期"
 
 msgid "Start Time"
 msgstr "开始时间"
@@ -357,8 +453,14 @@ msgstr "人数"
 msgid "Students below this percentage appear in the alert list."
 msgstr "出勤率低于该百分比的学生会出现在预警名单中。"
 
+msgid "Students by Form Group"
+msgstr "按班级查看学生"
+
 msgid "Summary"
 msgstr "汇总项"
+
+msgid "Sun"
+msgstr "周日"
 
 msgid "Sunday"
 msgstr "周日"
@@ -366,8 +468,27 @@ msgstr "周日"
 msgid "Term"
 msgstr "学期"
 
+#, php-format
+msgid "The current alert threshold is %s."
+msgstr "当前关注阈值为 %s。"
+
+msgid "The specified record does not exist."
+msgstr "指定记录不存在。"
+
+msgid "The submitted data is invalid."
+msgstr "提交的数据无效。"
+
 msgid "The submitted data is invalid. Select the records again."
 msgstr "提交的数据无效，请重新选择。"
+
+msgid "The submitted threshold is invalid. Enter a value from 0 to 100."
+msgstr "提交的阈值无效，请输入 0 到 100 之间的数值。"
+
+msgid "There are no records to display."
+msgstr "没有可显示的记录。"
+
+msgid "Thu"
+msgstr "周四"
 
 msgid "Thursday"
 msgstr "周四"
@@ -393,11 +514,23 @@ msgstr "迁移考勤记录"
 msgid "Transfer failed. Try again shortly."
 msgstr "迁移失败，请稍后重试。"
 
+msgid "Tue"
+msgstr "周二"
+
 msgid "Tuesday"
 msgstr "周二"
 
+msgid "Tutors"
+msgstr "导师"
+
 msgid "Type"
 msgstr "类型"
+
+msgid "Types"
+msgstr "类型"
+
+msgid "Unable to save your default threshold."
+msgstr "无法保存您的默认关注阈值。"
 
 msgid "Unassigned Form Group"
 msgstr "未分班"
@@ -417,6 +550,9 @@ msgstr "未知学年"
 msgid "Update Dates"
 msgstr "更新日期"
 
+msgid "View"
+msgstr "查看"
+
 msgid "View Attendance"
 msgstr "查看考勤信息"
 
@@ -426,23 +562,41 @@ msgstr "查看详情"
 msgid "View Timetable"
 msgstr "查看排课"
 
+msgid "Wed"
+msgstr "周三"
+
 msgid "Wednesday"
 msgstr "周三"
 
+#, php-format
 msgid "Week %d"
 msgstr "第%d周"
 
 msgid "Weekday"
 msgstr "星期"
 
+msgid ""
+"Weights are used by the full attendance history by course. Values range from "
+"0 to 1, where 1 means full attendance."
+msgstr "权重用于全周期课程考勤；数值范围为 0 到 1，1 表示完整出勤。"
+
 msgid "Year Group"
 msgstr "年级"
+
+msgid "You do not have access to this action."
+msgstr "您没有权限执行此操作。"
 
 msgid "You do not have access to this page."
 msgstr "您没有权限访问该页面。"
 
 msgid "You do not have permission to perform this action."
 msgstr "您没有权限执行该操作。"
+
+msgid "You do not have permission to enter attendance. This queue is read-only."
+msgstr "您没有考勤录入权限，此队列为只读。"
+
+msgid "Your default alert threshold has been saved."
+msgstr "您的默认关注阈值已保存。"
 
 msgid "Your session expired. Refresh the page and try again."
 msgstr "会话已过期，请刷新页面后重试。"

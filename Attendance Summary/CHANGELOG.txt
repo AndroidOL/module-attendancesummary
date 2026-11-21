@@ -3,6 +3,12 @@ CHANGELOG
 
 v1.0.3
 ------
+- Separate no-record student-days into a data-quality queue instead of treating
+  them as low attendance.
+- Respect student enrolment dates when calculating expected and no-record days.
+- Show attendance definitions consistently in the report and CSV export.
+- Persist an explicit per-user alert threshold without changing preferences on
+  GET, print or CSV requests.
 - Make attendance type keyword groups configurable alongside their score weights.
 - Support comma- or semicolon-separated aliases for multilingual attendance data.
 
