@@ -6,7 +6,8 @@ v1.1.2
 - Fix the form-group attendance summary to resolve the current staff person
   before calculating quick Follow-up access.
 - Re-run action/permission registration for installations already marked 1.1.1,
-  using repeat-safe checks.
+  using repeat-safe checks and aligning installed action teacher defaults with
+  the fresh-install manifest.
 
 v1.1.1
 ------

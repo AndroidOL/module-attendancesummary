@@ -119,6 +119,15 @@ namespace Gibbon\Module\Attendance\Tests {
             $this->assertStringContainsString('INSERT INTO gibbonPermission', $changedb);
             $this->assertStringContainsString("SELECT '002', action.gibbonActionID", $changedb);
             $this->assertSame(8, substr_count($changedb, 'AND NOT EXISTS ('));
+            $this->assertSame(
+                4,
+                substr_count($changedb, "'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'")
+            );
+            $this->assertStringNotContainsString(
+                "'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'",
+                $changedb
+            );
+            $this->assertStringContainsString("SET action.defaultPermissionTeacher='Y'", $changedb);
             $this->assertStringContainsString('maxLength(2000)', $view);
             $this->assertStringContainsString('sendAttendanceCsv', $export);
             $this->assertStringContainsString('The CSV was not generated.', $export);

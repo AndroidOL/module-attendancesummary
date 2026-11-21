@@ -15,7 +15,7 @@ $sql[$count][1] = "INSERT INTO gibbonAction
 SELECT module.gibbonModuleID, 'View Attendance Follow-up', 0, 'Follow-up',
        'View assigned attendance follow-up cases and append-only coordination notes.',
        'attendance_followup.php, attendance_followup_view.php',
-       'attendance_followup.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'
+       'attendance_followup.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'
 FROM gibbonModule AS module
 WHERE module.name='Attendance Summary'
   AND NOT EXISTS (
@@ -32,7 +32,7 @@ INSERT INTO gibbonAction
 SELECT module.gibbonModuleID, 'Manage Attendance Follow-up', 1, 'Follow-up',
        'Create, assign and update attendance follow-up cases, notes and retention.',
        'attendance_followup.php, attendance_followup_view.php, attendance_followup_create.php, attendance_followup_createProcess.php, attendance_followup_updateProcess.php, attendance_followup_noteProcess.php, attendance_followup_export.php, attendance_followup_retention.php, attendance_followup_retentionProcess.php',
-       'attendance_followup.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'
+       'attendance_followup.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'
 FROM gibbonModule AS module
 WHERE module.name='Attendance Summary'
   AND NOT EXISTS (
@@ -51,6 +51,11 @@ WHERE module.name='Attendance Summary'
       WHERE permission.gibbonRoleID='001'
         AND permission.gibbonActionID=action.gibbonActionID
   );end
+UPDATE gibbonAction AS action
+JOIN gibbonModule AS module ON module.gibbonModuleID=action.gibbonModuleID
+SET action.defaultPermissionTeacher='Y'
+WHERE module.name='Attendance Summary'
+  AND action.name IN ('View Attendance Follow-up', 'Manage Attendance Follow-up');end
 INSERT INTO gibbonPermission (gibbonRoleID, gibbonActionID)
 SELECT '002', action.gibbonActionID
 FROM gibbonAction AS action
@@ -75,7 +80,7 @@ $sql[$count][1] = "INSERT INTO gibbonAction
 SELECT module.gibbonModuleID, 'View Attendance Follow-up', 0, 'Follow-up',
        'View assigned attendance follow-up cases and append-only coordination notes.',
        'attendance_followup.php, attendance_followup_view.php',
-       'attendance_followup.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'
+       'attendance_followup.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'
 FROM gibbonModule AS module
 WHERE module.name='Attendance Summary'
   AND NOT EXISTS (
@@ -92,7 +97,7 @@ INSERT INTO gibbonAction
 SELECT module.gibbonModuleID, 'Manage Attendance Follow-up', 1, 'Follow-up',
        'Create, assign and update attendance follow-up cases, notes and retention.',
        'attendance_followup.php, attendance_followup_view.php, attendance_followup_create.php, attendance_followup_createProcess.php, attendance_followup_updateProcess.php, attendance_followup_noteProcess.php, attendance_followup_export.php, attendance_followup_retention.php, attendance_followup_retentionProcess.php',
-       'attendance_followup.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'
+       'attendance_followup.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'
 FROM gibbonModule AS module
 WHERE module.name='Attendance Summary'
   AND NOT EXISTS (
