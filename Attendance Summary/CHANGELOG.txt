@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-v1.0.3
+v1.0.4
 ------
 - Separate no-record student-days into a data-quality queue instead of treating
   them as low attendance.
@@ -9,6 +9,9 @@ v1.0.3
 - Show attendance definitions consistently in the report and CSV export.
 - Persist an explicit per-user alert threshold without changing preferences on
   GET, print or CSV requests.
+
+v1.0.3
+------
 - Make attendance type keyword groups configurable alongside their score weights.
 - Support comma- or semicolon-separated aliases for multilingual attendance data.
 
