@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\Input\Button;
 use Gibbon\Services\Format;
 
 function attendanceT($text, array $params = []): string
@@ -892,7 +893,14 @@ function renderAttendanceDailyTable(array $dailyAttendance, array $attendanceRec
             $output .= '<td>' . $rate . '%</td>';
         }
 
-        $output .= '<td><button type="button" class="attendanceSummaryToggle" onclick="toggleDetails(\'' . htmlPrep($dateStr) . '\')">' . attendanceT('View Details') . '</button></td>';
+        $detailsButton = new Button(
+            attendanceT('View Details'),
+            'button',
+            'toggleDetails('.json_encode($dateStr).')',
+            'attendanceSummaryDetails-'.md5($dateStr)
+        );
+        $detailsButton->setSize('sm');
+        $output .= '<td>'.$detailsButton->getOutput().'</td>';
         $output .= '</tr>';
 
         $output .= '<tr id="details-' . htmlPrep($dateStr) . '" class="attendanceSummaryDetails"><td colspan="6">';

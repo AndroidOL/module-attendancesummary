@@ -83,6 +83,7 @@ namespace Gibbon\Module\Attendance\Tests {
             $export = file_get_contents($base.'/attendance_followup_export.php');
             $retention = file_get_contents($base.'/attendance_followup_retentionProcess.php');
             $functions = file_get_contents($base.'/followupFunctions.php');
+            $moduleFunctions = file_get_contents($base.'/moduleFunctions.php');
             $version = file_get_contents($base.'/version.php');
 
             foreach (['attendance_follow_up', 'attendance_follow_up_note', 'attendance_follow_up_event', 'attendance_follow_up_retention_log'] as $table) {
@@ -102,6 +103,9 @@ namespace Gibbon\Module\Attendance\Tests {
             $this->assertStringContainsString('followUp.gibbonPersonIDCreator', $functions);
             $this->assertStringContainsString('followUp.gibbonPersonIDOwner', $functions);
             $this->assertStringNotContainsString('gibbonCourseClassPerson', $functions);
+            $this->assertStringContainsString('!attendanceFollowUpStudentIsFull($enrolment)', $create);
+            $this->assertStringContainsString('FOR UPDATE', $note);
+            $this->assertStringContainsString('attendanceFollowUpCanAccessCase($pdo, $gibbonPersonID, $lockedCase)', $note);
             $this->assertStringContainsString('revision=revision+1', $update);
             $this->assertStringContainsString('activeKey', $changedb);
             $this->assertStringContainsString('revision', $changedb);
@@ -110,6 +114,8 @@ namespace Gibbon\Module\Attendance\Tests {
             $this->assertStringContainsString('sendAttendanceCsv', $export);
             $this->assertStringContainsString('/modules/System Admin/systemSettings.php', $retention);
             $this->assertStringContainsString('ON DELETE CASCADE', $manifest);
+            $this->assertStringContainsString('new Button(', $moduleFunctions);
+            $this->assertStringNotContainsString('<button type="button"', $moduleFunctions);
         }
     }
 }

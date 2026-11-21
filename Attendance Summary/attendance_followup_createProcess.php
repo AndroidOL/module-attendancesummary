@@ -73,6 +73,7 @@ $enrolment = attendanceFollowUpCurrentEnrolment($pdo, $studentID, $gibbonSchoolY
 if (
     empty($schoolYear)
     || empty($enrolment)
+    || !attendanceFollowUpStudentIsFull($enrolment)
     || $dateStart < $schoolYear['firstDay']
     || $dateEnd > $schoolYear['lastDay']
 ) {

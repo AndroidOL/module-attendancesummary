@@ -48,6 +48,16 @@ if (empty($case) || !attendanceFollowUpCanAccessCase($pdo, $gibbonPersonID, $cas
 
 try {
     $pdo->beginTransaction();
+    $lockedCase = $pdo->selectOne(
+        "SELECT * FROM attendance_follow_up
+         WHERE followUpID=:followUpID
+           AND retentionUntil>=CURRENT_DATE
+         FOR UPDATE",
+        ['followUpID' => $followUpID]
+    );
+    if (empty($lockedCase) || !attendanceFollowUpCanAccessCase($pdo, $gibbonPersonID, $lockedCase)) {
+        throw new RuntimeException('forbidden');
+    }
     $noteID = $pdo->insert(
         "INSERT INTO attendance_follow_up_note
          SET followUpID=:followUpID, gibbonPersonIDAuthor=:authorID, noteText=:noteText",
@@ -68,7 +78,7 @@ try {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
-    $redirect('error1');
+    $redirect($e->getMessage() === 'forbidden' ? 'error0' : 'error1');
 }
 
 $redirect('success2');
