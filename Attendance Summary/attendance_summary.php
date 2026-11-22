@@ -38,6 +38,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Attendance Summary/attend
 
 $gibbonFormGroupID = is_scalar($_GET['gibbonFormGroupID'] ?? null) ? trim((string) $_GET['gibbonFormGroupID']) : null;
 $gibbonPersonID = (string) $session->get('gibbonPersonID');
+$canViewAllClasses = attendanceCanViewAllClasses($gibbonPersonID);
 
 $page->breadcrumbs->add(attendanceT('Students by Form Group'));
 
@@ -50,7 +51,7 @@ $form->addHiddenValue('q', '/modules/' . $session->get('module') . '/attendance_
 
 $row = $form->addRow();
 $row->addLabel('gibbonFormGroupID', attendanceT('Form Group'));
-$row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'), true)->selected($gibbonFormGroupID)->placeholder()->required();
+$row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'), $canViewAllClasses)->selected($gibbonFormGroupID)->placeholder()->required();
 
 $row = $form->addRow();
 $row->addFooter();
@@ -65,6 +66,30 @@ if (!isset($gibbonFormGroupID)) {
 
 $formGroupGateway = $container->get(FormGroupGateway::class);
 $studentGateway = $container->get(StudentGateway::class);
+
+if ($gibbonFormGroupID === '*' && !$canViewAllClasses) {
+    $page->addError(attendanceT('You do not have access to view all classes.'));
+    return;
+}
+if ($gibbonFormGroupID !== '*' && !$canViewAllClasses) {
+    $isFormTutor = !empty($pdo->selectOne(
+        "SELECT gibbonFormGroupID FROM gibbonFormGroup
+         WHERE gibbonFormGroupID=:gibbonFormGroupID
+           AND gibbonSchoolYearID=:gibbonSchoolYearID
+           AND (gibbonPersonIDTutor=:gibbonPersonID
+                OR gibbonPersonIDTutor2=:gibbonPersonID
+                OR gibbonPersonIDTutor3=:gibbonPersonID)",
+        [
+            'gibbonFormGroupID'  => $gibbonFormGroupID,
+            'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
+            'gibbonPersonID'     => $gibbonPersonID,
+        ]
+    ));
+    if (!$isFormTutor) {
+        $page->addError(attendanceT('You do not have access to this form group.'));
+        return;
+    }
+}
 
 $criteria = $studentGateway->newQueryCriteria(true)
     ->sortBy(['formGroup', 'surname', 'preferredName'])

@@ -1458,3 +1458,9 @@ msgstr "全部（入学至今）"
 #: ⁨Attendance Summary/src/AttendanceLifecycleCourse.php⁩:143
 msgid "Unknown School Year"
 msgstr "未知学年"
+
+msgid "You do not have access to view all classes."
+msgstr "您没有查看全部班级的权限。"
+
+msgid "You do not have access to this form group."
+msgstr "您没有查看该班级的权限。"
